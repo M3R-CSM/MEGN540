@@ -43,22 +43,14 @@
 
 	/* Macros: */
 		/** Endpoint address of the first CDC interface's device-to-host data IN endpoint. */
-		#define CDC1_TX_EPADDR                 (ENDPOINT_DIR_IN  | 1)
+		#define CDC_TX_EPADDR                 (ENDPOINT_DIR_IN  | 1)
 
 		/** Endpoint address of the first CDC interface's host-to-device data OUT endpoint. */
-		#define CDC1_RX_EPADDR                 (ENDPOINT_DIR_OUT | 2)
+		#define CDC_RX_EPADDR                 (ENDPOINT_DIR_OUT | 2)
 
 		/** Endpoint address of the first CDC interface's device-to-host notification IN endpoint. */
-		#define CDC1_NOTIFICATION_EPADDR       (ENDPOINT_DIR_IN  | 3)
+		#define CDC_NOTIFICATION_EPADDR       (ENDPOINT_DIR_IN  | 3)
 
-		/** Endpoint address of the second CDC interface's device-to-host data IN endpoint. */
-		#define CDC2_TX_EPADDR                 (ENDPOINT_DIR_IN  | 4)
-
-		/** Endpoint address of the second CDC interface's host-to-device data OUT endpoint. */
-		#define CDC2_RX_EPADDR                 (ENDPOINT_DIR_OUT | 5)
-
-		/** Endpoint address of the second CDC interface's device-to-host notification IN endpoint. */
-		#define CDC2_NOTIFICATION_EPADDR       (ENDPOINT_DIR_IN  | 6)
 
 		/** Size in bytes of the CDC device-to-host notification IN endpoints. */
 		#define CDC_NOTIFICATION_EPSIZE        8
@@ -76,30 +68,18 @@
 			USB_Descriptor_Configuration_Header_t    Config;
 
 			// First CDC Control Interface
-			USB_Descriptor_Interface_Association_t   CDC1_IAD;
-			USB_Descriptor_Interface_t               CDC1_CCI_Interface;
-			USB_CDC_Descriptor_FunctionalHeader_t    CDC1_Functional_Header;
-			USB_CDC_Descriptor_FunctionalACM_t       CDC1_Functional_ACM;
-			USB_CDC_Descriptor_FunctionalUnion_t     CDC1_Functional_Union;
-			USB_Descriptor_Endpoint_t                CDC1_ManagementEndpoint;
+			USB_Descriptor_Interface_Association_t   CDC_IAD;
+			USB_Descriptor_Interface_t               CDC_CCI_Interface;
+			USB_CDC_Descriptor_FunctionalHeader_t    CDC_Functional_Header;
+			USB_CDC_Descriptor_FunctionalACM_t       CDC_Functional_ACM;
+			USB_CDC_Descriptor_FunctionalUnion_t     CDC_Functional_Union;
+			USB_Descriptor_Endpoint_t                CDC_ManagementEndpoint;
 
 			// First CDC Data Interface
-			USB_Descriptor_Interface_t               CDC1_DCI_Interface;
-			USB_Descriptor_Endpoint_t                CDC1_DataOutEndpoint;
-			USB_Descriptor_Endpoint_t                CDC1_DataInEndpoint;
+			USB_Descriptor_Interface_t               CDC_DCI_Interface;
+			USB_Descriptor_Endpoint_t                CDC_DataOutEndpoint;
+			USB_Descriptor_Endpoint_t                CDC_DataInEndpoint;
 
-			// Second CDC Control Interface
-			USB_Descriptor_Interface_Association_t   CDC2_IAD;
-			USB_Descriptor_Interface_t               CDC2_CCI_Interface;
-			USB_CDC_Descriptor_FunctionalHeader_t    CDC2_Functional_Header;
-			USB_CDC_Descriptor_FunctionalACM_t       CDC2_Functional_ACM;
-			USB_CDC_Descriptor_FunctionalUnion_t     CDC2_Functional_Union;
-			USB_Descriptor_Endpoint_t                CDC2_ManagementEndpoint;
-
-			// Second CDC Data Interface
-			USB_Descriptor_Interface_t               CDC2_DCI_Interface;
-			USB_Descriptor_Endpoint_t                CDC2_DataOutEndpoint;
-			USB_Descriptor_Endpoint_t                CDC2_DataInEndpoint;
 		} USB_Descriptor_Configuration_t;
 
 		/** Enum for the device interface descriptor IDs within the device. Each interface descriptor
@@ -108,10 +88,8 @@
 		 */
 		enum InterfaceDescriptors_t
 		{
-			INTERFACE_ID_CDC1_CCI = 0, /**< CDC1 CCI interface descriptor ID */
-			INTERFACE_ID_CDC1_DCI = 1, /**< CDC1 DCI interface descriptor ID */
-			INTERFACE_ID_CDC2_CCI = 2, /**< CDC2 CCI interface descriptor ID */
-			INTERFACE_ID_CDC2_DCI = 3, /**< CDC2 DCI interface descriptor ID */
+			INTERFACE_ID_CDC_CCI = 0, /**< CDC1 CCI interface descriptor ID */
+			INTERFACE_ID_CDC_DCI = 1, /**< CDC1 DCI interface descriptor ID */
 		};
 
 		/** Enum for the device string descriptor IDs within the device. Each string descriptor should
@@ -125,12 +103,12 @@
 			STRING_ID_Product      = 2, /**< Product string ID */
 		};
 
-	/* Function Prototypes: already defined in Device.h inluded through USB.h
+	/* Function Prototypes: already defined in Device.h included through USB.h */
 		uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue,
 		                                    const uint16_t wIndex,
 		                                    const void** const DescriptorAddress)
 		                                    ATTR_WARN_UNUSED_RESULT ATTR_NON_NULL_PTR_ARG(3);
-	*/
+
 
 #endif
 

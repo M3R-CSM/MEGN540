@@ -93,9 +93,9 @@ void EVENT_USB_Device_ConfigurationChanged(void)
 	bool ConfigSuccess = true;
 
 	/* Setup first CDC Interface's Endpoints */
-	ConfigSuccess &= Endpoint_ConfigureEndpoint(CDC1_TX_EPADDR, EP_TYPE_BULK, CDC_TXRX_EPSIZE, 1);
-	ConfigSuccess &= Endpoint_ConfigureEndpoint(CDC1_RX_EPADDR, EP_TYPE_BULK, CDC_TXRX_EPSIZE, 1);
-	ConfigSuccess &= Endpoint_ConfigureEndpoint(CDC1_NOTIFICATION_EPADDR, EP_TYPE_INTERRUPT, CDC_NOTIFICATION_EPSIZE, 1);
+	ConfigSuccess &= Endpoint_ConfigureEndpoint(CDC_TX_EPADDR, EP_TYPE_BULK, CDC_TXRX_EPSIZE, 1);
+	ConfigSuccess &= Endpoint_ConfigureEndpoint(CDC_RX_EPADDR, EP_TYPE_BULK, CDC_TXRX_EPSIZE, 1);
+	ConfigSuccess &= Endpoint_ConfigureEndpoint(CDC_NOTIFICATION_EPADDR, EP_TYPE_INTERRUPT, CDC_NOTIFICATION_EPSIZE, 1);
 
 	/* Reset line encoding baud rates so that the host knows to send new values */
 	LineEncoding1.BaudRateBPS = 0;
@@ -158,7 +158,7 @@ void USB_Echo_Task(void)
 	  return;
 
 	/* Select the Serial Rx Endpoint */
-	Endpoint_SelectEndpoint(CDC1_RX_EPADDR);
+	Endpoint_SelectEndpoint(CDC_RX_EPADDR);
 
 	/* Check to see if any data has been received */
 	if (Endpoint_IsOUTReceived())
@@ -176,7 +176,7 @@ void USB_Echo_Task(void)
 		Endpoint_ClearOUT();
 
 		/* Select the Serial Tx Endpoint */
-		Endpoint_SelectEndpoint(CDC1_TX_EPADDR);
+		Endpoint_SelectEndpoint(CDC_TX_EPADDR);
 
 		/* Write the received data to the endpoint */
 		Endpoint_Write_Stream_LE(&Buffer, DataLength, NULL);
