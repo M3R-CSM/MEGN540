@@ -21,7 +21,7 @@ TARGET       = Lab1
 MCU          = atmega32u4
 ARCH         = AVR8
 BOARD        = USER
-PORT	     = /dev/zumoCarAVR
+PORT	     = /dev/ttyZumoCarARV
 VID = 0x1ffb #Dont Change These
 PID = 0x2300 #Dont Change These
 F_CPU        = 16000000
@@ -161,7 +161,7 @@ gccversion :
 	@$(CC) --version
 
 
-program: $(TARGET).hex
+program: $(TARGET).hex 
 	avrdude -p $(MCU) -c avr109 -P $(PORT) -U flash:w:$(TARGET).hex
 
 
