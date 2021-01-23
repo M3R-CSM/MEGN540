@@ -106,7 +106,7 @@ ALL_CPPFLAGS = -mmcu=$(MCU) -I. -I$(EXTRAINCDIRS) -x c++ $(CPPFLAGS) $(GENDEPFLA
 # Include LUFA-specific DMBS extension modules
 DMBS_LUFA_PATH ?= $(LUFA_PATH)/Build/LUFA
 include $(DMBS_LUFA_PATH)/lufa-sources.mk
-include $(DMBS_LUFA_PATH)/lufa-gcc.mk
+#include $(DMBS_LUFA_PATH)/lufa-gcc.mk
 
 # Include common DMBS build system modules
 #DMBS_PATH      ?= $(LUFA_PATH)/Build/DMBS/DMBS
