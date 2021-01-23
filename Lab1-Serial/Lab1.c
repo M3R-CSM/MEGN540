@@ -10,7 +10,7 @@ int main(void)
 
     for (;;)
     {
-        USB_Echo_Task();
+ //       USB_Echo_Task();
         USB_USBTask();
     }
 }
