@@ -62,13 +62,25 @@ class SerialData:
         self.dataFormat = new_format
 
     def backgroundThread(self):  # retrieve data
-        time.sleep(1.0)
         self.serialConnection.reset_input_buffer()
+        print('starting background thread...\n')
         while self.isRun:
-            self.serialConnection.readinto(self.rawData)
-            # self.isReceiving = True
-            if len(self.rawData) >= 4:
-                self.parseData()
+            if self.serialConnection.in_waiting > 0:
+                print('HAS DATA!\n')
+                self.serialConnection.readinto(self.rawData)
+                # self.isReceiving = True
+                if len(self.rawData) >= 4:
+                    self.parseData()
+            else:
+                time.sleep(0.005)
+
+    def write(self, data):
+        print(data)
+        if self.serialConnection.writable is True:
+            self.serialConnection.write(data)
+            print('Wrote ' + data)
+        else:
+            print('Error port not writeable!')
 
     def close(self):
         self.isRun = False

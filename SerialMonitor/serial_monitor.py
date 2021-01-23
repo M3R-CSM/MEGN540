@@ -78,7 +78,7 @@ class GuiSetup:
         self.port = Label(text="Port").place(x=xLoc, y=yLoc)
         self.port_entry = Entry(width=25)
         self.port_entry.place(x=(xLoc+50), y=yLoc)
-        self.port_entry.insert(1,"/dev/ttyAMC0")
+        self.port_entry.insert(1,"/dev/ttyACM0")
 
         # self.os_combobox = Combobox(self.gui, values=['Linux', 'Windows'],width=7)
         # self.os_combobox.place(x=15, y=320)
@@ -208,15 +208,16 @@ class GuiSetup:
         the data is always converted into ASCII, the receiving device has to convert the data into the required f
         format.
         """
-        self.send_data = self.data_entry.get()
+        self.send_data = self.data_entry_char.get()
 
         if not self.send_data:
             print("Sent Nothing")
         # self.serial_object.write(self.send_data.encode('utf-8'))
+        self.serial_object.write(self.send_data.encode('utf-8'));
 
         try:
             if self.button_var.get() == 3:
-                print(self.data_entry.get() + self.terminator_entry)
+                print(self.data_entry_char.get() + self.terminator_entry)
         except ValueError:
             print("Enter Baud and Port")
             return
