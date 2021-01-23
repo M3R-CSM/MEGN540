@@ -138,6 +138,9 @@ gccversion :
 program :
 	avrdude -p $(MCU) -c avr109 -P $(PORT) -U flash:w:$(TARGET).hex
 
+erase_program :
+	avrdude -c avr109 -p atmega32U4 -P $(PORT) -e
+
 # Create final output files (.hex, .eep) from ELF output file.
 %.hex: %.elf
 	@echo
