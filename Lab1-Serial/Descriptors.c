@@ -42,17 +42,17 @@
  *  number of device configurations. The descriptor is read out by the USB host when the enumeration
  *  process begins.
  */
-const USB_Descriptor_Device_t PROGMEM DeviceDescriptor =
+const USB_Descriptor_Device_t DeviceDescriptor =
         {
                 .Header                 = {.Size = sizeof(USB_Descriptor_Device_t), .Type = DTYPE_Device},
 
                 .USBSpecification       = VERSION_BCD(1,1,0),
-//                .Class                  = CDC_CSCP_CDCClass,
-//                .SubClass               = CDC_CSCP_NoSpecificSubclass ,
-//                .Protocol               = CDC_CSCP_NoSpecificProtocol,
-                .Class                  = USB_CSCP_IADDeviceClass,
-                .SubClass               = USB_CSCP_IADDeviceSubclass,
-                .Protocol               = USB_CSCP_IADDeviceProtocol,
+                .Class                  = CDC_CSCP_CDCClass,
+                .SubClass               = CDC_CSCP_NoSpecificSubclass ,
+                .Protocol               = CDC_CSCP_NoSpecificProtocol,
+//                .Class                  = USB_CSCP_IADDeviceClass,
+//                .SubClass               = USB_CSCP_IADDeviceSubclass,
+//                .Protocol               = USB_CSCP_IADDeviceProtocol,
 
                 .Endpoint0Size          = FIXED_CONTROL_ENDPOINT_SIZE,
 
@@ -72,7 +72,7 @@ const USB_Descriptor_Device_t PROGMEM DeviceDescriptor =
  *  and endpoints. The descriptor is read out by the USB host during the enumeration process when selecting
  *  a configuration so that the host may correctly communicate with the USB device.
  */
-const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor =
+const USB_Descriptor_Configuration_t ConfigurationDescriptor =
         {
                 .Config =
                         {
@@ -147,7 +147,7 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor =
                         {
                                 .Header                 = {.Size = sizeof(USB_Descriptor_Endpoint_t), .Type = DTYPE_Endpoint},
 
-                                .EndpointAddress        = CDC_NOTIFICATION_EPADDR, //(ENDPOINT_DIR_IN | CDC_NOTIFICATION_EPADDR),
+                                .EndpointAddress        = (ENDPOINT_DIR_IN | CDC_NOTIFICATION_EPADDR),//CDC_NOTIFICATION_EPADDR
                                 .Attributes             = (EP_TYPE_INTERRUPT | ENDPOINT_ATTR_NO_SYNC | ENDPOINT_USAGE_DATA),
                                 .EndpointSize           = CDC_NOTIFICATION_EPSIZE,
                                 .PollingIntervalMS      = 0xFF
@@ -173,20 +173,20 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor =
                         {
                                 .Header                 = {.Size = sizeof(USB_Descriptor_Endpoint_t), .Type = DTYPE_Endpoint},
 
-                                .EndpointAddress        = CDC_RX_EPADDR, //(ENDPOINT_DIR_OUT | CDC_RX_EPADDR),
+                                .EndpointAddress        = (ENDPOINT_DIR_OUT | CDC_RX_EPADDR),//CDC_RX_EPADDR,
                                 .Attributes             = (EP_TYPE_BULK | ENDPOINT_ATTR_NO_SYNC | ENDPOINT_USAGE_DATA),
                                 .EndpointSize           = CDC_TXRX_EPSIZE,
-                                .PollingIntervalMS      = 0x05 // 0x01
+                                .PollingIntervalMS      = 0x01 // 0x05
                         },
 
                 .CDC_DataInEndpoint =
                         {
                                 .Header                 = {.Size = sizeof(USB_Descriptor_Endpoint_t), .Type = DTYPE_Endpoint},
 
-                                .EndpointAddress        = CDC_TX_EPADDR,//(ENDPOINT_DIR_IN | CDC_TX_EPADDR),
+                                .EndpointAddress        = (ENDPOINT_DIR_IN | CDC_TX_EPADDR),//CDC_TX_EPADDR,//
                                 .Attributes             = (EP_TYPE_BULK | ENDPOINT_ATTR_NO_SYNC | ENDPOINT_USAGE_DATA),
                                 .EndpointSize           = CDC_TXRX_EPSIZE,
-                                .PollingIntervalMS      = 0x05//0x01
+                                .PollingIntervalMS      = 0x01//0x05
                         },
         };
 
