@@ -50,9 +50,6 @@ const USB_Descriptor_Device_t DeviceDescriptor =
                 .Class                  = CDC_CSCP_CDCClass,
                 .SubClass               = CDC_CSCP_NoSpecificSubclass ,
                 .Protocol               = CDC_CSCP_NoSpecificProtocol,
-//                .Class                  = USB_CSCP_IADDeviceClass,
-//                .SubClass               = USB_CSCP_IADDeviceSubclass,
-//                .Protocol               = USB_CSCP_IADDeviceProtocol,
 
                 .Endpoint0Size          = FIXED_CONTROL_ENDPOINT_SIZE,
 
@@ -88,19 +85,6 @@ const USB_Descriptor_Configuration_t ConfigurationDescriptor =
 
                                 .MaxPowerConsumption    = USB_CONFIG_POWER_MA(100)
                         },
-                .CDC_IAD =
-                        {
-                                .Header                 = {.Size = sizeof(USB_Descriptor_Interface_Association_t), .Type = DTYPE_InterfaceAssociation},
-
-                                .FirstInterfaceIndex    = INTERFACE_ID_CDC_CCI,
-                                .TotalInterfaces        = 2,
-
-                                .Class                  = CDC_CSCP_CDCClass,
-                                .SubClass               = CDC_CSCP_ACMSubclass,
-                                .Protocol               = CDC_CSCP_ATCommandProtocol,
-
-                                .IADStrIndex            = NO_DESCRIPTOR
-                        },
 
                 .CDC_CCI_Interface =
                         {
@@ -131,7 +115,7 @@ const USB_Descriptor_Configuration_t ConfigurationDescriptor =
                                 .Header                 = {.Size = sizeof(USB_CDC_Descriptor_FunctionalACM_t), .Type = CDC_DTYPE_CSInterface},
                                 .Subtype                = CDC_DSUBTYPE_CSInterface_ACM,
 
-                                .Capabilities           = 0x06//0x04,
+                                .Capabilities           = 0x06,
                         },
 
                 .CDC_Functional_Union =
@@ -147,7 +131,7 @@ const USB_Descriptor_Configuration_t ConfigurationDescriptor =
                         {
                                 .Header                 = {.Size = sizeof(USB_Descriptor_Endpoint_t), .Type = DTYPE_Endpoint},
 
-                                .EndpointAddress        = (ENDPOINT_DIR_IN | CDC_NOTIFICATION_EPADDR),//CDC_NOTIFICATION_EPADDR
+                                .EndpointAddress        = CDC_NOTIFICATION_EPADDR, //(ENDPOINT_DIR_IN | CDC_NOTIFICATION_EPADDR),//
                                 .Attributes             = (EP_TYPE_INTERRUPT | ENDPOINT_ATTR_NO_SYNC | ENDPOINT_USAGE_DATA),
                                 .EndpointSize           = CDC_NOTIFICATION_EPSIZE,
                                 .PollingIntervalMS      = 0xFF
@@ -173,20 +157,20 @@ const USB_Descriptor_Configuration_t ConfigurationDescriptor =
                         {
                                 .Header                 = {.Size = sizeof(USB_Descriptor_Endpoint_t), .Type = DTYPE_Endpoint},
 
-                                .EndpointAddress        = (ENDPOINT_DIR_OUT | CDC_RX_EPADDR),//CDC_RX_EPADDR,
+                                .EndpointAddress        = CDC_RX_EPADDR,//(ENDPOINT_DIR_OUT | CDC_RX_EPADDR),//,
                                 .Attributes             = (EP_TYPE_BULK | ENDPOINT_ATTR_NO_SYNC | ENDPOINT_USAGE_DATA),
                                 .EndpointSize           = CDC_TXRX_EPSIZE,
-                                .PollingIntervalMS      = 0x01 // 0x05
+                                .PollingIntervalMS      = 0x05
                         },
 
                 .CDC_DataInEndpoint =
                         {
                                 .Header                 = {.Size = sizeof(USB_Descriptor_Endpoint_t), .Type = DTYPE_Endpoint},
 
-                                .EndpointAddress        = (ENDPOINT_DIR_IN | CDC_TX_EPADDR),//CDC_TX_EPADDR,//
+                                .EndpointAddress        = CDC_TX_EPADDR,//(ENDPOINT_DIR_IN | CDC_TX_EPADDR),//,//
                                 .Attributes             = (EP_TYPE_BULK | ENDPOINT_ATTR_NO_SYNC | ENDPOINT_USAGE_DATA),
                                 .EndpointSize           = CDC_TXRX_EPSIZE,
-                                .PollingIntervalMS      = 0x01//0x05
+                                .PollingIntervalMS      = 0x05
                         },
         };
 
@@ -194,19 +178,19 @@ const USB_Descriptor_Configuration_t ConfigurationDescriptor =
  *  the string descriptor with index 0 (the first index). It is actually an array of 16-bit integers, which indicate
  *  via the language ID table available at USB.org what languages the device supports for its string descriptors.
  */
-const USB_Descriptor_String_t PROGMEM LanguageString = USB_STRING_DESCRIPTOR_ARRAY(LANGUAGE_ID_ENG);
+const USB_Descriptor_String_t LanguageString = USB_STRING_DESCRIPTOR_ARRAY(LANGUAGE_ID_ENG);
 
 /** Manufacturer descriptor string. This is a Unicode string containing the manufacturer's details in human readable
  *  form, and is read out upon request by the host when the appropriate string ID is requested, listed in the Device
  *  Descriptor.
  */
-const USB_Descriptor_String_t PROGMEM ManufacturerString = USB_STRING_DESCRIPTOR(L"Colorado Cool of Mines");
+const USB_Descriptor_String_t ManufacturerString = USB_STRING_DESCRIPTOR(L"Colorado School of Mines");
 
 /** Product descriptor string. This is a Unicode string containing the product's details in human readable form,
  *  and is read out upon request by the host when the appropriate string ID is requested, listed in the Device
  *  Descriptor.
  */
-const USB_Descriptor_String_t PROGMEM ProductString = USB_STRING_DESCRIPTOR(L"MEGN540 Lab Pololu Zumo Car");
+const USB_Descriptor_String_t ProductString = USB_STRING_DESCRIPTOR(L"MEGN540 Lab Pololu Zumo Car");
 
 
 /** This function is called by the library when in device mode, and must be overridden (see library "USB Descriptors"
@@ -258,3 +242,5 @@ uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue,
 	*DescriptorAddress = Address;
 	return Size;
 }
+
+

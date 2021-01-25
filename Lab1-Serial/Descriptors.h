@@ -28,6 +28,13 @@
   this software.
 */
 
+/*
+ *  MEGN540
+ * Copyright (c) Andrew Petruska 2020
+ * modifications for mechctronics class
+ * 
+ */
+
 /** \file
  *
  *  Header file for Descriptors.c.
@@ -43,13 +50,13 @@
 
 	/* Macros: */
 		/** Endpoint address of the first CDC interface's device-to-host data IN endpoint. */
-		#define CDC_TX_EPADDR                 3 //(ENDPOINT_DIR_IN  | 1)
+		#define CDC_TX_EPADDR                 (ENDPOINT_DIR_IN  | 1) 
 
 		/** Endpoint address of the first CDC interface's host-to-device data OUT endpoint. */
-		#define CDC_RX_EPADDR                 4 //(ENDPOINT_DIR_OUT | 2)
+		#define CDC_RX_EPADDR                 (ENDPOINT_DIR_OUT | 2) 
 
 		/** Endpoint address of the first CDC interface's device-to-host notification IN endpoint. */
-		#define CDC_NOTIFICATION_EPADDR       2 //(ENDPOINT_DIR_IN  | 3)
+		#define CDC_NOTIFICATION_EPADDR       (ENDPOINT_DIR_IN  | 3) 
 
 
 		/** Size in bytes of the CDC device-to-host notification IN endpoints. */
@@ -68,7 +75,6 @@
 			USB_Descriptor_Configuration_Header_t    Config;
 
 			// First CDC Control Interface
-			USB_Descriptor_Interface_Association_t   CDC_IAD;
 			USB_Descriptor_Interface_t               CDC_CCI_Interface;
 			USB_CDC_Descriptor_FunctionalHeader_t    CDC_Functional_Header;
 			USB_CDC_Descriptor_FunctionalACM_t       CDC_Functional_ACM;
