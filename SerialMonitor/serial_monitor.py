@@ -174,7 +174,7 @@ class GuiSetup:
         we leave the serialport in a good state as well as save data (if we want to) and terminate
         threads as necessary  etc.
     """
-self.ok = False # Tell thread to teminate while loop
+        self.ok = False # Tell thread to teminate while loop
         self.update_gui_thread.join()
         
         if self.serial_object:
