@@ -21,7 +21,7 @@ TARGET       = Lab1
 MCU          = atmega32u4
 ARCH         = AVR8
 BOARD        = USER
-PORT	     = /dev/ttyZumoCarARV
+PORT	     = /dev/ttyZumoCarAVR
 VID = 0x1ffb #Dont Change These
 PID = 0x2300 #Dont Change These
 F_CPU        = 16000000
@@ -136,10 +136,13 @@ gccversion :
 	@$(CC) --version
 
 program :
-	avrdude -p $(MCU) -c avr109 -P $(PORT) -U flash:w:$(TARGET).hex
+	avrdude -p $(MCU) -c avr109 -P $(PORT) -u -U flash:w:$(TARGET).hex
 
 erase_program :
-	avrdude -c avr109 -p atmega32U4 -P $(PORT) -e
+	avrdude -c avr109 -p atmega32U4 -P $(PORT) -u -e
+
+reset_fuse:
+	avrdude -c avr109 -p atmega32U4 -P $(PORT) -u -U efuse:w:0xcb:m -U hfuse:w:0xd8:m -U lfuse:w:0xFF:m
 
 # Create final output files (.hex, .eep) from ELF output file.
 %.hex: %.elf
