@@ -33,299 +33,167 @@ void morse_letter_end(uint32_t unit_length)
     led_off_block(2*unit_length);
 }
 
+void dot_dash_blink(char* c_str, uint32_t unit_length)
+{
+    uint8_t ind = 0;
+    while( c_str[ind] != 0 && ind < 8) // morse patterns are less than 5 dots and dashes with 7 for long pauses
+    {
+        if( c_str[ind] == '.' )
+            morse_dot(unit_length);
+        else
+            morse_dash(unit_length);
+        ind ++;
+    }
+    morse_letter_end(unit_length);
+}
+
 void blink_morse_char(char value, uint32_t unit_length)
 {
     switch( tolower(value) )
     {
         case 'a':
             // .-
-            morse_dot(unit_length);
-            morse_dash(unit_length);
-            morse_letter_end(unit_length);
+            dot_dash_blink(".-", unit_length);
             break;
         case 'b':
             //-...
-            morse_dash(unit_length);
-            morse_dot(unit_length);
-            morse_dot(unit_length);
-            morse_dot(unit_length);
-            morse_letter_end(unit_length);
+            dot_dash_blink("-...", unit_length);
             break;
         case 'c':
             //-.-.
-            morse_dash(unit_length);
-            morse_dot(unit_length);
-            morse_dash(unit_length);
-            morse_dot(unit_length);
-            morse_letter_end(unit_length);
+            dot_dash_blink("-.-.", unit_length);
             break;
         case 'd':
             //-...
-            morse_dash(unit_length);
-            morse_dot(unit_length);
-            morse_dot(unit_length);
-            morse_letter_end(unit_length);
+            dot_dash_blink("-...", unit_length);
             break;
         case 'e':
             //.
-            morse_dot(unit_length);
-            morse_letter_end(unit_length);
+            dot_dash_blink(".", unit_length);
             break;
         case 'f':
             //..-.
-            morse_dot(unit_length);
-            morse_dot(unit_length);
-            morse_dash(unit_length);
-            morse_dot(unit_length);
-            morse_letter_end(unit_length);
+            dot_dash_blink("..-.", unit_length);
             break;
         case 'h':
             //....
-            morse_dot(unit_length);
-            morse_dot(unit_length);
-            morse_dot(unit_length);
-            morse_dot(unit_length);
-            morse_letter_end(unit_length);
+            dot_dash_blink("....", unit_length);
             break;
         case 'i':
             //..
-            morse_dot(unit_length);
-            morse_dot(unit_length);
-            morse_letter_end(unit_length);
+            dot_dash_blink("..", unit_length);
             break;
         case 'j':
             //.---
-            morse_dot(unit_length);
-            morse_dash(unit_length);
-            morse_dash(unit_length);
-            morse_dash(unit_length);
+            dot_dash_blink(".---", unit_length);
             break;
         case 'k':
             //-.-
-            morse_dash(unit_length);
-            morse_dot(unit_length);
-            morse_dash(unit_length);
-            morse_letter_end(unit_length);
+            dot_dash_blink("-.-", unit_length);
             break;
         case 'l':
             //.-..
-            morse_dot(unit_length);
-            morse_dash(unit_length);
-            morse_dot(unit_length);
-            morse_dot(unit_length);
-            morse_letter_end(unit_length);
+            dot_dash_blink(".-..", unit_length);
             break;
         case 'm':
             //--
-            morse_dash(unit_length);
-            morse_dash(unit_length);
-            morse_letter_end(unit_length);
+            dot_dash_blink("--", unit_length);
             break;
         case 'n':
             //-.
-            morse_dash(unit_length);
-            morse_dot(unit_length);
-            morse_letter_end(unit_length);
+            dot_dash_blink("-.", unit_length);
             break;
         case 'o':
             //---
-            morse_dash(unit_length);
-            morse_dash(unit_length);
-            morse_dash(unit_length);
-            morse_letter_end(unit_length);
+            dot_dash_blink("---", unit_length);
             break;
         case 'p':
             //.--.
-            morse_dot(unit_length);
-            morse_dash(unit_length);
-            morse_dash(unit_length);
-            morse_dot(unit_length);
-            morse_letter_end(unit_length);
+            dot_dash_blink(".--.", unit_length);
             break;
         case 'q':
             //--.-
-            morse_dash(unit_length);
-            morse_dash(unit_length);
-            morse_dot(unit_length);
-            morse_dash(unit_length);
-            morse_letter_end(unit_length);
+            dot_dash_blink("--.-", unit_length);
             break;
         case 'r':
             //.-.
-            morse_dot(unit_length);
-            morse_dash(unit_length);
-            morse_dot(unit_length);
-            morse_letter_end(unit_length);
+            dot_dash_blink(".-.", unit_length);
             break;
         case 's':
             //...
-            morse_dot(unit_length);
-            morse_dot(unit_length);
-            morse_dot(unit_length);
-            morse_letter_end(unit_length);
+            dot_dash_blink("...", unit_length);
             break;
         case 't':
             //-
-            morse_dash(unit_length);
-            morse_letter_end(unit_length);
+            dot_dash_blink("-", unit_length);
             break;
         case 'u':
             //..-
-            morse_dot(unit_length);
-            morse_dot(unit_length);
-            morse_dash(unit_length);
-            morse_letter_end(unit_length);
+            dot_dash_blink("..-", unit_length);
             break;
         case 'v':
             //...-
-            morse_dot(unit_length);
-            morse_dot(unit_length);
-            morse_dot(unit_length);
-            morse_dash(unit_length);
-            morse_letter_end(unit_length);
+            dot_dash_blink("...-", unit_length);
             break;
         case 'w':
             //.--
-            morse_dot(unit_length);
-            morse_dash(unit_length);
-            morse_dash(unit_length);
-            morse_letter_end(unit_length);
+            dot_dash_blink(".--", unit_length);
             break;
         case 'x':
             //-..-
-            morse_dash(unit_length);
-            morse_dot(unit_length);
-            morse_dot(unit_length);
-            morse_dash(unit_length);
-            morse_letter_end(unit_length);
+            dot_dash_blink("-..-", unit_length);
             break;
         case 'y':
             //-.--
-            morse_dash(unit_length);
-            morse_dot(unit_length);
-            morse_dash(unit_length);
-            morse_dash(unit_length);
-            morse_letter_end(unit_length);
+            dot_dash_blink("-.--", unit_length);
             break;
         case 'z':
             //--..
-            morse_dash(unit_length);
-            morse_dash(unit_length);
-            morse_dot(unit_length);
-            morse_dot(unit_length);
-            morse_letter_end(unit_length);
+            dot_dash_blink("--..", unit_length);
             break;
         case '1':
-            morse_dot(unit_length);
-            morse_dash(unit_length);
-            morse_dash(unit_length);
-            morse_dash(unit_length);
-            morse_dash(unit_length);
-            morse_letter_end(unit_length);
+            dot_dash_blink(".____", unit_length);
             break;
         case '2':
-            morse_dot(unit_length);
-            morse_dot(unit_length);
-            morse_dash(unit_length);
-            morse_dash(unit_length);
-            morse_dash(unit_length);
-            morse_letter_end(unit_length);
+            dot_dash_blink("..___", unit_length);
             break;
         case '3':
-            morse_dot(unit_length);
-            morse_dot(unit_length);
-            morse_dot(unit_length);
-            morse_dash(unit_length);
-            morse_dash(unit_length);
-            morse_letter_end(unit_length);
+            dot_dash_blink("...__", unit_length);
             break;
         case '4':
-            morse_dot(unit_length);
-            morse_dot(unit_length);
-            morse_dot(unit_length);
-            morse_dot(unit_length);
-            morse_dash(unit_length);
-            morse_letter_end(unit_length);
+            dot_dash_blink("...._", unit_length);
             break;
         case '5':
-            morse_dot(unit_length);
-            morse_dot(unit_length);
-            morse_dot(unit_length);
-            morse_dot(unit_length);
-            morse_dot(unit_length);
-            morse_letter_end(unit_length);
+            dot_dash_blink(".....", unit_length);
             break;
         case '6':
-            morse_dash(unit_length);
-            morse_dot(unit_length);
-            morse_dot(unit_length);
-            morse_dot(unit_length);
-            morse_dot(unit_length);
-            morse_letter_end(unit_length);
+            dot_dash_blink("-....", unit_length);
             break;
         case '7':
-            morse_dash(unit_length);
-            morse_dash(unit_length);
-            morse_dot(unit_length);
-            morse_dot(unit_length);
-            morse_dot(unit_length);
-            morse_letter_end(unit_length);
+            dot_dash_blink("--...", unit_length);
             break;
         case '8':
-            morse_dash(unit_length);
-            morse_dash(unit_length);
-            morse_dash(unit_length);
-            morse_dot(unit_length);
-            morse_dot(unit_length);
-            morse_letter_end(unit_length);
+            dot_dash_blink("---..", unit_length);
             break;
         case '9':
-            morse_dash(unit_length);
-            morse_dash(unit_length);
-            morse_dash(unit_length);
-            morse_dash(unit_length);
-            morse_dot(unit_length);
-            morse_letter_end(unit_length);
+            dot_dash_blink("----.", unit_length);
             break;
         case '0':
-            morse_dash(unit_length);
-            morse_dash(unit_length);
-            morse_dash(unit_length);
-            morse_dash(unit_length);
-            morse_dash(unit_length);
-            morse_letter_end(unit_length);
+            dot_dash_blink("-----", unit_length);
             break;
         case ' ':
             led_off_block(7*unit_length);
             break;
         case '.':
             // .-.-.-
-            morse_dot(unit_length);
-            morse_dash(unit_length);
-            morse_dot(unit_length);
-            morse_dash(unit_length);
-            morse_dot(unit_length);
-            morse_dash(unit_length);
-            morse_letter_end(unit_length);
+            dot_dash_blink(".-.-.-", unit_length);
             break;
         case '!':
             // -.-.--
-            morse_dash(unit_length);
-            morse_dot(unit_length);
-            morse_dash(unit_length);
-            morse_dot(unit_length);
-            morse_dash(unit_length);
-            morse_dash(unit_length);
-            morse_letter_end(unit_length);
+            dot_dash_blink("-.-.--", unit_length);
         case '?':
             //..--..
-            morse_dot(unit_length);
-            morse_dot(unit_length);
-            morse_dash(unit_length);
-            morse_dash(unit_length);
-            morse_dot(unit_length);
-            morse_dot(unit_length);
-            morse_letter_end(unit_length);
+            dot_dash_blink("..--..", unit_length);
         default:
             led_off_block(7*unit_length);
             break;

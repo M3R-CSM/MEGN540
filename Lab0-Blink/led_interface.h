@@ -6,7 +6,7 @@
 #include <util/delay.h>
 
 #include <stdint.h> // for uint32_t type definition
-#include <ctype.h> // tolower() 
+#include <ctype.h> // tolower()
 
 #ifndef LAB0_BLINK_LED_INTERFACE_H
 #define LAB0_BLINK_LED_INTERFACE_H
@@ -27,6 +27,7 @@ void morse_new_letter(uint32_t unit_length);
 /** helper functions **/
 void morse_dot(uint32_t unit_length);
 void morse_dash(uint32_t unit_length);
+void dot_dash_blink(char* c_str, uint32_t unit_length);
 
 
 
