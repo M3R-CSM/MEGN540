@@ -12,30 +12,47 @@ import serial_monitor_lib
 class GuiSetup:
     def __init__(self):
         self.gui = Tk()
-        self.gui.title("window")
-
-        self.update_period = 5
-        self.serial_object = serial_monitor_lib.SerialData()
-        self.serial_object.registerCallback(self.addValue)
-        self.plotThread = None
-
-        self.button_var = IntVar()
-
-        self.version_ = self.button_var.get()  # in connectToSerial
-
-        # frames
-        self.frame_1 = Frame(height=285, width=480, relief='groove').place(x=7, y=5)
-        self.frame_2 = Frame(height=150, width=480, relief='groove').place(x=7, y=300)
-        self.text = Text(width=56, height=10)
-
-        # threads
-        self.t2 = threading.Thread(target=self.update_gui)
-        self.t2.daemon = True
-        self.t2.start()
-
-
+        self.gui.title("MEGN540 Serial Monitor & Plotter")
+        
         # Contact Info
         self.contact = Label(text="apetruska@mines.com").place(x=250, y=437)
+        
+        self.ok = True # flag to indicate shutdown has initiated
+        self.gui.protocol("WM_DELETE_WINDOW", self.close_window)
+
+        # Setup Serial Object
+        self.serial_object = serial_monitor_lib.SerialData()
+        self.serial_object.registerCallback(self.addValue)
+        self.serial_data = multiprocessing.Queue(maxsize=10)
+
+        # frames
+        frame_1 = Frame(self.gui, height=300, width=480, relief='groove')
+        frame_1.pack(side=TOP)
+        frame_1t = Frame(frame_1, height = 275, width = 460, relief='groove')
+        frame_1t.pack(side=TOP)
+       
+        frame_2 = Frame(self.gui, height=200, width=480, relief='groove')
+        frame_2.pack(side=BOTTOM, fill=Y)
+        
+        # Text window and scroll bar
+        self.text_box_update_Hz = 10  # 10 hz update
+        self.scrollbar = Scrollbar(frame_1t)
+        self.scrollbar.pack(side = RIGHT, fill = Y)
+        self.text = Text(frame_1t, height=12, yscrollcommand=self.scrollbar.set)
+        self.text.pack(side=LEFT, fill=X)
+        self.scrollbar.config(command=self.text.yview)        
+
+        # threads
+        self.update_gui_thread = threading.Thread(target=self.update_gui)
+        self.update_gui_thread.daemon = True
+        self.update_gui_thread.start()
+
+#        # Thread creation for gui text box functionality        
+#        self.t3 = threading.Thread(target=self.debug_check_gui)
+#        self.t3.daemon = True
+#        self.t3.start()
+
+
 
         # Send Button & Input
         xLoc = 15
@@ -80,12 +97,6 @@ class GuiSetup:
         self.port_entry.place(x=(xLoc+50), y=yLoc)
         self.port_entry.insert(1,"/dev/ttyACM0")
 
-        # self.os_combobox = Combobox(self.gui, values=['Linux', 'Windows'],width=7)
-        # self.os_combobox.place(x=15, y=320)
-        # self.os_combobox.current(0)
-        # #os_combobox.pack()
-
-
         # button
         self.button_connect = Button(   text=" Connect  ", command=self.connectToSerial)
         self.button_connect.place(x=15, y=360)
@@ -96,8 +107,6 @@ class GuiSetup:
         self.recording = Button(text="Start Recording", command=self.record)
         self.recording.place(x=185, y=320)
 
-        self.serial_data = multiprocessing.Queue(maxsize=2)
-
         self.plotObject = None
         self.recordObject = None
 
@@ -105,13 +114,7 @@ class GuiSetup:
         self.serial_object.setDataFormat(sv.get())
 
     def addValue(self, value):
-        if self.serial_data != None:
-            try:
-                self.serial_data.get_nowait()
-            except queue.Empty:
-                pass
-
-            self.serial_data.put(value)
+        self.serial_data.put(value)
 
     def connectToSerial(self):
         """The function initiates the Connection to the UART device with the Port and Buad fed through the Entry
@@ -126,28 +129,20 @@ class GuiSetup:
         '''baud = serial_monitor_lib.SerialData(baud)
         port = serial_monitor_lib.SerialData(port)'''
         if not self.serial_object.isConnected():
-            self.version_ = self.button_var.get()  # in connectToSerial
-
-            print(self.version_)
-            '''self.serial_object.append(baud)
-            self.serial_object.append(port)'''
             # global serial_object
-            self.port = self.port_entry.get()
-            self.baud = self.baud_entry.get()
+            port = self.port_entry.get()
+            baud = self.baud_entry.get()
 
             try:
-                self.serial_object.openPort( str(self.port), self.baud)
+                self.serial_object.openPort( str(port), baud)
             except ValueError:
                 print("Can't Open Specified Port")
+                
         else:  # Disconnect
             try:
                 self.serial_object.close()
             except AttributeError:
                 print("Closed without using it -_-")
-
-            if self.plotThread is not None:
-                serial_monitor_lib.close()
-                self.plotThread.join()
 
         if self.serial_object.isConnected():
             self.button_connect.configure(text="Disconnect")
@@ -155,73 +150,82 @@ class GuiSetup:
             self.button_connect.configure(text=" Connect ")
 
 
-            # try:
-            #     if self.version_ == 2:
-            #         try:
-            #             self.serial_object.openPort('/dev/tty' + str(self.port), self.baud)
-            #         except:
-            #             print("Can't Open Specified Port")
-            #     elif self.version_ == 1:
-            #         self.serial_object.openPort('COM' + str(self.port), self.baud)
-            # except ValueError:
-            #     print("Enter Baud and Port")
-            #     return
+    def debug_check_gui(self):
+        counter = 0
+        while self.ok:
+            self.addValue("Line " + str(counter))
+            counter += 1
+            time.sleep(.3)
 
     def update_gui(self):
-        """" This function is an update function which is also threaded. The function assimilates the data
-        and applies it to it corresponding progress bar. The text box is also updated every couple of seconds.
-        A simple auto refresh function .after() could have been used, this has been avoid purposely due to various
-        performance issues.
-        """
-        # global filter_data TODO
-        # global update_period TODO
-        # self.filter_data = serial_monitor_lib.SerialData.parseData(self).value,
-
-
-        self.text.place(x=15, y=10)
-        # progress_1.place(x=60, y=100)
-        # progress_2.place(x=60, y=130)
-        # progress_3.place(x=60, y=160)
-        # progress_4.place(x=60, y=190)
-        # progress_5.place(x=60, y=220)
-        new = time.time()
-
-        while 1:
-            # print(len(self.filter_data))
+        """" This function updates the text box with incomming serial data. """        
+        while self.ok: # self.ok gets set to False on window exit
             try:
                 self.text.insert(END, str(self.serial_data.get_nowait()))  # puts text data on monitor
                 self.text.insert(END, "\n")
-                if time.time() - new >= self.update_period:
-                    self.text.delete("1.0", END)
-                    # progress_1["value"] = 0
-                    # progress_2["value"] = 0
-                    # progress_3["value"] = 0
-                    # progress_4["value"] = 0
-                    # progress_5["value"] = 0
-                    new = time.time()
+                if self.text.yview()[1] > .9: # make slider stickey if at bottom
+                    self.text.yview(END)
             except queue.Empty:
-                pass
-
+                time.sleep(1/self.text_box_update_Hz) #sleep 1/updateHz
+                pass              
+            
+    def close_window(self):
+    """ This function is for some internal cleanup operations on closeing to make sure
+        we leave the serialport in a good state as well as save data (if we want to) and terminate
+        threads as necessary  etc.
+    """
+self.ok = False # Tell thread to teminate while loop
+        self.update_gui_thread.join()
+        
+        if self.serial_object:
+            self.serial_object.close()
+        
+        if self.plotObject:
+            self.plotObject.close()
+            
+        if self.recordObject and self.recordObject.isRecording():
+            self.recordObject.saveData()
+            
+        self.gui.destroy()
+        
+            
     def send(self):
         """This function is for sending data from the computer to the host controller.
         The value entered in the the entry box is pushed to the UART. The data can be of any format, since
         the data is always converted into ASCII, the receiving device has to convert the data into the required f
         format.
         """
-        self.send_data = self.data_entry_char.get()
-
-        if not self.send_data:
-            print("Sent Nothing")
-        # self.serial_object.write(self.send_data.encode('utf-8'))
-        self.serial_object.write(self.send_data.encode('utf-8'));
-
-        try:
-            if self.button_var.get() == 3:
-                print(self.data_entry_char.get() + self.terminator_entry)
-        except ValueError:
-            print("Enter Baud and Port")
-            return
-
+        cmd = self.data_entry_char.get()
+        
+        float1_str = self.data_entry_float_1.get()
+        if float1_str:
+            try:
+                float1 = float(float1_str)
+            except ValueError:
+                float1 = []
+                print("ERROR: Float 1 send box value [" + float1_str+"] is not a valid float")
+        else:
+            float1 = []
+    
+        float2_str = self.data_entry_float_2.get()
+        if float2_str:
+            try:
+                float2 = float(float2_str)
+            except ValueError:
+                float2 = []
+                print("ERROR: Float 1 send box value [" + float1_str+"] is not a valid float")
+        else:
+            float2 = []
+                
+        if cmd or float1 or float2:
+            # Something to send
+            if self.serial_object.write(cmd, float1, float2):
+                # Print to IO terminal
+                self.text.insert(END, ">>> "+ str(cmd) + " " + str(float1) + " " + str(float2) + "\n")
+            else:
+                self.text.insert(END, ">>> ERROR CANNOT SEND MSG: " + str(cmd) + " " + str(float1) + " " + str(float2) + "\n")
+                
+                
     def graph(self):
         if self.plotObject is None and self.serial_object.isConnected():
             self.plotObject = serial_monitor_lib.RealTimePlot()
@@ -247,24 +251,7 @@ class GuiSetup:
             self.recording.configure(text="Start Recording")
         else:
             print("Cannot start recording until serial is connected.\n")
-
-
-
-    # def disconnect(self):
-    #     """
-    #     This function is for disconnecting and quitting the application. Sometimes the application throws a couple of
-    #     errors while it is being shut down, the fix isn't out yet but will be pushed to the repo once done. simple
-    #     GUI.quit() calls.
-    #     """
-    #     try:
-    #         self.serial_object.close()
-    #     except AttributeError:
-    #         print("Closed without using it -_-")
-    #
-    #     if self.plotThread != None:
-    #         serial_monitor_lib.close()
-    #         self.plotThread.join()
-    #     self.gui.quit()
+            
 
     def Callback(self, function):
         self.callbackfunction.append(function)
