@@ -17,9 +17,9 @@ from array import *
 
 
 class SerialData:
-    def __init__(self, dataNumBytes=4):
-        self.dataNumBytes = dataNumBytes
-        self.rawData = bytearray(dataNumBytes)
+    def __init__(self):
+        self.dataNumBytes = None
+        self.rawData = None
         self.isRun = True
         # self.isReceiving = False
         self.thread = None
@@ -27,7 +27,7 @@ class SerialData:
         self.port = None
         self.baud = None
         self.serialConnection = None
-        self.dataFormat = 'c'
+        self.setDataFormat('c')
 
     def openPort (self, serialPort='COM5', serialBaud=9600):
         self.port = serialPort
@@ -36,6 +36,9 @@ class SerialData:
         print('Trying to connect to: ' + str(serialPort) + ' at ' + str(serialBaud) + ' BAUD.')
         try:
             self.serialConnection = serial.Serial(serialPort, serialBaud)
+            if(self.serialConnection.isOpen() == False):
+                self.serialConnection.open()
+                
             print('Connected to ' + str(serialPort) + ' at ' + str(serialBaud) + ' BAUD.')
             self.readSerialStart()
         except (RuntimeError, TypeError, NameError):
@@ -53,40 +56,54 @@ class SerialData:
                 time.sleep(0.1)'''
 
     def parseData(self):
-        value, = struct.unpack(self.dataFormat, self.rawData)
-        print(value)
+        value = struct.unpack("<"+self.dataFormat, self.rawData)
         for function in self.callbackfunction:
             function(value)
 
     def setDataFormat(self, new_format):
         self.dataFormat = new_format
+        self.dataNumBytes = struct.calcsize("<"+new_format)
+        self.rawData = bytearray(self.dataNumBytes)
+
 
     def backgroundThread(self):  # retrieve data
         self.serialConnection.reset_input_buffer()
         print('starting background thread...\n')
         while self.isRun:
-            if self.serialConnection.in_waiting > 0:
-                print('HAS DATA!\n')
+            if self.serialConnection.in_waiting >=  self.dataNumBytes:
                 self.serialConnection.readinto(self.rawData)
-                # self.isReceiving = True
-                if len(self.rawData) >= 4:
-                    self.parseData()
+                self.parseData()
             else:
-                time.sleep(0.005)
+                time.sleep(0.005) # recheck serial every 5ms
 
-    def write(self, data):
-        print(data)
-        if self.serialConnection.writable is True:
-            self.serialConnection.write(data)
-            print('Wrote ' + data)
+    def write(self, cmd, float1, float2):
+        if len(cmd) > 1:
+            print("Can only send a one character command identifier")
+            return False
+        
+        if cmd and float1 and float2:
+            msg = struct.pack("<c2f",cmd.encode(),float1,float2)
+        elif cmd and float1:
+            msg = struct.pack("<cf",cmd.encode(),float1)
+        elif cmd:
+            msg = struct.pack("<c",cmd.encode())
+        else:
+            print("Invalid Write String Combination")
+            return False
+        
+        if self.serialConnection: # and self.serialConnection.writable is True:
+            self.serialConnection.write(msg)
+            return True
         else:
             print('Error port not writeable!')
+            return False
 
     def close(self):
-        self.isRun = False
-        self.thread.join()
-        self.serialConnection.close()
-        print('Disconnected...')
+        if self.isConnected():
+            self.isRun = False
+            self.thread.join()
+            self.serialConnection.close()
+            print('Searial Port Disconnected.\n')
 
     def registerCallback(self, function):
         self.callbackfunction.append(function)
@@ -99,28 +116,35 @@ class RecordData:
     def __init__(self):
         self.csvData = []
         self.csvTime = []
-        self.isRecording = False
+        self.is_recording = False
 
     def startRecording(self):
-        self.isRecording = True
+        self.is_recording = True
         print("start recording")
 
     def addData(self, value):
-        if self.isRecording is True:
+        if self.is_recording is True:
             currentTimer = time.perf_counter()
             self.csvData.append(value)
             self.csvTime.append(currentTimer)
 
     def stopRecording(self):
-        self.isRecording = False
-        print("Stop recording")
+        if self.is_recording:
+            self.is_recording = False
+            print("Stop recording")
+    
+    def isRecording(self):
+        return self.is_recording
 
     def saveData(self):
-        d = {'TIME (ms)': self.csvTime, 'VALUE': self.csvData}
-        df = pd.DataFrame(d)
-        filename = filedialog.asksaveasfilename(title="test", filetypes=(("csv files", "*.csv"), ("all files", "*.*")))
-        if filename:
-            df.to_csv(filename)
+        if self.csvData:
+            d = {'TIME (ms)': self.csvTime, 'VALUE': self.csvData}
+            df = pd.DataFrame(d)
+            filename = filedialog.asksaveasfilename(title="test", filetypes=(("csv files", "*.csv"), ("all files", "*.*")))
+            if filename:
+                df.to_csv(filename)
+                self.csvData = []
+                self.csvTime = []
 
 
 class RealTimePlot:
@@ -192,35 +216,35 @@ class RealTimePlot:
         self.p.start()
 
 
-def printMe(value):
-    print("value is: " + str(value))
-
-
-def main():
-    portName = 'COM5'
-    baudRate = 9600
-
-    # 4 bytes in 1 data point
-    s = SerialData()
-    s.openPort(portName, baudRate)
-    # s.registerCallback(printMe)
-
-    p = RealTimePlot()
-    s.registerCallback(p.addValue)
-    p.Start()
-
-    r = RecordData()
-    s.registerCallback(r.addData)
-    r.startRecording()
-    time.sleep(10)
-    r.stopRecording()
-
-    s.close()
-
-    r.saveData()
-
-    p.close()
-
-
-if __name__ == '__main__':
-    main()
+#def printMe(value):
+#    print("value is: " + str(value))
+#
+#
+#def main():
+#    portName = 'COM5'
+#    baudRate = 9600
+#
+#    # 4 bytes in 1 data point
+#    s = SerialData()
+#    s.openPort(portName, baudRate)
+#    # s.registerCallback(printMe)
+#
+#    p = RealTimePlot()
+#    s.registerCallback(p.addValue)
+#    p.Start()
+#
+#    r = RecordData()
+#    s.registerCallback(r.addData)
+#    r.startRecording()
+#    time.sleep(10)
+#    r.stopRecording()
+#
+#    s.close()
+#
+#    r.saveData()
+#
+#    p.close()
+#
+#
+#if __name__ == '__main__':
+#    main()

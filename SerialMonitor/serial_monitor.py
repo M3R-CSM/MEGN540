@@ -88,14 +88,14 @@ class GuiSetup:
         self.baud = Label(text="Baud").place(x=xLoc, y=yLoc)
         self.baud_entry = Entry(width=7)
         self.baud_entry.place(x=(xLoc+50), y=yLoc)
-        self.baud_entry.insert(1,9600)
+        self.baud_entry.insert(1,256000)
 
         # Serial Port Input Box
         yLoc = 400
         self.port = Label(text="Port").place(x=xLoc, y=yLoc)
         self.port_entry = Entry(width=25)
         self.port_entry.place(x=(xLoc+50), y=yLoc)
-        self.port_entry.insert(1,"/dev/ttyACM0")
+        self.port_entry.insert(1,"/dev/ttyZumoCar")
 
         # button
         self.button_connect = Button(   text=" Connect  ", command=self.connectToSerial)
@@ -170,10 +170,10 @@ class GuiSetup:
                 pass              
             
     def close_window(self):
-    """ This function is for some internal cleanup operations on closeing to make sure
+        """ This function is for some internal cleanup operations on closeing to make sure
         we leave the serialport in a good state as well as save data (if we want to) and terminate
-        threads as necessary  etc.
-    """
+        threads as necessary  etc. """
+        
         self.ok = False # Tell thread to teminate while loop
         self.update_gui_thread.join()
         
@@ -213,7 +213,7 @@ class GuiSetup:
                 float2 = float(float2_str)
             except ValueError:
                 float2 = []
-                print("ERROR: Float 1 send box value [" + float1_str+"] is not a valid float")
+                print("ERROR: Float 2 send box value [" + float1_str+"] is not a valid float")
         else:
             float2 = []
                 
