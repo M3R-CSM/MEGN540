@@ -63,7 +63,6 @@ void USB_SetupHardware(void)
 #endif
 
 	/* Hardware Initialization */
-	//LEDs_Init();
 	USB_Init();
 }
 
@@ -73,7 +72,8 @@ void USB_SetupHardware(void)
 void EVENT_USB_Device_Connect(void)
 {
 	/* Indicate USB enumerating */
-	//LEDs_SetAllLEDs(LEDMASK_USB_ENUMERATING);
+	
+	//Future LED MSG could be good here
 }
 
 /** Event handler for the USB_Disconnect event. This indicates that the device is no longer connected to a host via
@@ -82,7 +82,8 @@ void EVENT_USB_Device_Connect(void)
 void EVENT_USB_Device_Disconnect(void)
 {
 	/* Indicate USB not ready */
-	//LEDs_SetAllLEDs(LEDMASK_USB_NOTREADY);
+	
+	//Future LED MSG could be good here
 }
 
 /** Event handler for the USB_ConfigurationChanged event. This is fired when the host set the current configuration
