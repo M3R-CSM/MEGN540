@@ -1,8 +1,14 @@
-# INSTALL ECLIPSE, GIT, MELD, EIGEN3, AND ARVDUDE
-sudo apt-get install -y build-essential libeigen3-dev git meld gcc-avr avr-libc avrdude arduino
-sudo dpkg --configure -a
+# Get System Updates and Upgrades
+sudo apt-get update
+sudo apt-get upgrade
 
-# Install Python and libraries
+# INSTALL PROGRAMMING APPS & LIBS: GIT (version control), MELD (file differences), EIGEN3 (linear algebra), AND AVRDUDE (avr programming)
+sudo apt-get install -y build-essential libeigen3-dev git meld gcc-avr avr-libc avrdude 
+
+# INSTALL SCREEN CAPTURE APPS: - This allows you to record the desktop with audio for assignents
+sudo apt-get install -y ffmpeg vokoscreen
+
+# Install Python and libraries necessary for the serial monitor application provided
 sudo apt-get install -y python3 libatlas-base-dev python3-numpy python3-pandas python3-serial python3-matplotlib 
 echo "export Path=/home/pi/.local/bin:$Path" >> ~/.bashrc
 . ~/.bashrc
