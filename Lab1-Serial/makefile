@@ -15,23 +15,41 @@
 
 # Run "make help" for target help.
 
+# Name of the main c file and resulting executable
 TARGET       = Lab1
 
+# List C source files here. (C dependencies are automatically generated.)
+SRC = $(TARGET).c       \
+	$(MEGN_C_LIB_PATH)/SerialIO.c			\
+	$(MEGN_C_LIB_PATH)/USB_Config/Descriptors.c       \
+	$(LUFA_SRC_USB)
 
+# List C++ source files here. (C dependencies are automatically generated.)
+CPPSRC =
+
+# Ohter Include Directories of importance
+LUFA_DIR     = ../lufa
+LUFA_PATH    = $(LUFA_DIR)/LUFA
+MEGN_C_LIB_PATH = ../c_lib
+
+# List any extra directories to look for include files here.
+#     Each directory must be seperated by a space.
+#     Use forward slashes for directory separators.
+#     For a directory that has spaces, enclose it in quotes.
+EXTRAINCDIRS = $(LUFA_DIR) $(MEGN_C_LIB_PATH) $(MEGN_C_LIB_PATH)/USB_Config
+
+#  Micro-Controller and USB Information
 MCU          = atmega32u4
 ARCH         = AVR8
 BOARD        = USER
 PORT	     = /dev/ttyZumoCarAVR
-VID = 0x1ffb #Dont Change These
-PID = 0x2300 #Dont Change These
+VID 		 = 0x1ffb #Dont Change These
+PID 		 = 0x2300 #Dont Change These
 F_CPU        = 16000000
 F_USB        = $(F_CPU)
 
+# Compiler Options
 OPTIMIZATION = s
-LUFA_DIR     = ../lufa
-LUFA_PATH    = $(LUFA_DIR)/LUFA
-MEGN_C_LIB_PATH = ../c_lib
-CC_FLAGS     = -DUSE_LUFA_CONFIG_HEADER -IConfig/
 CFLAGS      += -g -Wall -mcall-prologues -mmcu=$(MCU) -Os
 LDFLAGS	     = -Wl,-gc-sections -Wl,-relax
 OBJDIR		 = BIN
@@ -50,25 +68,6 @@ REMOVE = rm -f
 REMOVEDIR = rm -rf
 COPY = cp
 
-
-# List C source files here. (C dependencies are automatically generated.)
-SRC = $(TARGET).c       \
-	$(MEGN_C_LIB_PATH)/SerialIO.c			\
-	$(MEGN_C_LIB_PATH)/USB_Config/Descriptors.c       \
-	$(LUFA_SRC_USB)            
-
-
-
-# List C++ source files here. (C dependencies are automatically generated.)
-CPPSRC =
-
-
-# List any extra directories to look for include files here.
-#     Each directory must be seperated by a space.
-#     Use forward slashes for directory separators.
-#     For a directory that has spaces, enclose it in quotes.
-EXTRAINCDIRS = $(LUFA_DIR) $(MEGN_C_LIB_PATH) $(MEGN_C_LIB_PATH)/USB_Config
-
 # Compiler flag to set the C Standard level.
 #     c89   = "ANSI" C
 #     gnu89 = c89 plus GCC extensions
@@ -80,19 +79,15 @@ CSTANDARD = -std=c99
 CDEFS  = -DF_CPU=$(F_CPU)
 CDEFS += -DF_USB=$(F_USB)
 CDEFS += -DBOARD=BOARD_$(BOARD) -DARCH=ARCH_$(ARCH)
-CDEFS += -DBOOT_START_ADDR=$(BOOT_START)
 CDEFS += -DDEVICE_VID=$(VID)
 CDEFS += -DDEVICE_PID=$(PID)
 CDEFS += $(LUFA_OPTS)
-
-
 
 # Define all object files.
 OBJ = $(SRC:%.c=$(OBJDIR)/%.o) $(CPPSRC:%.cpp=$(OBJDIR)/%.o) $(ASRC:%.S=$(OBJDIR)/%.o)
 
 # Define all listing files.
 LST = $(SRC:%.c=$(OBJDIR)/%.lst) $(CPPSRC:%.cpp=$(OBJDIR)/%.lst) $(ASRC:%.S=$(OBJDIR)/%.lst)
-
 
 # Compiler flags to generate dependency files.
 GENDEPFLAGS = -MMD -MP -MF .dep/$(@F).d
@@ -104,28 +99,11 @@ ALL_CFLAGS = -mmcu=$(MCU) -I. $(addprefix -I,$(EXTRAINCDIRS)) $(CFLAGS) $(GENDEP
 ALL_CPPFLAGS = -mmcu=$(MCU) -I. $(addprefix -I,$(EXTRAINCDIRS)) -x c++ $(CPPFLAGS) $(GENDEPFLAGS)
 
 
-# Include LUFA-specific DMBS extension modules
-DMBS_LUFA_PATH ?= $(LUFA_PATH)/Build/LUFA
-include $(DMBS_LUFA_PATH)/lufa-sources.mk
-#include $(DMBS_LUFA_PATH)/lufa-gcc.mk
+# Include LUFA-specific make files and code
+include $(LUFA_PATH)/Build/LUFA/lufa-sources.mk
 
-# Include common DMBS build system modules
-#DMBS_PATH      ?= $(LUFA_PATH)/Build/DMBS/DMBS
-#include $(DMBS_PATH)/core.mk
-#include $(DMBS_PATH)/cppcheck.mk
-#include $(DMBS_PATH)/doxygen.mk
-#include $(DMBS_PATH)/dfu.mk
-#include $(DMBS_PATH)/gcc.mk
-#include $(DMBS_PATH)/hid.mk
-#include $(DMBS_PATH)/avrdude.mk
-#include $(DMBS_PATH)/atprogram.mk
-
-
-
-
-# Default target.ls
+# Default target.hex
 all: $(TARGET).hex
-
 elf: $(TARGET).elf
 hex: $(TARGET).hex
 sym: $(TARGET).sym
@@ -145,7 +123,7 @@ erase_program :
 reset_fuse:
 	avrdude -c avr109 -p atmega32U4 -P $(PORT) -u -U efuse:w:0xcb:m -U hfuse:w:0xd8:m -U lfuse:w:0xFF:m
 
-# Create final output files (.hex, .eep) from ELF output file.
+# Create final output files (.hex) from ELF output file.
 %.hex: %.elf
 	@echo
 	@echo $(MSG_FLASH) $@
