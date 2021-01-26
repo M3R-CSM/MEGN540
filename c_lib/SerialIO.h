@@ -43,8 +43,8 @@
 		#include <avr/interrupt.h>
 		#include <string.h>
 
-        #include "Config/LUFAConfig.h"
-    	#include "Descriptors.h"
+        #include "USB_Config/LUFAConfig.h"
+    	#include "USB_Config/Descriptors.h"
 
 		#include <LUFA/Drivers/USB/USB.h>
 		#include <LUFA/Platform/Platform.h>

@@ -30,6 +30,7 @@ F_USB        = $(F_CPU)
 OPTIMIZATION = s
 LUFA_DIR     = ../lufa
 LUFA_PATH    = $(LUFA_DIR)/LUFA
+MEGN_C_LIB_PATH = ../c_lib
 CC_FLAGS     = -DUSE_LUFA_CONFIG_HEADER -IConfig/
 CFLAGS      += -g -Wall -mcall-prologues -mmcu=$(MCU) -Os
 LDFLAGS	     = -Wl,-gc-sections -Wl,-relax
@@ -52,8 +53,8 @@ COPY = cp
 
 # List C source files here. (C dependencies are automatically generated.)
 SRC = $(TARGET).c       \
-	SerialIO.c			\
-	Descriptors.c       \
+	$(MEGN_C_LIB_PATH)/SerialIO.c			\
+	$(MEGN_C_LIB_PATH)/USB_Config/Descriptors.c       \
 	$(LUFA_SRC_USB)            
 
 
@@ -66,7 +67,7 @@ CPPSRC =
 #     Each directory must be seperated by a space.
 #     Use forward slashes for directory separators.
 #     For a directory that has spaces, enclose it in quotes.
-EXTRAINCDIRS = $(LUFA_DIR)
+EXTRAINCDIRS = $(LUFA_DIR) $(MEGN_C_LIB_PATH) $(MEGN_C_LIB_PATH)/USB_Config
 
 # Compiler flag to set the C Standard level.
 #     c89   = "ANSI" C
@@ -99,8 +100,8 @@ GENDEPFLAGS = -MMD -MP -MF .dep/$(@F).d
 
 # Combine all necessary flags and optional flags.
 # Add target processor to flags.
-ALL_CFLAGS = -mmcu=$(MCU) -I. -I$(EXTRAINCDIRS) $(CFLAGS) $(GENDEPFLAGS) $(CDEFS)
-ALL_CPPFLAGS = -mmcu=$(MCU) -I. -I$(EXTRAINCDIRS) -x c++ $(CPPFLAGS) $(GENDEPFLAGS)
+ALL_CFLAGS = -mmcu=$(MCU) -I. $(addprefix -I,$(EXTRAINCDIRS)) $(CFLAGS) $(GENDEPFLAGS) $(CDEFS)
+ALL_CPPFLAGS = -mmcu=$(MCU) -I. $(addprefix -I,$(EXTRAINCDIRS)) -x c++ $(CPPFLAGS) $(GENDEPFLAGS)
 
 
 # Include LUFA-specific DMBS extension modules
