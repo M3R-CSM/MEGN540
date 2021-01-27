@@ -191,9 +191,11 @@ void blink_morse_char(char value, uint32_t unit_length)
         case '!':
             // -.-.--
             dot_dash_blink("-.-.--", unit_length);
+            break;
         case '?':
             //..--..
             dot_dash_blink("..--..", unit_length);
+            break;
         default:
             led_off_block(7*unit_length);
             break;
