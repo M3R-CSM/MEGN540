@@ -143,7 +143,7 @@ class GuiSetup:
                 self.serial_object.close()
             except AttributeError:
                 print("Closed without using it -_-")
-
+                
         if self.serial_object.isConnected():
             self.button_connect.configure(text="Disconnect")
         else:
@@ -160,6 +160,17 @@ class GuiSetup:
     def update_gui(self):
         """" This function updates the text box with incomming serial data. """        
         while self.ok: # self.ok gets set to False on window exit
+            
+            # Update Button States
+            try:
+                if self.serial_object.isConnected():
+                    self.button_connect.configure(text="Disconnect")
+                else:
+                    self.button_connect.configure(text=" Connect ")
+            except:
+                pass
+            
+            # Insert new serial data if any
             try:
                 self.text.insert(END, str(self.serial_data.get_nowait()))  # puts text data on monitor
                 self.text.insert(END, "\n")

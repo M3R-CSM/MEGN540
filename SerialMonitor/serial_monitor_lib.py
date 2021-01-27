@@ -20,7 +20,7 @@ class SerialData:
     def __init__(self):
         self.dataNumBytes = None
         self.rawData = None
-        self.isRun = True
+        self.isRun = False
         # self.isReceiving = False
         self.thread = None
         self.callbackfunction = collections.deque()
@@ -30,6 +30,10 @@ class SerialData:
         self.setDataFormat('c')
 
     def openPort (self, serialPort='COM5', serialBaud=9600):
+        
+        if self.isRun:
+            close()
+        
         self.port = serialPort
         self.baud = serialBaud
 
@@ -41,19 +45,17 @@ class SerialData:
                 
             print('Connected to ' + str(serialPort) + ' at ' + str(serialBaud) + ' BAUD.')
             self.readSerialStart()
-        except (RuntimeError, TypeError, NameError):
+        except:
             print("Failed to connect with " + str(serialPort) + ' at ' + str(serialBaud) + ' BAUD.')
-            print(NameError)
 
     def isConnected(self):
-        return self.thread is not None
+        return self.isRun 
 
     def readSerialStart(self):
-        if self.thread is None:
+        if not self.isRun:
             self.thread = Thread(target=self.backgroundThread)
+            self.isRun = True
             self.thread.start()
-            '''while self.isReceiving is not True:
-                time.sleep(0.1)'''
 
     def parseData(self):
         value = struct.unpack("<"+self.dataFormat, self.rawData)
@@ -68,14 +70,20 @@ class SerialData:
 
     def backgroundThread(self):  # retrieve data
         self.serialConnection.reset_input_buffer()
-        print('starting background thread...\n')
+        print('Serial Monitoring Thread Started\n')
         while self.isRun:
-            if self.serialConnection.in_waiting >=  self.dataNumBytes:
-                self.serialConnection.readinto(self.rawData)
-                self.parseData()
-            else:
-                time.sleep(0.005) # recheck serial every 5ms
-
+            try:
+                if self.serialConnection.in_waiting >=  self.dataNumBytes:
+                    self.serialConnection.readinto(self.rawData)
+                    self.parseData()
+                else:
+                    time.sleep(0.005) # recheck serial every 5ms
+            except:
+                self.isRun = False
+                self.thread = None
+                self.serialConnection.close()
+                print('Connection Lost\n')
+                
     def write(self, cmd, float1, float2):
         if len(cmd) > 1:
             print("Can only send a one character command identifier")
@@ -102,8 +110,9 @@ class SerialData:
         if self.isConnected():
             self.isRun = False
             self.thread.join()
+            self.thread = None
             self.serialConnection.close()
-            print('Searial Port Disconnected.\n')
+            print('Searial Port ' + self.port + ' Disconnected.\n')
 
     def registerCallback(self, function):
         self.callbackfunction.append(function)
