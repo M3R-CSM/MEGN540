@@ -45,6 +45,12 @@ static volatile uint16_t _count_ms = 0;
 void SetupTimer0()
 {
     // YOUR CODE HERE
+
+
+    ms_counter_1 = 0;
+    ms_counter_2 = 0;
+    ms_counter_3 = 0;
+    ms_counter_4 = 0;
 }
 
 /**

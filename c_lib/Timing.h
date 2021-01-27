@@ -36,10 +36,10 @@ typedef struct Time {
  * Note that these will roll over at 255, tasks timing spanning more than 1/4 of a second should
  * leverage one of these in combination with the TimeSince function.
  */
-volatile uint8_t ms_counter_1 = 0;
-volatile uint8_t ms_counter_2 = 0;
-volatile uint8_t ms_counter_3 = 0;
-volatile uint8_t ms_counter_4 = 0;
+volatile uint8_t ms_counter_1;
+volatile uint8_t ms_counter_2;
+volatile uint8_t ms_counter_3;
+volatile uint8_t ms_counter_4;
 
 /**
  * Function SetupTimer0 initializes Timer0 to have a prescalar of XX and initializes the compare
