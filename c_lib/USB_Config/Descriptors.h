@@ -44,7 +44,7 @@
 #define _DESCRIPTORS_H_
 
 	/* Includes: */
-        #include "LUFAConfig.h"
+        //#include "LUFAConfig.h"
 		#include <LUFA/Drivers/USB/USB.h>
 		#include <avr/pgmspace.h>
 
