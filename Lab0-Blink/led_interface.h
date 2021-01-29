@@ -13,9 +13,12 @@
 
 #define initialize_LED()  DDRC |= (1 << DDC7)    // Make pin 13 be an output.
 
-#define LED_ON()  PORTC |= (1 << PORTC7)   // Turn the LED on.
+#define LED_ON()      PORTC |= (1 << PORTC7)   // Turn the LED on.
 
-#define LED_OFF() PORTC &= ~(1 << PORTC7)  // Turn the LED off.
+#define LED_TOGGLE()  PORTC ^= (1 << PORTC7)   // Toggles the led state
+
+#define LED_OFF()     PORTC &= ~(1 << PORTC7)  // Turn the LED off.
+
 
 void led_on_block( uint32_t ms );
 void led_off_block( uint32_t ms);
