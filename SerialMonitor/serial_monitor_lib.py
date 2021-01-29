@@ -18,8 +18,7 @@ from array import *
 
 class SerialData:
     def __init__(self):
-        self.dataNumBytes = None
-        self.rawData = None
+
         self.isRun = False
         # self.isReceiving = False
         self.thread = None
@@ -27,7 +26,11 @@ class SerialData:
         self.port = None
         self.baud = None
         self.serialConnection = None
-        self.setDataFormat('c')
+        
+        self.defined_data_mode = True
+        self.dataNumBytes = -1
+        self.dataFormat = "<"
+        self.rawData = None
 
     def openPort (self, serialPort='COM5', serialBaud=9600):
         
@@ -58,53 +61,115 @@ class SerialData:
             self.thread.start()
 
     def parseData(self):
-        value = struct.unpack("<"+self.dataFormat, self.rawData)
+        value = struct.unpack(self.dataFormat, self.rawData)
+        data = [];
+        
+        for i in range(len(value)):
+            if self.dataFormat[i+1] == 'c':
+                data.append(value[i].decode('ascii'))
+            elif self.dataFormat[i+1] == 'b' or self.dataFormat[i] == 'h':
+                data.append(int(value[i]))
+            else:
+                data.append(value[i])
+                     
         for function in self.callbackfunction:
-            function(value)
+            function(data)
 
     def setDataFormat(self, new_format):
-        self.dataFormat = new_format
-        self.dataNumBytes = struct.calcsize("<"+new_format)
-        self.rawData = bytearray(self.dataNumBytes)
-
+        if new_format != "Dynamic":
+            try:
+                self.defined_data_mode = True
+                self.dataFormat = "<"+new_format
+                self.dataNumBytes = struct.calcsize(self.dataFormat)
+                self.rawData = bytearray(self.dataNumBytes)
+            except:
+                print("Invalid Format: " + new_format)
+                return False
+        else:
+            self.defined_data_mode = False
+            self.dataFormat = "<"
+            self.dataNumBytes = -1
+            self.rawData = None
+        
+        return True
 
     def backgroundThread(self):  # retrieve data
         self.serialConnection.reset_input_buffer()
         print('Serial Monitoring Thread Started\n')
+        
         while self.isRun:
             try:
-                if self.serialConnection.in_waiting >=  self.dataNumBytes:
+                if self.defined_data_mode and self.serialConnection.in_waiting >= self.dataNumBytes:
+                    self.rawData = bytearray(self.dataNumBytes)
                     self.serialConnection.readinto(self.rawData)
                     self.parseData()
+                
+                elif (not self.defined_data_mode) and self.serialConnection.in_waiting and  self.dataNumBytes == -1:
+                    self.dataNumBytes = struct.unpack('b',self.serialConnection.read(1))[0]
+                
+                elif (not self.defined_data_mode) and self.serialConnection.in_waiting >= self.dataNumBytes and self.dataNumBytes > 0 :
+                    tmp = self.serialConnection.read(1)
+                    self.dataNumBytes -= 1
+                    tmp_uchar = struct.unpack('b',tmp)[0]
+                    
+                    if tmp_uchar != 0:
+                        self.dataFormat = self.dataFormat + struct.unpack('c',tmp)[0].decode('ascii')
+                    else:                       
+                        self.rawData = bytearray(self.dataNumBytes)
+                        self.serialConnection.readinto(self.rawData)
+                        self.parseData()
+                        self.dataNumBytes = -1
+                        self.dataFormat = "<"
+                
+                elif self.dataNumBytes == 0:
+                    self.dataNumBytes = -1
+                
                 else:
                     time.sleep(0.005) # recheck serial every 5ms
+            
             except:
                 self.isRun = False
                 self.thread = None
                 self.serialConnection.close()
                 print('Connection Lost\n')
                 
-    def write(self, cmd, float1, float2):
-        if len(cmd) > 1:
-            print("Can only send a one character command identifier")
-            return False
+    def write(self, data, data_format):
+        try:
+            index = 0
+            for d in data:
+                if data_format[index] == 'c':
+                    data[index] = d.encode()
+                elif data_format[index] == 'f':
+                    data[index] = float(d)
+                else:
+                    data[index] = int(d)
+                index += 1
+                
+        except:
+            return (False, 'Format/Entry Mismatch')
         
-        if cmd and float1 and float2:
-            msg = struct.pack("<c2f",cmd.encode(),float1,float2)
-        elif cmd and float1:
-            msg = struct.pack("<cf",cmd.encode(),float1)
-        elif cmd:
-            msg = struct.pack("<c",cmd.encode())
-        else:
-            print("Invalid Write String Combination")
-            return False
-        
+        data_format_str = ""
+        for e in data_format:
+            data_format_str += e
+        print(data_format_str)
+        print(data)
+        try:
+            if len(data) == 1:
+                msg = struct.pack("<"+data_format_str,data[0])
+            elif len(data) == 3:
+                msg = struct.pack("<"+data_format_str,data[0],data[1],data[2])
+            elif len(data) == 2:
+                msg = struct.pack("<"+data_format_str,data[0],data[1])
+            else:
+                return (False, "Data Length Unsupported")
+        except:
+            return (False, "Format/Entry Mismatch" )
+            
         if self.serialConnection: # and self.serialConnection.writable is True:
             self.serialConnection.write(msg)
-            return True
+            return True, None
         else:
-            print('Error port not writeable!')
-            return False
+            return (False, 'Port Not Writeable!')
 
     def close(self):
         if self.isConnected():
