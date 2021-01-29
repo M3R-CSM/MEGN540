@@ -77,7 +77,7 @@ void USB_SetupHardware(void);  // You'll need to add in any initialization items
  */
 void USB_Upkeep_Task(void);    // You'll need to add in USB buffer interaction here. This is where calls to usb_read_nex_byte would go...
 
-void USB_Echo_Task(void)
+void USB_Echo_Task(void);
 void EVENT_USB_Device_Connect(void);
 void EVENT_USB_Device_Disconnect(void);
 void EVENT_USB_Device_ConfigurationChanged(void);
