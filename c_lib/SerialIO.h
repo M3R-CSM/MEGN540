@@ -50,7 +50,6 @@
   this software.
 */
 
-
 #ifndef _SERIAL_IO_H_
 #define _SERIAL_IO_H_
 
@@ -65,8 +64,20 @@
 #include <LUFA/Drivers/USB/USB.h>
 #include <LUFA/Platform/Platform.h>
 
+// *** MEGN540  ***
+// Include your Ring_Buffer homework code.
+#include "Ring_Buffer.h"
+
+
 /* LUFA Specific Function Prototypes: */
 void USB_SetupHardware(void);  // You'll need to add in any initialization items to this function for your ring buffers
+
+/**
+ * Function USB_Upkeep_Task shoudl be called each loop in the main function.
+ */
+void USB_Upkeep_Task(void);    // You'll need to add in USB buffer interaction here. This is where calls to usb_read_nex_byte would go...
+
+void USB_Echo_Task(void)
 void EVENT_USB_Device_Connect(void);
 void EVENT_USB_Device_Disconnect(void);
 void EVENT_USB_Device_ConfigurationChanged(void);
