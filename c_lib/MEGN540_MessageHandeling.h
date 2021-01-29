@@ -35,12 +35,12 @@
 #include "SerialIO.h"
 
 /** Message Driven State Machine Flags */
-typedef struct { bool active; } MSG_FLAG_t;
-typedef struct { bool active; float duration } MSG_FLAG_D_t;
-typedef struct { bool active; float duration; uint8_t value }   MSG_FLAG_D_ValueU8_t;
-typedef struct { bool active; float duration; int16_t value }   MSG_FLAG_D_ValueI16_t;
-typedef struct { bool active; float duration; float value }     MSG_FLAG_D_ValueF_t;
-typedef struct { bool active; float duration; float value_1; float value_2 } MSG_FLAG_D_ValueFF_t;
+typedef struct MSG_FLAG { bool active; }  MSG_FLAG_t;
+typedef struct MSG_FLAG_D   { bool active; float duration; } MSG_FLAG_D_t;
+typedef struct MSG_FLAG_D_ValueU8   { bool active; float duration; uint8_t value; }  MSG_FLAG_D_ValueU8_t;
+typedef struct MSG_FLAG_D_ValueI16  { bool active; float duration; int16_t value; }  MSG_FLAG_D_ValueI16_t;
+typedef struct MSG_FLAG_D_ValueF    { bool active; float duration; float value; }    MSG_FLAG_D_ValueF_t;
+typedef struct MSG_FLAG_D_ValueFF   { bool active; float duration; float value_1; float value_2; } MSG_FLAG_D_ValueFF_t;
 
 MSG_FLAG_t mf_restart;  ///<-- This flag indicates that the device received a restart command from the hoast. Default inactive.
 
