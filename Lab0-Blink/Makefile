@@ -24,7 +24,7 @@ F_CPU        = 16000000
 
 OPTIMIZATION = s
 CC_FLAGS     =
-CFLAGS      += -g -Wall -mcall-prologues -mmcu=$(MCU) -Os
+CFLAGS      += -g -Wall -mcall-prologues -mmcu=$(MCU) -O$(OPTIMIZATION)
 LDFLAGS	     = -Wl,-gc-sections -Wl,-relax
 OBJDIR		 = BIN
 
