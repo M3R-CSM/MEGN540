@@ -54,7 +54,9 @@ void Message_Handling_Task()
 {
     // *** MEGN540  ***
     // YOUR CODE HERE. I suggest you use your peak function and a switch interface
-    return true;
+    // Either do the simple stuff strait up, set flags to have it done later.
+    // If it just is a USB thing, do it here, if it requires other hardware, do it in the main and
+    // set a flag to have it done here.
 }
 
 
