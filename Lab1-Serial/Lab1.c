@@ -29,6 +29,7 @@
 */
 
 #include "../c_lib/SerialIO.h"
+#include "../c_lib/MEGN540_MessageHandeling.h"
 
 /** Main program entry point. This routine configures the hardware required by the application, then
  *  enters a loop to run the application tasks in sequence.
@@ -37,10 +38,16 @@ int main(void)
 {
     USB_SetupHardware();
     GlobalInterruptEnable();
+    Message_Handling_Init(); // initialize message handling
 
-    for (;;)
+    while( !mf_restart.active )
     {
-        USB_Echo_Task();
-        USB_USBTask();
+        USB_Upkeep_Task();
+
+        USB_Echo_Task();// you'll want to remove this once you get your serial sorted
+        Message_Handling_Task();
+
+        // Below here you'll process state-machine flags.
+
     }
 }
