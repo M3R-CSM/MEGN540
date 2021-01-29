@@ -270,31 +270,7 @@ class GuiSetup:
         if self.data_entry_float_2.get() != '':
             data.append(self.data_entry_float_2.get())
             data_format.append(self.out_selection[self.combobox_out3.current()])
-        '''
-        cmd = self.data_entry_char.get()
-        
-        float1_str = self.data_entry_float_1.get()
-        if float1_str:
-            try:
-                float1 = float(float1_str)
-            except ValueError:
-                float1 = []
-                print("ERROR: Float 1 send box value [" + float1_str+"] is not a valid float")
-        else:
-            float1 = []
-    
-        float2_str = self.data_entry_float_2.get()
-        if float2_str:
-            try:
-                float2 = float(float2_str)
-            except ValueError:
-                float2 = []
-                print("ERROR: Float 2 send box value [" + float1_str+"] is not a valid float")
-        else:
-            float2 = []
-        '''
-        print(data)
-        print(data_format)
+
         if len(data):
             # Something to send
             self.text.insert(END, ">>> ")

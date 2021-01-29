@@ -151,8 +151,8 @@ class SerialData:
         data_format_str = ""
         for e in data_format:
             data_format_str += e
-        print(data_format_str)
-        print(data)
+
+
         try:
             if len(data) == 1:
                 msg = struct.pack("<"+data_format_str,data[0])
