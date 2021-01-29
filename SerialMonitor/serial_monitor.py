@@ -60,15 +60,25 @@ class GuiSetup:
         self.button1 = Button(text="Send", command=self.send, width=6).place(x=xLoc, y=yLoc)
         xLoc = 100
         yLoc += 5
-        self.label_char = Label(text="char").place(x=xLoc+5, y=yLoc-20)
+
+        self.out_selection = ["c", "b", "B", "h", "f"]
+        self.combobox_out1 = Combobox(self.gui, values = self.out_selection, width=3 )
+        self.combobox_out1.place(x=xLoc+15, y=yLoc-20)
+        self.combobox_out1.current(0)
         self.data_entry_char = Entry(self.gui)
-        self.data_entry_char.place(x=xLoc, y=yLoc, width=45)
-        xLoc += 50
-        self.label_float_1 = Label(text="float 1").place(x=xLoc+15, y=yLoc-20)
+        self.data_entry_char.place(x=xLoc, y=yLoc, width=70)
+        xLoc += 75
+        
+        self.combobox_out2 = Combobox(self.gui, values = self.out_selection, width=3 )
+        self.combobox_out2.place(x=xLoc+15, y=yLoc-20)
+        self.combobox_out2.current(4)
         self.data_entry_float_1 = Entry(self.gui)
         self.data_entry_float_1.place(x=xLoc, y=yLoc, width=70)
         xLoc += 75
-        self.label_float_2 = Label(text="float 2").place(x=xLoc+15, y=yLoc-20)
+        
+        self.combobox_out3 = Combobox(self.gui, values = self.out_selection, width=3 )
+        self.combobox_out3.place(x=xLoc+15, y=yLoc-20)
+        self.combobox_out3.current(4)
         self.data_entry_float_2 = Entry(self.gui)
         self.data_entry_float_2.place(x=xLoc, y=yLoc, width=70)
 
@@ -81,7 +91,13 @@ class GuiSetup:
         self.format_entry = Entry(width=7, textvariable=self.input_format_sv)
         self.format_entry.place(x=xLoc, y=yLoc)
         self.input_format_sv.set("c")
-
+        
+        self.combobox = Combobox(self.gui, values = ["Hex", "int8_t", "uint8_t", "Char", "Fixed", "Dynamic"], width=7 )
+        self.combobox.bind("<<ComboboxSelected>>", self.cb_selection_changed)
+        self.combobox.place(x=xLoc, y=yLoc+20)
+        self.combobox.current(0)
+        self.cb_selection_changed(None)
+        
         # Serial baudrate box
         xLoc = 130
         yLoc = 365
@@ -110,8 +126,37 @@ class GuiSetup:
         self.plotObject = None
         self.recordObject = None
 
+    def cb_selection_changed(self,unused):
+        selection = self.combobox.current()
+      
+        if selection is 0: # HEX
+            self.input_format_sv.set('B')
+            self.format_entry.config(state='disabled')
+        
+        elif selection is 1: #int8_t
+            self.input_format_sv.set('b')
+            self.format_entry.config(state='disabled')
+            
+        elif selection is 2: #uint8_t
+            self.input_format_sv.set('B')
+            self.format_entry.config(state='disabled')
+
+        elif selection is 3: #Char
+            self.input_format_sv.set('c')
+            self.format_entry.config(state='disabled')
+            
+        elif selection is 4: #Fixed
+            self.input_format_sv.set('c')
+            self.format_entry.config(state='enabled')
+            
+        else: #Dynamic
+            self.input_format_sv.set("Dynamic")
+            self.format_entry.config(state='disabled')
+   
     def change_input_format_callback(self, sv):
-        self.serial_object.setDataFormat(sv.get())
+        ok_format = self.serial_object.setDataFormat(sv.get())
+        if not ok_format:
+            self.format_entry.delete(self.format_entry.index(INSERT)-1)
 
     def addValue(self, value):
         self.serial_data.put(value)
@@ -172,11 +217,17 @@ class GuiSetup:
             
             # Insert new serial data if any
             try:
-                self.text.insert(END, str(self.serial_data.get_nowait()))  # puts text data on monitor
+                if self.combobox.current():
+                    self.text.insert(END, str(self.serial_data.get_nowait()))  # puts text data on monitor
+                else:
+                    dat = self.serial_data.get_nowait();
+                    for v in dat:
+                        self.text.insert(END, hex(v))  # puts text data on monitor
+                    
                 self.text.insert(END, "\n")
                 if self.text.yview()[1] > .9: # make slider stickey if at bottom
                     self.text.yview(END)
-            except queue.Empty:
+            except:
                 time.sleep(1/self.text_box_update_Hz) #sleep 1/updateHz
                 pass              
             
@@ -206,6 +257,20 @@ class GuiSetup:
         the data is always converted into ASCII, the receiving device has to convert the data into the required f
         format.
         """
+        data = []
+        data_format = []
+        if self.data_entry_char.get() != '':
+            data.append(self.data_entry_char.get())
+            data_format.append(self.out_selection[self.combobox_out1.current()])
+        
+        if self.data_entry_float_1.get() != '':
+            data.append(self.data_entry_float_1.get())
+            data_format.append(self.out_selection[self.combobox_out2.current()])
+
+        if self.data_entry_float_2.get() != '':
+            data.append(self.data_entry_float_2.get())
+            data_format.append(self.out_selection[self.combobox_out3.current()])
+        '''
         cmd = self.data_entry_char.get()
         
         float1_str = self.data_entry_float_1.get()
@@ -227,14 +292,20 @@ class GuiSetup:
                 print("ERROR: Float 2 send box value [" + float1_str+"] is not a valid float")
         else:
             float2 = []
-                
-        if cmd or float1 or float2:
+        '''
+        print(data)
+        print(data_format)
+        if len(data):
             # Something to send
-            if self.serial_object.write(cmd, float1, float2):
-                # Print to IO terminal
-                self.text.insert(END, ">>> "+ str(cmd) + " " + str(float1) + " " + str(float2) + "\n")
-            else:
-                self.text.insert(END, ">>> ERROR CANNOT SEND MSG: " + str(cmd) + " " + str(float1) + " " + str(float2) + "\n")
+            self.text.insert(END, ">>> ")
+            (sucess, err_msg) = self.serial_object.write(data, data_format)
+            if  not sucess: #self.serial_object.write(cmd, float1, float2):
+                self.text.insert(END, "SEND ERROR <"+err_msg+">: ")
+            
+            for v in data:
+                self.text.insert(END, " " + str(v) )
+                
+            self.text.insert(END, "\n")
                 
                 
     def graph(self):
