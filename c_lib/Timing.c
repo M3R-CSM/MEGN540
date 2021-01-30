@@ -35,8 +35,7 @@
  *  The volatile keyword is because they are changing in an ISR, the static means they are not
  *  visible (not global) outside of this file.
  */
-static volatile uint16_t _count_sec = 0;  // 18 hours till overflow
-static volatile uint16_t _count_ms = 0;
+static volatile uint32_t _count_ms = 0;
 
 /**
  * Function SetupTimer0 initializes Timer0 to have a prescalar of XX and initializes the compare
@@ -53,8 +52,9 @@ static volatile uint16_t _count_ms = 0;
 void SetupTimer0()
 {
     // YOUR CODE HERE
+    // Enable timing, setup prescalers, etc.
 
-
+    _count_ms= 0;
     ms_counter_1 = 0;
     ms_counter_2 = 0;
     ms_counter_3 = 0;
@@ -65,10 +65,14 @@ void SetupTimer0()
  * This function gets the current time and returns it in a Time_t structure.
  * @return
  */
+float  GetTimeSec()
+{
+    time = 0; // YOUR CODE HERE
+    return time;
+}
 Time_t GetTime()
 {
     Time_t time ={
-                    .seconds = _count_sec,
                     .millisec = _count_ms,
                     .microsec = 0 // YOU NEED TO REPLACE THIS WITH A CALL TO THE TIMER0 REGISTER AND MULTIPLY APPROPRIATELY
                  };
@@ -81,11 +85,7 @@ Time_t GetTime()
  * things on second or millisecond resolution.
  * @return
  */
-uint16_t GetSec()
-{
-    return _count_sec;
-}
-uint16_t GetMilli()
+uint32_t GetMilli()
 {
     return _count_ms;
 }
@@ -94,32 +94,17 @@ uint16_t GetMicro()
     return 0 ;// YOU NEED TO REPLACE THIS WITH A CALL TO THE TIMER0 REGISTER AND MULTIPLY APPROPRIATELY
 }
 
-/**
- * This function takes a time struct and returns a float32 value of the equivalent seconds.
- * @param p_time a pointer to a Time structure object
- * @return float32 second equivalent
- */
-float  ConvertToFloat( const Time_t* time_p)
-{
-    // YOUR CODE HERE
-    return 0;
-}
 
 /**
  * This function takes a start time and calculates the time since that time, it returns it in the Time struct.
  * @param p_time_start a pointer to a start time struct
  * @return (Time_t) Time since the other time.
  */
-Time_t  TimeSince(const Time_t* time_start_p )
+float  SecondsSince(const Time_t* time_start_p )
 {
-    // YOUR CODE HERE. Dont just convert to float, its faster to do integer addition/subtraction.
-    // Be careful of rounding!
-    Time_t ret_val = {
-                        .seconds = 0,
-                        .millisec = 0,
-                        .microsec = 0
-                     };
-    return ret_val;
+    // YOUR CODE HERE.
+    float delta_time = 0;
+    return delta_time;
 }
 
 /** This is the Interrupt Service Routine for the Timer0 Compare A feature.
@@ -131,10 +116,7 @@ Time_t  TimeSince(const Time_t* time_start_p )
 
     // take care of upticks of both our internal and external variables.
     _count_ms ++;
-    if( _count_ms == 1000 ){
-        _count_ms = 0;
-        _count_sec ++;
-    }
+
     ms_counter_1 ++;
     ms_counter_2 ++;
     ms_counter_3 ++;

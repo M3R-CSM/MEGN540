@@ -47,17 +47,6 @@
 
 #include <ctype.h>
 
-/**
- * The Time struct, type defined as Time_t for ease of use, carries the time information for the
- * microcontroller since it was last reset.  The structure can handle time in the range of +/- 9 hours
- * which should be sufficient four our needs.  If necessary, seconds can be changed to a int32_t to cover
- * years.
- */
-typedef struct Time {
-    int16_t seconds;
-    int16_t millisec;
-    int16_t microsec;
-} Time_t;
 
 /**
  * Millisecond counters are also provided for use in other functions to control operations
@@ -78,32 +67,30 @@ volatile uint8_t ms_counter_4;
 void SetupTimer0( );
 
 /**
- * This function gets the current time and returns it in a Time_t structure.
- * @return
- */
-Time_t GetTime();
-
-/**
  * These functions return the individual parts of the Time_t struct, useful if you only care about
  * things on second or millisecond resolution.
  * @return
  */
-uint16_t GetSec();
-uint16_t GetMilli();
+uint32_t GetMilli();
 uint16_t GetMicro();
 
 /**
- * This function takes a time struct and returns a float32 value of the equivalent seconds.
- * @param p_time a pointer to a Time structure object
- * @return float32 second equivalent
+ * Struct Time_t captures the time based in milliseconds at a 4-microsecond resolution.
  */
-float  ConvertToFloat( const Time_t* time_p);
+typedef struct { uint32_t millisec; uint16_t microsec; } Time_t;
+
+/**
+ * This function gets the current time and returns it in a Time_t structure.
+ * @return
+ */
+Time_t GetTime();
+float  GetTimeSec();
 
 /**
  * This function takes a start time and calculates the time since that time, it returns it in the Time struct.
  * @param p_time_start a pointer to a start time struct
  * @return (Time_t) Time since the other time.
  */
-Time_t  TimeSince(const Time_t* time_start_p );
+float  SecondsSince(const Time_t* time_start_p );
 
 #endif //LAB2_TIMING_TIMING_H
