@@ -32,20 +32,30 @@
  * This file defines the incomming message length and other details.
  */
 
+#ifndef MEGN540_MESAGEHANDELING_H
+#define MEGN540_MESAGEHANDELING_H
+
 #include "SerialIO.h"
+#include "Timing.h"
 
 /** Message Driven State Machine Flags */
-typedef struct MSG_FLAG { bool active; }  MSG_FLAG_t;
-typedef struct MSG_FLAG_D   { bool active; float duration; } MSG_FLAG_D_t;
-typedef struct MSG_FLAG_D_ValueU8   { bool active; float duration; uint8_t value; }  MSG_FLAG_D_ValueU8_t;
-typedef struct MSG_FLAG_D_ValueI16  { bool active; float duration; int16_t value; }  MSG_FLAG_D_ValueI16_t;
-typedef struct MSG_FLAG_D_ValueF    { bool active; float duration; float value; }    MSG_FLAG_D_ValueF_t;
-typedef struct MSG_FLAG_D_ValueFF   { bool active; float duration; float value_1; float value_2; } MSG_FLAG_D_ValueFF_t;
+typedef struct MSG_FLAG { bool active; float duration; Time_t last_trigger_time; } MSG_FLAG_t;
 
-MSG_FLAG_t mf_restart;  ///<-- This flag indicates that the device received a restart command from the hoast. Default inactive.
+
+MSG_FLAG_t mf_restart;       ///<-- This flag indicates that the device received a restart command from the hoast. Default inactive.
+MSG_FLAG_t mf_loop_timer;    ///<-- Indicates if the system should report time to complete a loop.
+MSG_FLAG_t mf_time_float_send;   ///<-- Indicates if the system should report the time to send a float.
+MSG_FLAG_t mf_send_time;     ///<-- Indicates if the system should send the current time.
 
 /**
- * Function Message_Handling_Init initializes the message handeling and all associated state flags and data to their default
+ * Function MSG_FLAG_Execute indicates if the action associated with the message flag should be executed
+ * in the main loop both because its active and because its time.
+ * @return [bool] True for execute action, False for skip action
+ */
+bool MSG_FLAG_Execute( MSG_FLAG_t* );
+
+/**
+ * Function Message_Handling_Init initializes the message handling and all associated state flags and data to their default
  * conditions.
  */
 void Message_Handling_Init();
@@ -61,6 +71,8 @@ void Message_Handling_Task();
  * Function MEGN540_Message_Len returns the number of bytes associated with a command string per the
  * class documentation;
  * @param cmd
- * @return Size of expected string. Returns 0 if unreconized.
+ * @return Size of expected string. Returns 0 if unrecognized.
  */
 uint8_t MEGN540_Message_Len( char cmd );
+
+#endif

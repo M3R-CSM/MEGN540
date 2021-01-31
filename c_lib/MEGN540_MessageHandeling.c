@@ -31,8 +31,32 @@
 #include "MEGN540_MessageHandeling.h"
 
 
+static inline void MSG_FLAG_Init(MSG_FLAG_t* p_flag)
+{
+    p_flag->active = false;
+    p_flag->duration = -1;
+    p_flag->last_trigger_time.millisec=0;
+    p_flag->last_trigger_time.microsec=0;
+}
+
+
 /**
- * Function Message_Handling_Init initializes the message handeling and all associated state flags and data to their default
+ * Function MSG_FLAG_Execute indicates if the action associated with the message flag should be executed
+ * in the main loop both because its active and because its time.
+ * @return [bool] True for execute action, False for skip action
+ */
+bool MSG_FLAG_Execute( MSG_FLAG_t* p_flag)
+{
+    // *** MEGN540  ***
+    // THIS FUNCTION WILL BE MOST USEFUL FORM LAB 2 ON.
+    // What is the logic to indicate an action should be executed?
+    // For Lab 1, ignore the timing part.
+    return false;
+}
+
+
+/**
+ * Function Message_Handling_Init initializes the message handling and all associated state flags and data to their default
  * conditions.
  */
 void Message_Handling_Init()
@@ -41,7 +65,7 @@ void Message_Handling_Init()
     // YOUR CODE HERE. This is where you'd initialize any
     // state machine flags to control your main-loop state machine
 
-    mf_restart.active = false; // needs to be initialized to the default values.
+    MSG_FLAG_Init( &mf_restart ); // needs to be initialized to the default values.
     return;
 }
 
@@ -76,8 +100,8 @@ uint8_t MEGN540_Message_Len( char cmd )
         case '/': return	9; break;
         case '+': return	9; break;
         case '-': return    9; break;
-        case 't': return	6; break;
-        case 'T': return	2; break;
+        case 't': return	2; break;
+        case 'T': return	6; break;
         case 'e': return	2; break;
         case 'E': return	2; break;
         case 'a': return	1; break;
