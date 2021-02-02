@@ -45,13 +45,14 @@
 #include <avr/interrupt.h> // For Interrupts
 #include <avr/io.h>        // For pin input/output access
 #include <ctype.h>         // For int32_t type
+#include <math.h>          // for M_PI
+#include <stdbool.h>       // for bool type
 
 /**
  * Function Encoders_Init initializes the encoders, sets up the pin change interrupts, and zeros the initial encoder
  * counts.
  */
 void Encoders_Init();
-
 
 /**
  * Function Counts_Left returns the number of counts from the left encoder.
