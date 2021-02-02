@@ -51,6 +51,7 @@ static volatile uint32_t _count_ms = 0;
  */
 void SetupTimer0()
 {
+    // *** MEGN540 Lab 2 ***
     // YOUR CODE HERE
     // Enable timing, setup prescalers, etc.
 
@@ -67,11 +68,14 @@ void SetupTimer0()
  */
 float  GetTimeSec()
 {
-    time = 0; // YOUR CODE HERE
-    return time;
+    // *** MEGN540 Lab 2 ***
+    // YOUR CODE HERE
+    return 0;
 }
 Time_t GetTime()
 {
+    // *** MEGN540 Lab 2 ***
+    // YOUR CODE HERE
     Time_t time ={
                     .millisec = _count_ms,
                     .microsec = 0 // YOU NEED TO REPLACE THIS WITH A CALL TO THE TIMER0 REGISTER AND MULTIPLY APPROPRIATELY
@@ -91,6 +95,8 @@ uint32_t GetMilli()
 }
 uint16_t GetMicro()
 {
+    // *** MEGN540 Lab 2 ***
+    // YOUR CODE HERE
     return 0 ;// YOU NEED TO REPLACE THIS WITH A CALL TO THE TIMER0 REGISTER AND MULTIPLY APPROPRIATELY
 }
 
@@ -102,7 +108,8 @@ uint16_t GetMicro()
  */
 float  SecondsSince(const Time_t* time_start_p )
 {
-    // YOUR CODE HERE.
+    // *** MEGN540 Lab 2 ***
+    // YOUR CODE HERE
     float delta_time = 0;
     return delta_time;
 }
@@ -112,6 +119,8 @@ float  SecondsSince(const Time_t* time_start_p )
  */
 /*ISR( DEFINE THE COMPARISON TRIGGER )
 {
+    // *** MEGN540 Lab 2 ***
+    // YOUR CODE HERE
     // YOU NEED TO RESET THE Timer0 Value to 0 again!
 
     // take care of upticks of both our internal and external variables.
