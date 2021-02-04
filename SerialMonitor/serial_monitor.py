@@ -32,10 +32,12 @@ import multiprocessing
 import queue
 from tkinter import *      # for gui general
 from tkinter.ttk import *  # for combobox
-import threading
+from threading import Lock
 import time
 import serial
 import serial_monitor_lib
+import collections
+
 
 
 class GuiSetup:
@@ -52,7 +54,9 @@ class GuiSetup:
         # Setup Serial Object
         self.serial_object = serial_monitor_lib.SerialData()
         self.serial_object.registerCallback(self.addValue)
-        self.serial_data = multiprocessing.Queue(maxsize=10)
+        
+        self.serial_data_lock = Lock()
+        self.serial_data = collections.deque()
 
         # frames
         frame_1 = Frame(self.gui, height=300, width=480, relief='groove')
@@ -72,9 +76,9 @@ class GuiSetup:
         self.scrollbar.config(command=self.text.yview)        
 
         # threads
-        self.update_gui_thread = threading.Thread(target=self.update_gui)
-        self.update_gui_thread.daemon = True
-        self.update_gui_thread.start()
+#        self.update_gui_thread = threading.Thread(target=self.update_gui)
+#        self.update_gui_thread.daemon = True
+#        self.update_gui_thread.start()
 
 #        # Thread creation for gui text box functionality        
 #        self.t3 = threading.Thread(target=self.debug_check_gui)
@@ -84,12 +88,12 @@ class GuiSetup:
 
 
         # Send Button & Input
-        xLoc = 15
-        yLoc = 227
+        xLoc = 5
+        yLoc = 250
         self.button1 = Button(text="Send", command=self.send, width=6).place(x=xLoc, y=yLoc)
-        xLoc = 100
+        xLoc += 75
         yLoc += 5
-
+        
         self.out_selection = ["c", "b", "B", "h", "f"]
         self.combobox_out1 = Combobox(self.gui, values = self.out_selection, width=3 )
         self.combobox_out1.place(x=xLoc+15, y=yLoc-20)
@@ -110,10 +114,18 @@ class GuiSetup:
         self.combobox_out3.current(4)
         self.data_entry_float_2 = Entry(self.gui)
         self.data_entry_float_2.place(x=xLoc, y=yLoc, width=70)
+        
+        xLoc += 75
+        self.combobox_out4 = Combobox(self.gui, values = self.out_selection, width=3 )
+        self.combobox_out4.place(x=xLoc+15, y=yLoc-20)
+        self.combobox_out4.current(4)
+        self.data_entry_float_3 = Entry(self.gui)
+        self.data_entry_float_3.place(x=xLoc, y=yLoc, width=70)
 
 
         # Incomming Message Formatting String
-        xLoc += 150
+        xLoc += 100
+        yLoc -= 20
         self.charnum = Label(text="Incoming Format").place(x=xLoc-20, y=yLoc-20)
         self.input_format_sv = StringVar()
         self.input_format_sv.trace("w", lambda name, index, mode, sv=self.input_format_sv: self.change_input_format_callback(sv))
@@ -148,13 +160,35 @@ class GuiSetup:
 
         self.graphing = Button(text="Open Plot", command=self.graph)
         self.graphing.place(x=305, y=320)
+        
+        
+        self.plot_select_values = [0]
+        self.plot_select = Combobox(self.gui, values = self.plot_select_values, width=3 )
+        self.plot_select.bind("<<ComboboxSelected>>", self.plot_selection_changed)
+        self.plot_select.place(x=400, y=323)
+        self.plot_select.current(0)
+        self.plot_select.config(state='disabled')
 
+
+        self.recording = Button(text="Start Recording", command=self.record)
+        self.recording.place(x=185, y=320)
+        
         self.recording = Button(text="Start Recording", command=self.record)
         self.recording.place(x=185, y=320)
 
         self.plotObject = None
         self.recordObject = None
-
+        
+        self.update_job = None;
+        
+        self.update_gui()
+        
+    def plot_selection_changed(self,unused=None):
+        selection = self.plot_select.current()
+        if self.plotObject is not None:
+            self.plotObject.changePlotIndex(selection)
+            
+            
     def cb_selection_changed(self,unused):
         selection = self.combobox.current()
       
@@ -188,7 +222,9 @@ class GuiSetup:
             self.format_entry.delete(self.format_entry.index(INSERT)-1)
 
     def addValue(self, value):
-        self.serial_data.put(value)
+        self.serial_data_lock.acquire()
+        self.serial_data.append(value)
+        self.serial_data_lock.release()
 
     def connectToSerial(self):
         """The function initiates the Connection to the UART device with the Port and Buad fed through the Entry
@@ -233,23 +269,34 @@ class GuiSetup:
 
     def update_gui(self):
         """" This function updates the text box with incomming serial data. """        
-        while self.ok: # self.ok gets set to False on window exit
+  #      while self.ok: # self.ok gets set to False on window exit
             
-            # Update Button States
-            try:
-                if self.serial_object.isConnected():
-                    self.button_connect.configure(text="Disconnect")
-                else:
-                    self.button_connect.configure(text=" Connect ")
-            except:
-                pass
-            
+        # Update Button States
+        try:
+            if self.serial_object.isConnected():
+                self.button_connect.configure(text="Disconnect")
+            else:
+                self.button_connect.configure(text=" Connect ")
+        except:
+            pass
+       
+        self.serial_data_lock.acquire()
+        while len(self.serial_data):
             # Insert new serial data if any
             try:
+                dat = self.serial_data.popleft()
+                
+                if len(dat) is not len(self.plot_select_values):
+                    self.plot_select_values.clear()
+                    for i in range(len(dat)):
+                        self.plot_select_values.append(i)
+                    self.plot_select.current(0)
+                    self.plot_select.config(values=self.plot_select_values)
+                    
+                
                 if self.combobox.current():
-                    self.text.insert(END, str(self.serial_data.get_nowait()))  # puts text data on monitor
+                    self.text.insert(END, str(dat))  # puts text data on monitor
                 else:
-                    dat = self.serial_data.get_nowait();
                     for v in dat:
                         self.text.insert(END, hex(v))  # puts text data on monitor
                     
@@ -257,28 +304,40 @@ class GuiSetup:
                 if self.text.yview()[1] > .9: # make slider stickey if at bottom
                     self.text.yview(END)
             except:
-                time.sleep(1/self.text_box_update_Hz) #sleep 1/updateHz
-                pass              
+                 break
+        self.serial_data_lock.release()
+
+            
+        if (self.plotObject is not None) and not self.plotObject.isOk():
+            self.graph() #will disconnect the grap and call close and change buttons etc
+            
+        self.update_job = self.gui.after(int(1000/self.text_box_update_Hz),self.update_gui)
+        
             
     def close_window(self):
         """ This function is for some internal cleanup operations on closeing to make sure
         we leave the serialport in a good state as well as save data (if we want to) and terminate
         threads as necessary  etc. """
         
-        self.ok = False # Tell thread to teminate while loop
-        self.update_gui_thread.join()
+        #self.ok = False # Tell thread to teminate while loop
+        #self.update_gui_thread.join()
         
         if self.serial_object:
             self.serial_object.close()
         
         if self.plotObject:
             self.plotObject.close()
+                           
+        #if self.recordObject and self.recordObject.isRecording():
+        #    self.recordObject.saveData()
+        if self.update_job is not None:
+            self.gui.after_cancel(self.update_job )
+            self.update_job = None
             
-        if self.recordObject and self.recordObject.isRecording():
-            self.recordObject.saveData()
-            
-        self.gui.destroy()
-        
+        if self.gui:
+            self.gui.quit()
+            self.gui.destroy()
+        self.gui = None
             
     def send(self):
         """This function is for sending data from the computer to the host controller.
@@ -299,6 +358,10 @@ class GuiSetup:
         if self.data_entry_float_2.get() != '':
             data.append(self.data_entry_float_2.get())
             data_format.append(self.out_selection[self.combobox_out3.current()])
+            
+        if self.data_entry_float_3.get() != '':
+            data.append(self.data_entry_float_3.get())
+            data_format.append(self.out_selection[self.combobox_out4.current()])
 
         if len(data):
             # Something to send
@@ -317,11 +380,17 @@ class GuiSetup:
         if self.plotObject is None and self.serial_object.isConnected():
             self.plotObject = serial_monitor_lib.RealTimePlot()
             self.serial_object.registerCallback(self.plotObject.addValue)
-            self.plotObject.Start()
+            self.plotObject.Start(self.gui)
+            self.plot_select.config(state='enabled')
+            self.graphing.configure(text="Close Plot")
+            self.plot_selection_changed()
+            
         elif self.plotObject is not None:
             self.plotObject.close()
             self.serial_object.removeCallback(self.plotObject.addValue)
             self.plotObject = None
+            self.plot_select.config(state='disabled')
+            self.graphing.configure(text="Open Plot")
         else:
             print("Cannot start graphing until serial is connected.\n")
 
@@ -334,11 +403,12 @@ class GuiSetup:
         elif self.recordObject is not None:
             self.recordObject.stopRecording()
             self.serial_object.removeCallback(self.recordObject.addData)
+            self.recordObject.saveData()
             self.recordObject = None
             self.recording.configure(text="Start Recording")
         else:
             print("Cannot start recording until serial is connected.\n")
-            
+        
 
     def Callback(self, function):
         self.callbackfunction.append(function)

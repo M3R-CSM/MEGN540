@@ -29,21 +29,25 @@
     SOFTWARE.
 
 '''
-
+import tkinter
 from tkinter import filedialog
 from tkinter import *
-import multiprocessing
+
 import queue
-from threading import Thread
+from threading import Thread, Lock
 import serial
 import time
 import collections
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
+
 import struct
 import csv
 import pandas as pd
 from array import *
+
+from matplotlib.backends.backend_tkagg import(FigureCanvasTkAgg,NavigationToolbar2Tk)
+from matplotlib.figure import Figure
 
 
 class SerialData:
@@ -53,6 +57,7 @@ class SerialData:
         # self.isReceiving = False
         self.thread = None
         self.callbackfunction = collections.deque()
+        self.callback_list_mutex = Lock()
         self.port = None
         self.baud = None
         self.serialConnection = None
@@ -101,9 +106,12 @@ class SerialData:
                 data.append(int(value[i]))
             else:
                 data.append(value[i])
-                     
-        for function in self.callbackfunction:
-            function(data)
+        self.callback_list_mutex.acquire()
+        try:
+            for function in self.callbackfunction:
+                function(data)
+        finally:
+            self.callback_list_mutex.release()
 
     def setDataFormat(self, new_format):
         if new_format != "Dynamic":
@@ -186,34 +194,50 @@ class SerialData:
         try:
             if len(data) == 1:
                 msg = struct.pack("<"+data_format_str,data[0])
-            elif len(data) == 3:
-                msg = struct.pack("<"+data_format_str,data[0],data[1],data[2])
             elif len(data) == 2:
                 msg = struct.pack("<"+data_format_str,data[0],data[1])
+            elif len(data) == 3:
+                msg = struct.pack("<"+data_format_str,data[0],data[1],data[2])
+            elif len(data) == 4:
+                msg = struct.pack("<"+data_format_str,data[0],data[1],data[2],data[3])
             else:
                 return (False, "Data Length Unsupported")
         except:
             return (False, "Format/Entry Mismatch" )
             
-        if self.serialConnection: # and self.serialConnection.writable is True:
-            self.serialConnection.write(msg)
-            return True, None
+        if self.isConnected():    
+            if self.serialConnection:
+                self.serialConnection.write(msg)
+                return True, None
+            else:
+                return (False, 'Port Not Writeable')
         else:
-            return (False, 'Port Not Writeable!')
+            return (False, 'Not Connected')
 
-    def close(self):
+    def close(self, on_shutdown=False):
         if self.isConnected():
             self.isRun = False
             self.thread.join()
             self.thread = None
             self.serialConnection.close()
-            print('Searial Port ' + self.port + ' Disconnected.\n')
+            if not on_shutdown:
+                print('Serial Port ' + self.port + ' Disconnected.\n')
 
     def registerCallback(self, function):
-        self.callbackfunction.append(function)
+        self.callback_list_mutex.acquire()
+        try:
+            self.callbackfunction.append(function)
+        finally:
+            self.callback_list_mutex.release()
+            
 
     def removeCallback(self, function):
-        self.callbackfunction.remove(function)
+        self.callback_list_mutex.acquire()
+        try:
+            self.callbackfunction.remove(function)
+        finally:
+            self.callback_list_mutex.release()
+            
 
 
 class RecordData:
@@ -242,82 +266,174 @@ class RecordData:
 
     def saveData(self):
         if self.csvData:
-            d = {'TIME (ms)': self.csvTime, 'VALUE': self.csvData}
-            df = pd.DataFrame(d)
             filename = filedialog.asksaveasfilename(title="test", filetypes=(("csv files", "*.csv"), ("all files", "*.*")))
             if filename:
-                df.to_csv(filename)
-                self.csvData = []
-                self.csvTime = []
+                file = open(filename,'w');
+                time_ind = 0;
+                for val in self.csvData:
+                    file.write(str(self.csvTime[time_ind]))
+                    time_ind += 1
+                    for e in val:
+                        file.write(", " + str(e) )
+                    
+                    file.write('\n')
+                
+                file.close()
 
 
-class RealTimePlot:
-    def __init__(self, plotLength=100, refreshTime=50):
+class RealTimePlot():
+    def __init__(self, plotLength=500, refreshTime=30):
+               
+        self.gui_main = None       
+        self.window = None
         self.plotMaxLength = plotLength
-        self.data = collections.deque([0] * plotLength, maxlen=plotLength)
+        
+        self.data  = collections.deque( maxlen=plotLength)
+        self.times = collections.deque( maxlen=plotLength)
         self.plotTimer = 0
         self.previousTimer = 0
         self.valueLast = None
         self.p = None
         self.fig = None
-        self.q = None
+        
+        self.t_start = time.perf_counter()
+        self.values_queue = collections.deque(maxlen=plotLength)
+        self.times_queue  = collections.deque(maxlen=plotLength)
+        
+        self.plotTimer = 0
+        self.previousTimer = 0
+        self.timeText = None
+        
+        self.input_index = 0;
+        
         self.pltInterval = refreshTime  # Refresh period [ms]
+        
+        self.data_mutex = Lock()
 
-    def updatePlotData(self, frame, lines, lineValueText, lineLabel, timeText):
-        currentTimer = time.perf_counter()
-        self.plotTimer = int((currentTimer - self.previousTimer) * 1000)
-        self.previousTimer = currentTimer
-        timeText.set_text('Plot Interval = ' + str(self.plotTimer) + 'ms')
-        valueLast = self.q.get()
+    def updatePlotData(self,args=None): #, frame, lines, lineValueText, lineLabel, timeText):
+#        while self.isRunning:
+        
+        if len(self.times_queue):
+            currentTimer = time.perf_counter()
+            self.plotTimer = int((currentTimer - self.previousTimer) * 1000)
+            if self.plotTimer > 1:
+                self.previousTimer = currentTimer
+                self.timeText.set_text('Plot Interval = ' + str(self.plotTimer) + 'ms')
+       
+        valueLast = []
 
-        self.data.append(valueLast)  # latest data point and append it to array
-        lines.set_data(range(self.plotMaxLength), self.data)
-        lineValueText.set_text('[' + lineLabel + '] = ' + str(self.valueLast))
+        self.data_mutex.acquire()
+
+        while len(self.times_queue):
+            try:
+                valueLast = self.values_queue.popleft()[self.input_index]
+                valueLast = float(valueLast) # make sure its a number
+                self.data.append(valueLast)  # latest data point and append it to array
+                self.times.append(self.times_queue.popleft())                          
+            except:
+                break
+
+        self.data_mutex.release()
+        
+        self.lines.set_data(self.times, self.data)
+        if len(self.data):
+            self.lineValueText.set_text('[' + self.lineLabel + " IND: " +str(self.input_index) + '] = ' + str(round(self.data[-1],3)))
+        
+        if len(self.times) > 5:
+            #self.fig.canvas.restore_region(self.background)
+            self.ax.set_xlim(self.times[0],self.times[-1])
+            
+            min_ylim = min(self.data)
+            max_ylim = max(self.data)
+            
+            if min_ylim == max_ylim:
+                if min_ylim == 0:
+                    min_ylim = -1
+                    max_ylim = 1
+                else:
+                    min_ylim = min_ylim*.2
+                    max_ylim = max_ylim*1.2
+            
+            
+            self.ax.set_ylim(min_ylim - (max_ylim-min_ylim)/10, max_ylim + (max_ylim-min_ylim)/10)
 
     def addValue(self, value):
-        if self.q != None:
-            try:
-                self.q.get_nowait()
-            except queue.Empty:
-                pass
+        self.data_mutex.acquire()
+        self.values_queue.append(value)
+        self.times_queue.append(time.perf_counter()-self.t_start)
+        self.data_mutex.release()
+        
+    def changePlotIndex(self, index):
+        self.input_index = index
+        self.times.clear()
+        self.data.clear()
 
-            self.q.put(value)
-
-    def backgroundThread(self):  # retrieve data
+    def setupPlot(self):  # retrieve data
         xmin = 0
         xmax = self.plotMaxLength
         ymin = -1
         ymax = 1050
         self.fig = plt.figure()
-        ax = plt.axes(xlim=(xmin, xmax), ylim=(float(ymin - (ymax - ymin) / 10), float(ymax + (ymax - ymin) / 10)))
-        ax.set_title('Arduino Analog Read')
-        ax.set_xlabel("time")
-        ax.set_ylabel("AnalogRead Value")
+        self.ax = plt.axes( autoscale_on=True)#xlim=(xmin, xmax), ylim=(float(ymin - (ymax - ymin) / 10), float(ymax + (ymax - ymin) / 10)))
+        self.ax.set_title('Arduino Analog Read')
+        self.ax.set_xlabel("time")
+        self.ax.set_ylabel("AnalogRead Value")
+        
+        self.canvas = FigureCanvasTkAgg(self.fig, master=self.window)
+        self.canvas.draw()
+        self.canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
+        
+        toolbar = NavigationToolbar2Tk(self.canvas,self.window)
+        toolbar.update()
+        self.canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
 
-        lineLabel = 'Sensor Value'
-        timeText = ax.text(0.50, 0.95, '', transform=ax.transAxes)
-        lines = ax.plot([], [], label=lineLabel)[0]
-        lineValueText = ax.text(0.50, 0.90, '', transform=ax.transAxes)
-        anim = animation.FuncAnimation(self.fig, self.updatePlotData, fargs=(lines, lineValueText, lineLabel, timeText),
-                                       interval=self.pltInterval)
+        self.lineLabel = 'Sensor Value'
+        self.timeText = self.ax.text(0.50, 0.95, '', transform=self.ax.transAxes)
+        self.lines = self.ax.plot([], [], label=self.lineLabel)[0]
+        self.lineValueText = self.ax.text(0.50, 0.90, '', transform=self.ax.transAxes)
+         
 
-        plt.legend(loc="upper left")
-        plt.show()
-        # self.fig = None
+        
+        self.anim = animation.FuncAnimation(self.fig, self.updatePlotData, interval=self.pltInterval)
+        #self.lineLabel = 'Sensor Value'
+        #self.timeText = self.ax.text(0.50, 0.95, '', transform=self.ax.transAxes)
+        #self.lines = self.ax.plot([], [], label=self.lineLabel)[0]
+        #self.lineValueText = self.ax.text(0.50, 0.90, '', transform=self.ax.transAxes)
+        
+        self.updatePlotData()
+    
+    def isOk(self):
+        return self.anim is not None
 
     def close(self):
-        # if self.fig != None:
-        plt.close(self.fig)
-        if self.p is not None:
-            self.q.close()
-            self.q = None
-            self.p.terminate()
-        self.p = None
+        if self.anim is not None:
+            self.anim.event_source.stop()
+        self.anim = None
+ 
+        self.window.withdraw()
+        
+        '''if self.window is not None:
+            self.window.quit() # stops main loop
+            self.window.destroy() # Destroys window and all child widgets
+        '''
 
-    def Start(self):
-        self.q = multiprocessing.Queue(maxsize=2)
-        self.p = multiprocessing.Process(target=self.backgroundThread)
-        self.p.start()
+    def Start(self, main=None):
+        if self.window is None:
+            self.window = Toplevel(main)
+            self.window.title("Real Time Plot")
+            self.window.geometry("800x600")
+            self.window.protocol("WM_DELETE_WINDOW", self.close)
+            self.gui_main = main
+        self.setupPlot()
+#            self.isRunning = True
+#            self.thread = Thread(target=self.updatePlotData)
+#            self.thread.start()
+            #self.p = multiprocessing.Process(target=self.setupPlot)
+            #self.p.start()
+            
+        #self.q = multiprocessing.Queue(maxsize=2)
+        #self.p = multiprocessing.Process(target=self.backgroundThread)
+        #self.p.start()
 
 
 #def printMe(value):
