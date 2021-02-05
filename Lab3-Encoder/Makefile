@@ -22,9 +22,10 @@ TARGET       = Lab3-Encoder
 SRC = $(TARGET).c       \
 	$(MEGN_C_LIB_PATH)/SerialIO.c			\
 	$(MEGN_C_LIB_PATH)/Ring_Buffer.c		\
-    $(MEGN_C_LIB_PATH)/MEGN540_MessageHandeling.c \
+	$(MEGN_C_LIB_PATH)/MEGN540_MessageHandeling.c \
 	$(MEGN_C_LIB_PATH)/Timing.c				\
 	${MEGN_C_LIB_PATH}/Encoder.c \
+	${MEGN_C_LIB_PATH}/Battery_Monitor.c \
 	$(MEGN_C_LIB_PATH)/USB_Config/Descriptors.c       \
 	$(LUFA_SRC_USB)
 
