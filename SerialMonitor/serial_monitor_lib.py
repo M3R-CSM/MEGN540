@@ -96,16 +96,53 @@ class SerialData:
             self.thread.start()
 
     def parseData(self):
-        value = struct.unpack(self.dataFormat, self.rawData)
+        try:
+            value = struct.unpack(self.dataFormat, self.rawData)
+        except:
+            return
+        
         data = [];
         
-        for i in range(len(value)):
-            if self.dataFormat[i+1] == 'c':
+        '''for i in range(len(value)):         
+            if self.dataFormat[i+1-rep_ind] == 'c':
                 data.append(value[i].decode('ascii'))
-            elif self.dataFormat[i+1] == 'b' or self.dataFormat[i] == 'h':
+            elif self.dataFormat[i+1-rep_ind] == 'b' or self.dataFormat[i] == 'h':
                 data.append(int(value[i]))
             else:
-                data.append(value[i])
+                data.append(value[i])'''
+        rep = 1
+        ind = 0
+        for fmt in self.dataFormat:
+            if fmt is '<':
+                continue
+            
+            if rep == 1:
+                try:
+                    rep = int(str(fmt))
+                    continue
+                except:
+                    rep = 1
+
+            for i in range(rep):
+                if fmt == 'c':
+                    if rep == 1 or i == 0:
+                        data.append(value[ind].decode('ascii'))
+                    else:
+                        data[-1] += value[ind].decode('ascii')
+                        
+                elif fmt == 's':
+                    data.append(value[ind].decode('ascii'))
+                    ind += 1
+                    break
+                elif fmt == 'b' or fmt == 'h':
+                    data.append(int(value[ind]))
+                else:
+                    data.append(value[ind])
+                    
+                ind += 1
+            rep = 1
+
+                
         self.callback_list_mutex.acquire()
         try:
             for function in self.callbackfunction:
@@ -135,9 +172,11 @@ class SerialData:
         self.serialConnection.reset_input_buffer()
         print('Serial Monitoring Thread Started\n')
         
+        self.rawData = bytearray(0)
+        
         while self.isRun:
             try:
-                if self.defined_data_mode and self.serialConnection.in_waiting >= self.dataNumBytes:
+                if self.defined_data_mode and self.serialConnection.in_waiting >= self.dataNumBytes and self.dataNumBytes > 0:
                     self.rawData = bytearray(self.dataNumBytes)
                     self.serialConnection.readinto(self.rawData)
                     self.parseData()
@@ -150,12 +189,26 @@ class SerialData:
                     self.dataNumBytes -= 1
                     tmp_uchar = struct.unpack('b',tmp)[0]
                     
-                    if tmp_uchar != 0:
+                    if tmp_uchar is not 0:
                         self.dataFormat = self.dataFormat + struct.unpack('c',tmp)[0].decode('ascii')
-                    else:                       
-                        self.rawData = bytearray(self.dataNumBytes)
-                        self.serialConnection.readinto(self.rawData)
-                        self.parseData()
+                        try:
+                            try:
+                                i = int(self.dataFormat[-1])
+                            except:
+                                i = None
+                                
+                            if i is None:
+                                struct.calcsize(self.dataFormat) # check if its a valid format skip ones that end in a number
+                        except:
+                            print("num bytes: " + str(self.dataNumBytes) + " attempt fmt: " + self.dataFormat)
+                            self.dataNumBytes = -1
+                            self.dataFormat = "<"
+                    else:
+                        if struct.calcsize(self.dataFormat) == self.dataNumBytes:
+                            # all is as expected
+                            self.rawData = bytearray(self.dataNumBytes)
+                            self.serialConnection.readinto(self.rawData)
+                            self.parseData()
                         self.dataNumBytes = -1
                         self.dataFormat = "<"
                 
@@ -164,6 +217,8 @@ class SerialData:
                 
                 else:
                     time.sleep(0.005) # recheck serial every 5ms
+                    
+                        
             
             except:
                 self.isRun = False
