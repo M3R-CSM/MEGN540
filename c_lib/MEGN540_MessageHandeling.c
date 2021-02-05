@@ -81,6 +81,66 @@ void Message_Handling_Task()
     // Either do the simple stuff strait up, set flags to have it done later.
     // If it just is a USB thing, do it here, if it requires other hardware, do it in the main and
     // set a flag to have it done here.
+
+    // Check to see if their is data in waiting
+    if( !usb_msg_length() )
+        return; // nothing to process...
+
+    // Get Your command designator without removal so if their are not enough bytes yet, the command persists
+    char command = usb_msg_peek();
+
+    // process command
+    switch( command )
+    {
+        case '*':
+            if( usb_msg_length() >= MEGN540_Message_Len('*') )
+            {
+                //then process your times...
+
+                // remove the command from the usb recieved buffer using the usb_msg_get() function
+                usb_msg_get(); // removes the first character from the received buffer, we already know it was a * so no need to save it as a variable
+
+                // Build a meaningful structure to put your data in. Here we want two floats.
+                struct __attribute__((__packed__)) { float v1; float v2; } data;
+
+                // Copy the bytes from the usb receive buffer into our structure so we can use the information
+                usb_msg_read_into( &data, sizeof(data) );
+
+                // Do the thing you need to do. Here we want to multiply
+                float ret_val = data.v1 * data.v2;
+
+                // send response right here if appropriate.
+                usb_send_msg("cf", command, &ret_val, sizeof(ret_val));
+            }
+            break;
+        case '/':
+            if( usb_msg_length() >= MEGN540_Message_Len('/') )
+            {
+                //then process your divide...
+            }
+            break;
+        case '+':
+            if( usb_msg_length() >= MEGN540_Message_Len('+') )
+            {
+                //then process your plus...
+            }
+            break;
+        case '-':
+            if( usb_msg_length() >= MEGN540_Message_Len('-') )
+            {
+                //then process your minus...
+            }
+            break;
+        case '~':
+            if( usb_msg_length() >= MEGN540_Message_Len('~') )
+            {
+                //then process your reset by setting the mf_restart flag
+            }
+            break;
+        default:
+            // What to do if you dont recognize the command character
+            break;
+    }
 }
 
 
@@ -102,14 +162,14 @@ uint8_t MEGN540_Message_Len( char cmd )
         case '-': return    9; break;
         case 't': return	2; break;
         case 'T': return	6; break;
-        case 'e': return	2; break;
-        case 'E': return	2; break;
-        case 'a': return	1; break;
-        case 'A': return 	5; break;
-        case 'w': return	1; break;
-        case 'W': return 	5; break;
-        case 'm': return	1; break;
-        case 'M': return	5; break;
+        case 'e': return	1; break;
+        case 'E': return	5; break;
+//        case 'a': return	1; break;
+//        case 'A': return 	5; break;
+//        case 'w': return	1; break;
+//        case 'W': return 	5; break;
+//        case 'm': return	1; break;
+//        case 'M': return	5; break;
         case 'p': return	4; break;
         case 'P': return	8; break;
         case 's': return 	1; break;

@@ -40,14 +40,17 @@ int main(void)
     GlobalInterruptEnable();
     Message_Handling_Init(); // initialize message handling
 
-    while( !mf_restart.active )
+    while( true )
     {
         USB_Upkeep_Task();
 
-        USB_Echo_Task();// you'll want to remove this once you get your serial sorted
+        //USB_Echo_Task();// you'll want to remove this once you get your serial sorted
         Message_Handling_Task();
 
         // Below here you'll process state-machine flags.
-
+        if( MSG_FLAG_Execute( &mf_restart ) )
+        {
+            // re initialzie your stuff...
+        }
     }
 }
