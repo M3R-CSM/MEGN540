@@ -231,7 +231,7 @@ class SerialData:
                     self.dataNumBytes = -1
                 
                 else:
-                    time.sleep(0.005) # recheck serial every 5ms
+                    time.sleep(0.001) # recheck serial every 5ms
                     
                         
             

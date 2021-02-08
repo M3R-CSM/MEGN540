@@ -74,7 +74,13 @@ class GuiSetup:
         self.scrollbar.pack(side = RIGHT, fill = Y)
         self.text = Text(frame_1t, height=12, yscrollcommand=self.scrollbar.set)
         self.text.pack(side=LEFT, fill=X)
-        self.scrollbar.config(command=self.text.yview)        
+        self.scrollbar.config(command=self.text.yview)
+        
+        # Filter Response box
+        self.data_entry_filt = Entry(self.gui)
+        self.data_entry_filt.place(x=5, y=210, width=70)
+        Label(self.gui, text="Display Filter").place(x=76, y=213)
+
 
         # Send Button & Input
         xLoc = 5
@@ -270,7 +276,7 @@ class GuiSetup:
         while len(self.serial_data):
             # Insert new serial data if any
             try:
-                dat = self.serial_data.popleft()
+                dat = self.serial_data.popleft()            
                 
                 if len(dat) is not len(self.plot_select_values):
                     self.plot_select_values.clear()
@@ -279,16 +285,23 @@ class GuiSetup:
                     self.plot_select.current(0)
                     self.plot_select.config(values=self.plot_select_values)
                     
-                
-                if self.combobox.current():
-                    self.text.insert(END, str(dat))  # puts text data on monitor
-                else:
-                    for v in dat:
-                        self.text.insert(END, hex(v))  # puts text data on monitor
+                #print( "dat 0: " + str(dat[0]) + " list: " + str(self.data_entry_filt.get()))
+                skip = False
+                for v in self.data_entry_filt.get():
+                    if v == dat[0] :
+                        skip = True
+                        break;
                     
-                self.text.insert(END, "\n")
-                if self.text.yview()[1] > .9: # make slider stickey if at bottom
-                    self.text.yview(END)
+                if not skip:
+                    if self.combobox.current():
+                        self.text.insert(END, str(dat))  # puts text data on monitor
+                    else:
+                        for v in dat:
+                            self.text.insert(END, hex(v))  # puts text data on monitor
+                        
+                    self.text.insert(END, "\n")
+                    if self.text.yview()[1] > .9: # make slider stickey if at bottom
+                        self.text.yview(END)
             except:
                  break
         self.serial_data_lock.release()
