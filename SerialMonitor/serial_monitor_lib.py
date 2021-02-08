@@ -59,6 +59,7 @@ class SerialData:
         self.thread = None
         self.callbackfunction = collections.deque()
         self.callback_list_mutex = Lock()
+        self.serial_read_write_mutex = Lock()
         self.port = None
         self.baud = None
         self.serialConnection = None
@@ -179,14 +180,23 @@ class SerialData:
             try:
                 if self.defined_data_mode and self.serialConnection.in_waiting >= self.dataNumBytes and self.dataNumBytes > 0:
                     self.rawData = bytearray(self.dataNumBytes)
-                    self.serialConnection.readinto(self.rawData)
+                    self.serial_read_write_mutex.acquire()
+                    try:
+                        self.serialConnection.readinto(self.rawData)
+                    finally:
+                        self.serial_read_write_mutex.release()
                     self.parseData()
                 
                 elif (not self.defined_data_mode) and self.serialConnection.in_waiting and  self.dataNumBytes == -1:
                     self.dataNumBytes = struct.unpack('b',self.serialConnection.read(1))[0]
                 
                 elif (not self.defined_data_mode) and self.serialConnection.in_waiting >= self.dataNumBytes and self.dataNumBytes > 0 :
-                    tmp = self.serialConnection.read(1)
+                    self.serial_read_write_mutex.acquire()
+                    try:
+                        tmp = self.serialConnection.read(1)
+                    finally:
+                        self.serial_read_write_mutex.release()
+                    
                     self.dataNumBytes -= 1
                     tmp_uchar = struct.unpack('b',tmp)[0]
                     
@@ -208,7 +218,11 @@ class SerialData:
                         if struct.calcsize(self.dataFormat) == self.dataNumBytes:
                             # all is as expected
                             self.rawData = bytearray(self.dataNumBytes)
-                            self.serialConnection.readinto(self.rawData)
+                            self.serial_read_write_mutex.acquire()
+                            try:
+                                self.serialConnection.readinto(self.rawData)
+                            finally:
+                                self.serial_read_write_mutex.release()
                             self.parseData()
                         self.dataNumBytes = -1
                         self.dataFormat = "<"
@@ -263,7 +277,11 @@ class SerialData:
             
         if self.isConnected():    
             if self.serialConnection:
-                self.serialConnection.write(msg)
+                self.serial_read_write_mutex.acquire()
+                try:
+                    self.serialConnection.write(msg)
+                finally:
+                    self.serial_read_write_mutex.release()
                 return True, None
             else:
                 return (False, 'Port Not Writeable')

@@ -147,7 +147,7 @@ class GuiSetup:
         self.button_connect = Button(   text=" Connect  ", command=self.connectToSerial)
         self.button_connect.place(x=15, y=360)
 
-        self.graphing = Button(text="Open Plot", command=self.graph)
+        self.graphing = Button(text="Open Plot", command=self.plotWindowOpenClose)
         self.graphing.place(x=305, y=320)
         
         
@@ -159,12 +159,9 @@ class GuiSetup:
         self.plot_select.config(state='disabled')
 
 
-        self.recording = Button(text="Start Recording", command=self.record)
+        self.recording = Button(text="Start Recording", command=self.dataRecordingStartStop)
         self.recording.place(x=185, y=320)
         
-        self.recording = Button(text="Start Recording", command=self.record)
-        self.recording.place(x=185, y=320)
-
         self.plotObject = None
         self.recordObject = None
         
@@ -298,7 +295,7 @@ class GuiSetup:
 
             
         if (self.plotObject is not None) and not self.plotObject.isOk():
-            self.graph() #will disconnect the grap and call close and change buttons etc
+            self.plotWindowOpenClose() #will disconnect the grap and call close and change buttons etc
             
         self.update_job = self.gui.after(int(1000/self.text_box_update_Hz),self.update_gui)
         
@@ -360,7 +357,7 @@ class GuiSetup:
             self.text.insert(END, "\n")
                 
                 
-    def graph(self):
+    def plotWindowOpenClose(self):
         if self.plotObject is None and self.serial_object.isConnected():
             self.plotObject = serial_monitor_lib.RealTimePlot()
             self.serial_object.registerCallback(self.plotObject.addValue)
@@ -378,7 +375,7 @@ class GuiSetup:
         else:
             print("Cannot start graphing until serial is connected.\n")
 
-    def record(self):
+    def dataRecordingStartStop(self):
         if self.recordObject is None and self.serial_object.isConnected():
             self.recordObject = serial_monitor_lib.RecordData()
             self.serial_object.registerCallback(self.recordObject.addData)
