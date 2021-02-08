@@ -28,14 +28,15 @@
 
 '''
 
-import multiprocessing
-import queue
+# GUI IMPORTS
 from tkinter import *      # for gui general
 from tkinter.ttk import *  # for combobox
 from threading import Lock
-import time
-import serial
+
+# BACKGROUND MEGN540 FUNCTIONS
 import serial_monitor_lib
+
+# IMPORT FOR DEQUEUE
 import collections
 
 
@@ -74,18 +75,6 @@ class GuiSetup:
         self.text = Text(frame_1t, height=12, yscrollcommand=self.scrollbar.set)
         self.text.pack(side=LEFT, fill=X)
         self.scrollbar.config(command=self.text.yview)        
-
-        # threads
-#        self.update_gui_thread = threading.Thread(target=self.update_gui)
-#        self.update_gui_thread.daemon = True
-#        self.update_gui_thread.start()
-
-#        # Thread creation for gui text box functionality        
-#        self.t3 = threading.Thread(target=self.debug_check_gui)
-#        self.t3.daemon = True
-#        self.t3.start()
-
-
 
         # Send Button & Input
         xLoc = 5
@@ -319,17 +308,12 @@ class GuiSetup:
         we leave the serialport in a good state as well as save data (if we want to) and terminate
         threads as necessary  etc. """
         
-        #self.ok = False # Tell thread to teminate while loop
-        #self.update_gui_thread.join()
-        
         if self.serial_object:
             self.serial_object.close()
         
         if self.plotObject:
             self.plotObject.close()
                            
-        #if self.recordObject and self.recordObject.isRecording():
-        #    self.recordObject.saveData()
         if self.update_job is not None:
             self.gui.after_cancel(self.update_job )
             self.update_job = None

@@ -29,25 +29,26 @@
     SOFTWARE.
 
 '''
+# GUI IMPORTS
 import tkinter
 from tkinter import filedialog
 from tkinter import *
 
-import queue
+# FOR THREADING AND MUTEX PROTECTION (used in serial interface primarily) 
 from threading import Thread, Lock
-import serial
-import time
-import collections
-import matplotlib.pyplot as plt
+import collections  # FOR DEQUEUE USED IN DATA STORAGE AND CALLBACK QUEUES
+
+# FOR SERIAL COMMUNICATIONS
+import serial # FOR SERIAL INTERFACE
+import struct # FOR BINARY DATA INTERFACING
+import time   # FOR TIME STAMPING DATA
+
+
+
+# FOR REALTIME PLOT
+import matplotlib.pyplot as plt 
 import matplotlib.animation as animation
-
-import struct
-import csv
-import pandas as pd
-from array import *
-
 from matplotlib.backends.backend_tkagg import(FigureCanvasTkAgg,NavigationToolbar2Tk)
-from matplotlib.figure import Figure
 
 
 class SerialData:
@@ -446,16 +447,10 @@ class RealTimePlot():
         self.timeText = self.ax.text(0.50, 0.95, '', transform=self.ax.transAxes)
         self.lines = self.ax.plot([], [], label=self.lineLabel)[0]
         self.lineValueText = self.ax.text(0.50, 0.90, '', transform=self.ax.transAxes)
-         
-
-        
+  
+        # START THE PLOT ANIMATION
         self.anim = animation.FuncAnimation(self.fig, self.updatePlotData, interval=self.pltInterval)
-        #self.lineLabel = 'Sensor Value'
-        #self.timeText = self.ax.text(0.50, 0.95, '', transform=self.ax.transAxes)
-        #self.lines = self.ax.plot([], [], label=self.lineLabel)[0]
-        #self.lineValueText = self.ax.text(0.50, 0.90, '', transform=self.ax.transAxes)
         
-        self.updatePlotData()
     
     def isOk(self):
         return self.anim is not None
@@ -480,46 +475,4 @@ class RealTimePlot():
             self.window.protocol("WM_DELETE_WINDOW", self.close)
             self.gui_main = main
         self.setupPlot()
-#            self.isRunning = True
-#            self.thread = Thread(target=self.updatePlotData)
-#            self.thread.start()
-            #self.p = multiprocessing.Process(target=self.setupPlot)
-            #self.p.start()
-            
-        #self.q = multiprocessing.Queue(maxsize=2)
-        #self.p = multiprocessing.Process(target=self.backgroundThread)
-        #self.p.start()
 
-
-#def printMe(value):
-#    print("value is: " + str(value))
-#
-#
-#def main():
-#    portName = 'COM5'
-#    baudRate = 9600
-#
-#    # 4 bytes in 1 data point
-#    s = SerialData()
-#    s.openPort(portName, baudRate)
-#    # s.registerCallback(printMe)
-#
-#    p = RealTimePlot()
-#    s.registerCallback(p.addValue)
-#    p.Start()
-#
-#    r = RecordData()
-#    s.registerCallback(r.addData)
-#    r.startRecording()
-#    time.sleep(10)
-#    r.stopRecording()
-#
-#    s.close()
-#
-#    r.saveData()
-#
-#    p.close()
-#
-#
-#if __name__ == '__main__':
-#    main()
