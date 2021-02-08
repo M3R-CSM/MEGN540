@@ -316,8 +316,8 @@ class SerialData:
 
 class RecordData:
     def __init__(self):
-        self.csvData = []
-        self.csvTime = []
+        self.csvData = collections.deque(maxlen=100000)
+        self.csvTime = collections.deque(maxlen=100000)
         self.is_recording = False
 
     def startRecording(self):
