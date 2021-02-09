@@ -62,20 +62,20 @@
 #define RB_LENGTH_C 16  // must be a power of 2 (max of 256). This is an easy place to adjust max expected length
 
 // data structure for a float ring buffer 
-struct Ring_Buffer_F
+typedef struct Ring_Buffer_F
 {
     float buffer[RB_LENGTH_F];
     uint8_t start_index;
     uint8_t end_index;
-};
+} Ring_Buffer_F_t;
 
 // data structure for a char ring buffer
-struct Ring_Buffer_C
+typedef struct Ring_Buffer_C
 {
     char buffer[RB_LENGTH_C];
     uint8_t start_index;
     uint8_t end_index;
-};
+} Ring_Buffer_C_t;
 
 // Debugging Assistant Functions (these are already written for you)
 void rb_print_data_F(struct Ring_Buffer_F *p_buf);
