@@ -28,6 +28,8 @@
 
 '''
 
+import itertools # interating through multiple lists
+
 # GUI IMPORTS
 from tkinter import *      # for gui general
 from tkinter.ttk import *  # for combobox
@@ -39,6 +41,11 @@ import serial_monitor_lib
 # IMPORT FOR DEQUEUE
 import collections
 
+# FOR RUNNIGN SET OF CSV COMMANDS
+import csv
+from tkinter import filedialog
+from tkinter import simpledialog
+import struct
 
 
 class GuiSetup:
@@ -90,32 +97,34 @@ class GuiSetup:
         yLoc += 5
         
         self.out_selection = ["c", "b", "B", "h", "f"]
-        self.combobox_out1 = Combobox(self.gui, values = self.out_selection, width=3 )
-        self.combobox_out1.place(x=xLoc+15, y=yLoc-20)
-        self.combobox_out1.current(0)
-        self.data_entry_char = Entry(self.gui)
-        self.data_entry_char.place(x=xLoc, y=yLoc, width=70)
+        self.combobox_out = []
+        self.data_entry = []
+        self.combobox_out.append(Combobox(self.gui, values = self.out_selection, width=3 ))
+        self.combobox_out[-1].place(x=xLoc+15, y=yLoc-20)
+        self.combobox_out[-1].current(0)
+        self.data_entry.append(Entry(self.gui))
+        self.data_entry[-1].place(x=xLoc, y=yLoc, width=70)
         xLoc += 75
         
-        self.combobox_out2 = Combobox(self.gui, values = self.out_selection, width=3 )
-        self.combobox_out2.place(x=xLoc+15, y=yLoc-20)
-        self.combobox_out2.current(4)
-        self.data_entry_float_1 = Entry(self.gui)
-        self.data_entry_float_1.place(x=xLoc, y=yLoc, width=70)
+        self.combobox_out.append(Combobox(self.gui, values = self.out_selection, width=3 ))
+        self.combobox_out[-1].place(x=xLoc+15, y=yLoc-20)
+        self.combobox_out[-1].current(4)
+        self.data_entry.append( Entry(self.gui))
+        self.data_entry[-1].place(x=xLoc, y=yLoc, width=70)
         xLoc += 75
         
-        self.combobox_out3 = Combobox(self.gui, values = self.out_selection, width=3 )
-        self.combobox_out3.place(x=xLoc+15, y=yLoc-20)
-        self.combobox_out3.current(4)
-        self.data_entry_float_2 = Entry(self.gui)
-        self.data_entry_float_2.place(x=xLoc, y=yLoc, width=70)
+        self.combobox_out.append(Combobox(self.gui, values = self.out_selection, width=3 ))
+        self.combobox_out[-1].place(x=xLoc+15, y=yLoc-20)
+        self.combobox_out[-1].current(4)
+        self.data_entry.append(Entry(self.gui))
+        self.data_entry[-1].place(x=xLoc, y=yLoc, width=70)
         
         xLoc += 75
-        self.combobox_out4 = Combobox(self.gui, values = self.out_selection, width=3 )
-        self.combobox_out4.place(x=xLoc+15, y=yLoc-20)
-        self.combobox_out4.current(4)
-        self.data_entry_float_3 = Entry(self.gui)
-        self.data_entry_float_3.place(x=xLoc, y=yLoc, width=70)
+        self.combobox_out.append(Combobox(self.gui, values = self.out_selection, width=3 ))
+        self.combobox_out[-1].place(x=xLoc+15, y=yLoc-20)
+        self.combobox_out[-1].current(4)
+        self.data_entry.append(Entry(self.gui))
+        self.data_entry[-1].place(x=xLoc, y=yLoc, width=70)
 
 
         # Incomming Message Formatting String
@@ -134,44 +143,57 @@ class GuiSetup:
         self.combobox.current(0)
         self.cb_selection_changed(None)
         
+        
+        
         # Serial baudrate box
         xLoc = 130
-        yLoc = 365
+        yLoc = 400
         self.baud = Label(text="Baud").place(x=xLoc, y=yLoc)
         self.baud_entry = Entry(width=7)
         self.baud_entry.place(x=(xLoc+50), y=yLoc)
         self.baud_entry.insert(1,256000)
 
         # Serial Port Input Box
-        yLoc = 400
+        yLoc +=35
         self.port = Label(text="Port").place(x=xLoc, y=yLoc)
         self.port_entry = Entry(width=25)
         self.port_entry.place(x=(xLoc+50), y=yLoc)
         self.port_entry.insert(1,"/dev/ttyZumoCar")
 
         # button
+        yLoc += - 40
         self.button_connect = Button(   text=" Connect  ", command=self.connectToSerial)
-        self.button_connect.place(x=15, y=360)
+        self.button_connect.place(x=15, y=yLoc)
 
+        yLoc += - 55
+        xLoc = 15
+        self.recording = Button(text="Send CSV Commands", command=self.loadCSV_Commands)
+        self.recording.place(x=xLoc, y=yLoc)
+        
+        xLoc += 170
+        self.recording = Button(text="Start Recording", command=self.dataRecordingStartStop)
+        self.recording.place(x=xLoc, y=yLoc)
+        
+        xLoc += 120
         self.graphing = Button(text="Open Plot", command=self.plotWindowOpenClose)
-        self.graphing.place(x=305, y=320)
-        
-        
+        self.graphing.place(x=xLoc, y=yLoc)
+             
+        xLoc += 95
+        yLoc += 3
         self.plot_select_values = [0]
         self.plot_select = Combobox(self.gui, values = self.plot_select_values, width=3 )
         self.plot_select.bind("<<ComboboxSelected>>", self.plot_selection_changed)
-        self.plot_select.place(x=400, y=323)
+        self.plot_select.place(x=xLoc, y=yLoc)
         self.plot_select.current(0)
         self.plot_select.config(state='disabled')
 
 
-        self.recording = Button(text="Start Recording", command=self.dataRecordingStartStop)
-        self.recording.place(x=185, y=320)
         
         self.plotObject = None
         self.recordObject = None
         
-        self.update_job = None;
+        self.update_job = None
+        self.auto_send_job = None
         
         self.update_gui()
         
@@ -318,6 +340,10 @@ class GuiSetup:
         we leave the serialport in a good state as well as save data (if we want to) and terminate
         threads as necessary  etc. """
         
+        if self.auto_send_job is not None:
+            self.gui.after_cancel(self.auto_send_job)
+            self.auto_send_job = None
+        
         if self.serial_object:
             self.serial_object.close()
         
@@ -341,22 +367,11 @@ class GuiSetup:
         """
         data = []
         data_format = []
-        if self.data_entry_char.get() != '':
-            data.append(self.data_entry_char.get())
-            data_format.append(self.out_selection[self.combobox_out1.current()])
+        for (combo_box, entry) in zip(self.combobox_out, self.data_entry):
+            if entry.get() != '':
+                data.append(entry.get())
+                data_format.append(self.out_selection[combo_box.current()])
         
-        if self.data_entry_float_1.get() != '':
-            data.append(self.data_entry_float_1.get())
-            data_format.append(self.out_selection[self.combobox_out2.current()])
-
-        if self.data_entry_float_2.get() != '':
-            data.append(self.data_entry_float_2.get())
-            data_format.append(self.out_selection[self.combobox_out3.current()])
-            
-        if self.data_entry_float_3.get() != '':
-            data.append(self.data_entry_float_3.get())
-            data_format.append(self.out_selection[self.combobox_out4.current()])
-
         if len(data):
             # Something to send
             self.text.insert(END, ">>> ")
@@ -403,6 +418,54 @@ class GuiSetup:
         else:
             print("Cannot start recording until serial is connected.\n")
         
+    def loadCSV_Commands(self):
+        filename = filedialog.askopenfilename(filetypes=(("csv files", "*.csv"), ("all files", "*.*")),defaultextension='.csv')
+        if not filename:
+            return # none was selected
+        
+        csvfile = open('/home/pi/Desktop/MEGN540/SerialMonitor/csv_tmp.csv',newline='\n')
+        csv_reader = csv.reader(csvfile, delimiter=',')
+        
+        command_list = collections.deque()
+        for row in csv_reader:
+            command_list.append(row)
+        
+        csvfile.close()
+            
+        for row in command_list:
+            try:
+                size = struct.calcsize(row[0])
+                if len(row[0]) is not len(row)-1:
+                    print("Missmatch Encoding Number and Entries for Command String: " + row )
+                    return
+            except:
+                print(row[0])
+                print("Invalid Command Type: " + row[0] )
+                return
+        
+        delay_time = simpledialog.askfloat("Input", "Milliseconds Between Commands?",
+                               parent=self.gui,
+                               minvalue=0, maxvalue=10000)
+        
+        self.sendCSV_Commands(command_list, delay_time)
+     
+    def sendCSV_Commands(self, cmd_list, delay_time):
+        cmd = cmd_list.popleft();
+        fmt = cmd.pop(0)
+        
+        #load into boxes
+        for (f,c,box,entry) in itertools.zip_longest(fmt,cmd,self.combobox_out, self.data_entry,fillvalue=-1):
+            entry.delete(0,'end')
+            if f is not -1 and c is not -1:
+                box.current(self.out_selection.index(f))
+                entry.insert(END,"".join(c.split())) # .join(c.split()) removes any whitespace that might have been in the csv file
+                
+        self.send()
+        
+        if len(cmd_list) > 0:
+            self.auto_send_job = self.gui.after(int(delay_time), lambda:self.sendCSV_Commands(cmd_list,delay_time))
+        else:
+            self.auto_send_job = None
 
     def Callback(self, function):
         self.callbackfunction.append(function)
