@@ -170,8 +170,8 @@ uint8_t MEGN540_Message_Len( char cmd )
 //        case 'W': return 	5; break;
 //        case 'm': return	1; break;
 //        case 'M': return	5; break;
-        case 'p': return	4; break;
-        case 'P': return	8; break;
+        case 'p': return	5; break;
+        case 'P': return	9; break;
         case 's': return 	1; break;
         case 'S': return 	1; break;
         case 'q': return	1; break;
