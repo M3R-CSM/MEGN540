@@ -40,7 +40,7 @@
 
 #include "Ring_Buffer.h"
 
-typedef struct { Ring_Buffer_F numerator; Ring_Buffer_F denominator; Ring_Buffer_F out_list; Ring_Buffer_F in_list; } Filter_Data_t;
+typedef struct { struct Ring_Buffer_F numerator; struct Ring_Buffer_F denominator; struct Ring_Buffer_F out_list; struct Ring_Buffer_F in_list; } Filter_Data_t;
 
 /**
  * Function Filter_Init initializes the filter given two float arrays and the order of the filter.  Note that the

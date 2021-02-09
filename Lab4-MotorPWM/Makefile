@@ -27,6 +27,7 @@ SRC = $(TARGET).c       \
 	${MEGN_C_LIB_PATH}/Encoder.c \
 	${MEGN_C_LIB_PATH}/MotorPWM.c\
 	${MEGN_C_LIB_PATH}/Battery_Monitor.c \
+	${MEGN_C_LIB_PATH}/Filter.c\
 	$(MEGN_C_LIB_PATH)/USB_Config/Descriptors.c       \
 	$(LUFA_SRC_USB)
 
