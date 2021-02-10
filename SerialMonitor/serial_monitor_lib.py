@@ -356,7 +356,7 @@ class RecordData:
 
 
 class RealTimePlot():
-    def __init__(self, plotLength=500, refreshTime=30):
+    def __init__(self, plotLength=500, refreshTime=10):
                
         self.gui_main = None       
         self.window = None
@@ -393,6 +393,8 @@ class RealTimePlot():
             if self.plotTimer > 1:
                 self.previousTimer = currentTimer
                 self.timeText.set_text('Plot Interval = ' + str(self.plotTimer) + 'ms')
+        else:
+            return
        
         valueLast = []
 
@@ -400,12 +402,16 @@ class RealTimePlot():
 
         while len(self.times_queue):
             try:
-                valueLast = self.values_queue.popleft()[self.input_index]
+                valueLast = self.values_queue[-1][self.input_index]
+                time_val = self.times_queue[-1]
                 valueLast = float(valueLast) # make sure its a number
                 self.data.append(valueLast)  # latest data point and append it to array
-                self.times.append(self.times_queue.popleft())                          
+                self.times.append(time_val)
+                self.values_queue.clear()
+                self.times_queue.clear()
             except:
                 break
+        
 
         self.data_mutex.release()
         
