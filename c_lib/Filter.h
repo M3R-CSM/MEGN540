@@ -81,7 +81,7 @@ float Filter_Value( Filter_Data_t* p_filt, float value);
  * Function Filter_Last_Output returns the most up-to-date filtered value without updating the filter.
  * @return The latest filtered value
  */
-float Fliter_Last_Output();
+float Filter_Last_Output(  Filter_Data_t* p_filt );
 
 
 #endif
