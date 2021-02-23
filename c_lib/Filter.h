@@ -50,8 +50,8 @@ typedef struct { struct Ring_Buffer_F numerator; struct Ring_Buffer_F denominato
  *         i=0..N                    i=1..N
  *
  *  Note a 5-point moving average filter has coefficients:
- *      numerator_coeffs   = { 5 0 0 0 0 };
- *      denominator_coeffs = { 1 1 1 1 1 };
+ *      numerator_coeffs (B's)   = { 1 1 1 1 1 };
+ *      denominator_coeffs (A's) = { 5 0 0 0 0 };
  *      order = 4;
  *
  * @param p_filt pointer to the filter object
