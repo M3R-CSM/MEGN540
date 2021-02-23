@@ -62,12 +62,20 @@ typedef struct { struct Ring_Buffer_F numerator; struct Ring_Buffer_F denominato
 void  Filter_Init ( Filter_Data_t* p_filt, float* numerator_coeffs, float* denominator_coeffs, uint8_t order );
 
 /**
- * Function Shift_Filter shifts the input list and output list to keep the filter in the same frame. This especially
+ * Function Filter_ShiftBy shifts the input list and output list to keep the filter in the same frame. This especially
  * useful when initializing the filter to the current value or handling wrapping/overflow issues.
  * @param p_filt
  * @param shift_amount
  */
-void  Shift_Filter( Filter_Data_t* p_filt, float shift_amount );
+void  Filter_ShiftBy( Filter_Data_t* p_filt, float shift_amount );
+
+/**
+ * Function Filter_SetTo sets the initial values for the input and output lists to a constant defined value. This
+ * helps to initialize or re-initialize the filter as desired.
+ * @param p_filt Pointer to a Filter_Data sturcture
+ * @param amount The value to re-initialize the filter to.
+ */
+void Filter_SetTo( Filter_Data_t* p_filt, float amount );
 
 /**
  * Function Filter_Value adds a new value to the filter and returns the new output.
