@@ -428,7 +428,8 @@ class GuiSetup:
         
         command_list = collections.deque()
         for row in csv_reader:
-            command_list.append(row)
+            if len(row) is not 0:
+                command_list.append(row)
         
         csvfile.close()
             
