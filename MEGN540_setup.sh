@@ -2,8 +2,9 @@
 sudo apt-get update
 sudo apt-get upgrade
 
-# INSTALL PROGRAMMING APPS & LIBS: GIT (version control), MELD (file differences), EIGEN3 (linear algebra), AND AVRDUDE (avr programming)
-sudo apt-get install -y build-essential libeigen3-dev git meld gcc-avr avr-libc avrdude 
+# INSTALL PROGRAMMING APPS & LIBS: GIT (version control), MELD (file differences), code (Visual Studio Code), AND AVRDUDE (avr programming)
+sudo apt-get install -y build-essential git meld gcc-avr avr-libc avrdude code
+
 
 # INSTALL SCREEN CAPTURE APPS: - This allows you to record the desktop with audio for assignents
 sudo apt-get install -y ffmpeg vokoscreen
