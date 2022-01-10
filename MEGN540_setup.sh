@@ -3,22 +3,19 @@ sudo apt-get update
 sudo apt-get upgrade
 
 # INSTALL PROGRAMMING APPS & LIBS: GIT (version control), MELD (file differences), code (Visual Studio Code), AND AVRDUDE (avr programming)
-sudo apt-get install -y build-essential git meld gcc-avr avr-libc avrdude code
+sudo apt-get install -y build-essential git meld gcc-avr avr-libc avrdude code cmake
 
 
 # INSTALL SCREEN CAPTURE APPS: - This allows you to record the desktop with audio for assignents
 sudo apt-get install -y ffmpeg vokoscreen
-
-# Install Python and libraries necessary for the serial monitor application provided
-sudo apt-get install -y python3 libatlas-base-dev python3-numpy python3-pandas python3-serial python3-matplotlib 
-echo "export Path=/home/pi/.local/bin:$Path" >> ~/.bashrc
-. ~/.bashrc
 
 # CLONE CLASS REPOS AND SETUP FILE SYSTEM
 cd ~/Desktop
 git clone https://github.com/M3R-CSM/MEGN540.git
 cd MEGN540
 git submodule update --init --recursive
+mkdir BIN
+bash SerialMonitor/install_dep.sh
 cd ..
 
 # Remove Mode Manager Which Causes Issues with programming
