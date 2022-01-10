@@ -1,3 +1,6 @@
+# ALL BIN FILES
+BIN/*
+
 # Prerequisites
 *.d
 
