@@ -30,45 +30,6 @@
 
 #include "MEGN540_MessageHandeling.h"
 
-
-static inline void MSG_FLAG_Init(MSG_FLAG_t* p_flag)
-{
-    p_flag->active = false;
-    p_flag->duration = -1;
-    p_flag->last_trigger_time.millisec=0;
-    p_flag->last_trigger_time.microsec=0;
-}
-
-
-/**
- * Function MSG_FLAG_Execute indicates if the action associated with the message flag should be executed
- * in the main loop both because its active and because its time.
- * @return [bool] True for execute action, False for skip action
- */
-bool MSG_FLAG_Execute( MSG_FLAG_t* p_flag)
-{
-    // *** MEGN540  ***
-    // THIS FUNCTION WILL BE MOST USEFUL FORM LAB 2 ON.
-    // What is the logic to indicate an action should be executed?
-    // For Lab 1, ignore the timing part.
-    return false;
-}
-
-
-/**
- * Function Initialize_Message_Handling initializes the message handling and all associated state flags and data to their default
- * conditions.
- */
-void Initialize_Message_Handling()
-{
-    // *** MEGN540  ***
-    // YOUR CODE HERE. This is where you'd initialize any
-    // state machine flags to control your main-loop state machine
-
-    MSG_FLAG_Init( &mf_restart ); // needs to be initialized to the default values.
-    return;
-}
-
 /**
  * Function Task_Message_Handling processes USB messages as necessary and sets status flags to control the flow of the program.
  */

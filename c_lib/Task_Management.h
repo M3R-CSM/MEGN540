@@ -70,7 +70,7 @@ void Task_Cancel( Task_t* task );
 bool Task_Is_Ready( Task_t* task );
 
 /**
- * @brief Function Task_Execute checks to see if the given task is ready for execution, executes the task, 
+ * @brief Function Task_Run_If_Ready checks to see if the given task is ready for execution, executes the task, 
  *  and resets the time_last_ran appropriately. If the task function pointer is NULL then it just 
  *  returns if the task is ready and resets the time_last_ran.
  * 
@@ -78,7 +78,7 @@ bool Task_Is_Ready( Task_t* task );
  * @return true if the task was executed
  * @return false if the task was not exectued (because it was not ready)
  */
-bool Task_Execute( Task_t* task );
+bool Task_Run_If_Ready( Task_t* task );
 
 
 
