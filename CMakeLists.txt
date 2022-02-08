@@ -119,15 +119,15 @@ add_definitions(
   # Define Clock Speed as F_CPU 
   -DF_CPU=${MCU_SPEED}
 
-  # Compile Flags
-  -fpack-struct
-  -fshort-enums
-  -Wall
-  #-Werror  # this turns warnings in to errors. Helpful in practice. But and issues with our to-be-done library code
-  -funsigned-char
-  -funsigned-bitfields
-  -ffunction-sections
-  -c
+  # Compile Flags (https://linux.die.net/man/1/avr-gcc)
+  -fpack-struct # this signals the compiler not to add padding to structures. This fine becasue were running on an 8bit architecture anyway
+  -fshort-enums # choose enum type based on max enum value required. This will likely keep them as 8-bit for our purposes.
+  -Wall    # this turns on all warnings
+  -Werror  # this turns warnings in to errors.
+  -funsigned-char # ensures char is treated as unsigned during math 
+  -funsigned-bitfields # ensures bitfields are treated as unsigned during math 
+  -ffunction-sections  #places each funciton into its own section allowing for better elf optimizations
+  -c # dont do linking (that will be done later)
   -std=gnu99
 
   # LUFA DEFNITIONS
@@ -156,7 +156,7 @@ add_avr_library( LUFA_USB
    ## Project Specific LUFA Descriptors
    ${MEG540_C_LIB_PATH}/USB_Config/Descriptors.c
 
-   ## Lufa Core Code
+   ## Lufa Core Code for USB Interface
    ${LUFA_PATH}/Drivers/USB/Core/${ARCH}/USBController_${ARCH}.c
    ${LUFA_PATH}/Drivers/USB/Core/${ARCH}/USBInterrupt_${ARCH}.c
    ${LUFA_PATH}/Drivers/USB/Core/ConfigDescriptors.c
@@ -189,11 +189,3 @@ add_subdirectory(Lab3-Encoder)
 add_subdirectory(Lab4-MotorPWM)
 add_subdirectory(Lab5-Control)
 
-
-# file(GLOB LAB_SRC_FILES "Lab1-Serial/*.c")
-
-# # Create one target
-# add_avr_executable(Lab0  ${LAB_SRC_FILES} ${MEG540_C_LIB_SRC_FILES} )
-
-# # LINK Agains LUFA Libarary 
-# avr_target_link_libraries(Lab0 LUFA_USB)

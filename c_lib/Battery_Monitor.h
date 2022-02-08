@@ -43,9 +43,9 @@
 #include <ctype.h>         // For int32_t type
 
 /**
- * Function Battery_Monitor_Init initializes the Battery Monitor to record the current battery voltages.
+ * Function Initialize_Battery_Monitor initializes the Battery Monitor to record the current battery voltages.
  */
-void Battery_Monitor_Init();
+void Initialize_Battery_Monitor();
 
 /**
  * Function Battery_Voltage initiates the A/D measurement and returns the result for the battery voltage.

@@ -43,7 +43,7 @@
 typedef struct { struct Ring_Buffer_F numerator; struct Ring_Buffer_F denominator; struct Ring_Buffer_F out_list; struct Ring_Buffer_F in_list; } Filter_Data_t;
 
 /**
- * Function Filter_Init initializes the filter given two float arrays and the order of the filter.  Note that the
+ * Function Initialize_Filter initializes the filter given two float arrays and the order of the filter.  Note that the
  * size of the array will be one larger than the order. (First order systems have two coefficients).
  *
  *  1/A_0*( SUM( B_i * input_i )  -   SUM( A_i * output_i) )
@@ -59,7 +59,7 @@ typedef struct { struct Ring_Buffer_F numerator; struct Ring_Buffer_F denominato
  * @param denominator_coeffs The denominator coefficients (A/alpha traditionally)
  * @param order The filter order
  */
-void  Filter_Init ( Filter_Data_t* p_filt, float* numerator_coeffs, float* denominator_coeffs, uint8_t order );
+void  Initialize_Filter ( Filter_Data_t* p_filt, float* numerator_coeffs, float* denominator_coeffs, uint8_t order );
 
 /**
  * Function Filter_ShiftBy shifts the input list and output list to keep the filter in the same frame. This especially

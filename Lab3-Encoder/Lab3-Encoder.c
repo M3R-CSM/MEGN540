@@ -28,22 +28,26 @@
 
 */
 
-#include "../c_lib/SerialIO.h"
-#include "../c_lib/Timing.h"
+// Includes for usb, timing, encoders, etc
+
+
+/**
+ * Function Initialize_Modules sets up all hardware and persistant memory necessary
+ * for the main loop to funciton properly. It is the first thing main should call and is
+ * a convenient way or resetting the system if that is requested. 
+ * 
+ */
+void Initialize_Modules()
+{
+
+}
+
 
 /** Main program entry point. This routine configures the hardware required by the application, then
  *  enters a loop to run the application tasks in sequence.
  */
 int main(void)
 {
-    SetupTimer0();         // initialize timer zero functionality
-    USB_SetupHardware();   // initialize USB
 
-    GlobalInterruptEnable(); // Enable Global Interrupts for USB and Timer etc.
 
-    for (;;)
-    {
-        USB_Echo_Task();
-        USB_USBTask();
-    }
 }

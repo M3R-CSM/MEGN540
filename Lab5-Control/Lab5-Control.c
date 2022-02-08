@@ -28,32 +28,8 @@
 
 */
 
-#include "../c_lib/SerialIO.h"
-#include "../c_lib/MEGN540_MessageHandeling.h"
-#include "../c_lib/Timing.h"
-#include "../c_lib/Encoder.h"
-#include "../c_lib/MotorPWM.h"
-#include "../c_lib/Filter.h"
-#include "../c_lib/Battery_Monitor.h"
-#include "../c_lib/Controller.h"
-// #include "../c_lib/Task_Scheduler.h"
 
-
-
-void InitializeSystem()
+int main()
 {
-
-    
-}
-
-/** Main program entry point. This routine configures the hardware required by the application, then
- *  enters a loop to run the application tasks in sequence.
- */
-int main(void)
-{
-
     return 0;
 }
-
-
-

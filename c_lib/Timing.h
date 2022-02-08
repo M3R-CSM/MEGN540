@@ -49,30 +49,18 @@
 
 
 /**
- * Millisecond counters are also provided for use in other functions to control operations
- * on a multi millisecond trigger level.  These will be incremented on each ISR trigger and are
- * accessible outside of the program and resettable by other functions to assist timed tasks.
- * Note that these will roll over at 255, tasks timing spanning more than 1/4 of a second should
- * leverage one of these in combination with the TimeSince function.
- */
-volatile uint8_t ms_counter_1;
-volatile uint8_t ms_counter_2;
-volatile uint8_t ms_counter_3;
-volatile uint8_t ms_counter_4;
-
-/**
  * Function SetupTimer0 initializes Timer0 to have a prescalar of XX and initializes the compare
  * feature for use in an ISR.  It also enables ISR's.
  */
-void SetupTimer0( );
+void Initialize_Timing( );
 
 /**
  * These functions return the individual parts of the Time_t struct, useful if you only care about
  * things on second or millisecond resolution.
  * @return
  */
-uint32_t GetMilli();
-uint16_t GetMicro();
+uint32_t Timing_Get_Milli();
+uint16_t Timing_Get_Micro();
 
 /**
  * Struct Time_t captures the time based in milliseconds at a 4-microsecond resolution.
@@ -83,14 +71,14 @@ typedef struct { uint32_t millisec; uint16_t microsec; } Time_t;
  * This function gets the current time and returns it in a Time_t structure.
  * @return
  */
-Time_t GetTime();
-float  GetTimeSec();
+Time_t Timing_Get_Time();
+float  Timing_Get_Time_Sec();
 
 /**
  * This function takes a start time and calculates the time since that time, it returns it in the Time struct.
  * @param p_time_start a pointer to a start time struct
  * @return (Time_t) Time since the other time.
  */
-float  SecondsSince(const Time_t* time_start_p );
+float  Timing_Seconds_Since(const Time_t* time_start_p );
 
 #endif //LAB2_TIMING_TIMING_H

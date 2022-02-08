@@ -1,11 +1,11 @@
 #include "Battery_Monitor.h"
 
-static const float BITS_TO_BATTERY_VOLTS = 0;
+static const float BITS_TO_BATTERY_VOLTS = 0.0f;
 
 /**
- * Function Battery_Monitor_Init initializes the Battery Monitor to record the current battery voltages.
+ * Function Initialize_Battery_Monitor initializes the Battery Monitor to record the current battery voltages.
  */
-void Battery_Monitor_Init()
+void Initialize_Battery_Monitor()
 {
 
 	// *** MEGN540 LAB3 YOUR CODE HERE ***
@@ -18,7 +18,7 @@ void Battery_Monitor_Init()
 float Battery_Voltage()
 {
     // A Union to assist with reading the LSB and MSB in the  16 bit register
-    union { struct {uint8_t LSB; uint8_t MSB; } split; uint16_t value;} data;
+    union { struct {uint8_t LSB; uint8_t MSB; } split; uint16_t value;} data = {.value = 0};
 
     // *** MEGN540 LAB3 YOUR CODE HERE ***
 

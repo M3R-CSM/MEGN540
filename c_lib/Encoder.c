@@ -3,15 +3,15 @@
 /**
 * Internal counters for the Interrupts to increment or decrement as necessary.
 */
-static volatile bool _last_right_A;  // Static limits it's use to this file
-static volatile bool _last_right_B;  // Static limits it's use to this file
+static volatile bool _last_right_A = 0;  // Static limits it's use to this file
+static volatile bool _last_right_B = 0;  // Static limits it's use to this file
 
-static volatile bool _last_left_A;   // Static limits it's use to this file
-static volatile bool _last_left_B;   // Static limits it's use to this file
-static volatile bool _last_left_XOR; // Necessary to check if PB4 triggered the ISR or not
+static volatile bool _last_left_A = 0;   // Static limits it's use to this file
+static volatile bool _last_left_B = 0;   // Static limits it's use to this file
+static volatile bool _last_left_XOR = 0; // Necessary to check if PB4 triggered the ISR or not
 
-static volatile int32_t _left_counts;   // Static limits it's use to this file
-static volatile int32_t _right_counts;  // Static limits it's use to this file
+static volatile int32_t _left_counts = 0;   // Static limits it's use to this file
+static volatile int32_t _right_counts = 0;  // Static limits it's use to this file
 
 /** Helper Funcions for Accessing Bit Information */
 // *** MEGN540 Lab 3 TODO ***
@@ -28,7 +28,7 @@ static inline bool Left_A()   { return 0; } // MEGN540 Lab 3 TODO
  * Function Encoders_Init initializes the encoders, sets up the pin change interrupts, and zeros the initial encoder
  * counts.
  */
-void Encoders_Init()
+void Initialize_Encoders()
 {
     // *** MEGN540 Lab3 ***
     // YOUR CODE HERE
@@ -58,10 +58,10 @@ void Encoders_Init()
 
 
 /**
- * Function Counts_Left returns the number of counts from the left encoder.
+ * Function Encoder_Counts_Left returns the number of counts from the left encoder.
  * @return [int32_t] The count number.
  */
-int32_t Counts_Left()
+int32_t Encoder_Counts_Left()
 {
     // *** MEGN540 Lab3 ***
     // YOUR CODE HERE
@@ -72,10 +72,10 @@ int32_t Counts_Left()
 }
 
 /**
- * Function Counts_Right returns the number of counts from the right encoder.
+ * Function Encoder_Counts_Right returns the number of counts from the right encoder.
  * @return [int32_t] The count number.
  */
-int32_t Counts_Right()
+int32_t Encoder_Counts_Right()
 {
     // *** MEGN540 Lab3 ***
     // YOUR CODE HERE
@@ -86,10 +86,10 @@ int32_t Counts_Right()
 }
 
 /**
- * Function Rad_Left returns the number of radians for the left encoder.
+ * Function Encoder_Rad_Left returns the number of radians for the left encoder.
  * @return [float] Encoder angle in radians
  */
-float Rad_Left()
+float Encoder_Rad_Left()
 {
     // *** MEGN540 Lab3 ***
     // YOUR CODE HERE.  How many counts per rotation???
@@ -97,10 +97,10 @@ float Rad_Left()
 }
 
 /**
- * Function Rad_Right returns the number of radians for the left encoder.
+ * Function Encoder_Rad_Right returns the number of radians for the left encoder.
  * @return [float] Encoder angle in radians
  */
-float Rad_Right()
+float Encoder_Rad_Right()
 {
     // *** MEGN540 Lab3 ***
     // YOUR CODE HERE.  How many counts per rotation???

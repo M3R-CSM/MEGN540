@@ -28,24 +28,35 @@
 
 */
 
-#include "../c_lib/SerialIO.h"
-#include "../c_lib/MEGN540_MessageHandeling.h"
+#include "SerialIO.h"
+#include "MEGN540_MessageHandeling.h"
+
+/**
+ * Function Initialize_Modules sets up all hardware and persistant memory necessary
+ * for the main loop to funciton properly. It is the first thing main should call and is
+ * a convenient way or resetting the system if that is requested. 
+ * 
+ */
+void Initialize_Modules()
+{
+    Initialize_USB(); 
+    Initialize_Message_Handling(); 
+
+}
 
 /** Main program entry point. This routine configures the hardware required by the application, then
  *  enters a loop to run the application tasks in sequence.
  */
 int main(void)
 {
-    USB_SetupHardware();
-    GlobalInterruptEnable();
-    Message_Handling_Init(); // initialize message handling
+    Initialize_Modules();
 
     while( true )
     {
-        USB_Upkeep_Task();
+        Task_USB_Upkeep();
 
-        //USB_Echo_Task();// you'll want to remove this once you get your serial sorted
-        Message_Handling_Task();
+        Task_USB_Echo();// you'll want to remove this once you get your serial sorted
+        //Task_Message_Handling(); // you'll want to uncomment once you get your serial sorted.
 
         // Below here you'll process state-machine flags.
         if( MSG_FLAG_Execute( &mf_restart ) )

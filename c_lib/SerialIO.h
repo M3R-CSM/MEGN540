@@ -68,57 +68,45 @@
 // Include your Ring_Buffer homework code.
 #include "Ring_Buffer.h"
 
-
-/* LUFA Specific Function Prototypes: */
-void USB_SetupHardware(void);  // You'll need to add in any initialization items to this function for your ring buffers
-
 /**
- * Function USB_Upkeep_Task shoudl be called each loop in the main function.
+ * Function Initialize_USB Initializes the USB hardware leveraging the LUFA library and also 
+ * initializes the internal ring-buffers for USB data storage. Care should be taken to make sure
+ * the ring buffer's can accomidate at least two full-sized (16 byte) messages before overflowing. * 
  */
-void USB_Upkeep_Task(void);    // You'll need to add in USB buffer interaction here. This is where calls to usb_read_nex_byte would go...
+void Initialize_USB(void);  // You'll need to add in any initialization items to this function for your ring buffers
 
-void USB_Echo_Task(void);
-void EVENT_USB_Device_Connect(void);
-void EVENT_USB_Device_Disconnect(void);
-void EVENT_USB_Device_ConfigurationChanged(void);
-void EVENT_USB_Device_ControlRequest(void);
-
-
-/* MEGN540 Specific Functions */
 /**
- * (non-blocking) Function usb_read_next_byte takes the next USB byte and reads it
- * into a ring buffer for latter processing.
- *
+ * Function Task_USB_Upkeep should be called each loop in the main function.
  */
-void usb_read_next_byte();
+void Task_USB_Upkeep(void);    // You'll need to add in USB buffer interaction here. This is where calls to usb_read_nex_byte would go...
 
 /**
- * (non-blocking) Function usb_write_next_byte takes the next byte from the output
- * ringbuffer and writes it to the USB port (if free).
+ * Function Task_USB_Echo provides a functioning example to help you build your code. This should be removed 
+ * in the final implementaion.
  */
-void usb_write_next_byte();
+void Task_USB_Echo(void);
 
 /**
- * (non-blocking) Function usb_send_byte Adds a character to the output buffer
+ * (non-blocking) Function USB_Send_Byte Adds a character to the output buffer
  * @param byte [uint8_t] Data to send
  */
-void usb_send_byte(uint8_t byte);
+void USB_Send_Byte(uint8_t byte);
 
 /**
- * (non-blocking) Function usb_send_data adds the data buffer to the output ring buffer.
+ * (non-blocking) Function USB_Send_Data adds the data buffer to the output ring buffer.
  * @param p_data [void*] pointer to the data-object to be sent
  * @param data_len [uint8_t] size of data-object to be sent
  */
-void usb_send_data(void* p_data, uint8_t data_len);
+void USB_Send_Data(void* p_data, uint8_t data_len);
 
 /**
- * (non-blocking) Function usb_send_str adds a c-style (null terminated) string to the output buffer
+ * (non-blocking) Function USB_Send_Str adds a c-style (null terminated) string to the output buffer
  * @param p_str [char*] Pointer to a c-string (null terminated) to send
  */
-void usb_send_str(char* p_str);
+void USB_Send_Str(char* p_str);
 
 /**
- * (non-blocking) Function usb_send_msg sends a message according to the MEGN540 USB message format.
+ * (non-blocking) Function USB_Send_Msg sends a message according to the MEGN540 USB message format.
  *      [MSG Length] [Format C-Str][Host Initiating CMD Char][DATA]
  *      MSG Length: [uint8_t] Number of bytes to follow in full message.
  *              Length of: Format C-String + 1 (CMD Char) + Length of DATA Array
@@ -135,28 +123,28 @@ void usb_send_str(char* p_str);
  * @param p_data [void*] pointer to the data-object to send.
  * @param data_len [uint8_t] size of the data-object to send. Remember sizeof() can help you with this!
  */
-void usb_send_msg(char* format, char cmd, void* p_data, uint8_t data_len );
+void USB_Send_Msg(char* format, char cmd, void* p_data, uint8_t data_len );
 
 /**
- * (non-blocking) Funtion usb_msg_length returns the number of bytes in the receive buffer awaiting processing.
+ * (non-blocking) Funtion USB_Msg_Length returns the number of bytes in the receive buffer awaiting processing.
  * @return [uint8_t] Number of bytes ready for processing.
  */
-uint8_t usb_msg_length();
+uint8_t USB_Msg_Length();
 
 /**
- * (non-blocking) Function usb_msg_peek returns (without removal) the next byte in teh receive buffer (null if empty).
+ * (non-blocking) Function USB_Msg_Peek returns (without removal) the next byte in teh receive buffer (null if empty).
  * @return [uint8_t] Next Byte
  */
-uint8_t usb_msg_peek();
+uint8_t USB_Msg_Peek();
 
 /**
- * (non-blocking) Function usb_msg_get removes and returns the next byte in the receive buffer (null if empty)
+ * (non-blocking) Function USB_Msg_Get removes and returns the next byte in the receive buffer (null if empty)
  * @return [uint8_t] Next Byte
  */
-uint8_t usb_msg_get();
+uint8_t USB_Msg_Get();
 
 /**
- * (non-blocking) Function usb_msg_read_into populates the object with the data in the recieve buffer and
+ * (non-blocking) Function USB_Msg_Read_Into populates the object with the data in the recieve buffer and
  * removes the bytes as they are read.  Returns false if receive buffer does not contain enough bytes to
  * fill the container and terminates without reading or removing.
  *
@@ -164,13 +152,20 @@ uint8_t usb_msg_get();
  * @param data_len
  * @return [bool]  True: sucess, False: not enough bytes available
  */
-bool usb_msg_read_into(void* p_obj, uint8_t data_len);
+bool USB_Msg_Read_Into(void* p_obj, uint8_t data_len);
 
 /**
- * (non-blocking) Function usb_flush_input_buffer sets the length of the recieve buffer to zero and disreguards
+ * (non-blocking) Function USB_Flush_Input_Buffer sets the length of the recieve buffer to zero and disreguards
  * any bytes that remaining.
  */
-void usb_flush_input_buffer();
+void USB_Flush_Input_Buffer();
+
+
+// LUFA Event handeling functions that are defined but do not require modificaiton
+void EVENT_USB_Device_Connect(void);
+void EVENT_USB_Device_Disconnect(void);
+void EVENT_USB_Device_ConfigurationChanged(void);
+void EVENT_USB_Device_ControlRequest(void);
 
 #endif
 

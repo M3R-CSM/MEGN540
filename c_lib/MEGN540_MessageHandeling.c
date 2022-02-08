@@ -56,10 +56,10 @@ bool MSG_FLAG_Execute( MSG_FLAG_t* p_flag)
 
 
 /**
- * Function Message_Handling_Init initializes the message handling and all associated state flags and data to their default
+ * Function Initialize_Message_Handling initializes the message handling and all associated state flags and data to their default
  * conditions.
  */
-void Message_Handling_Init()
+void Initialize_Message_Handling()
 {
     // *** MEGN540  ***
     // YOUR CODE HERE. This is where you'd initialize any
@@ -70,11 +70,9 @@ void Message_Handling_Init()
 }
 
 /**
- * Function Message_Handler processes USB messages as necessary and sets status flags to control the flow of the program.
- * It returns true unless the program receives a reset message.
- * @return
+ * Function Task_Message_Handling processes USB messages as necessary and sets status flags to control the flow of the program.
  */
-void Message_Handling_Task()
+void Task_Message_Handling()
 {
     // *** MEGN540  ***
     // YOUR CODE HERE. I suggest you use your peak function and a switch interface
@@ -83,56 +81,56 @@ void Message_Handling_Task()
     // set a flag to have it done here.
 
     // Check to see if their is data in waiting
-    if( !usb_msg_length() )
+    if( !USB_Msg_Length() )
         return; // nothing to process...
 
     // Get Your command designator without removal so if their are not enough bytes yet, the command persists
-    char command = usb_msg_peek();
+    char command = USB_Msg_Peek();
 
     // process command
     switch( command )
     {
         case '*':
-            if( usb_msg_length() >= MEGN540_Message_Len('*') )
+            if( USB_Msg_Length() >= MEGN540_Message_Len('*') )
             {
                 //then process your times...
 
                 // remove the command from the usb recieved buffer using the usb_msg_get() function
-                usb_msg_get(); // removes the first character from the received buffer, we already know it was a * so no need to save it as a variable
+                USB_Msg_Get(); // removes the first character from the received buffer, we already know it was a * so no need to save it as a variable
 
                 // Build a meaningful structure to put your data in. Here we want two floats.
                 struct __attribute__((__packed__)) { float v1; float v2; } data;
 
                 // Copy the bytes from the usb receive buffer into our structure so we can use the information
-                usb_msg_read_into( &data, sizeof(data) );
+                USB_Msg_Read_Into( &data, sizeof(data) );
 
                 // Do the thing you need to do. Here we want to multiply
                 float ret_val = data.v1 * data.v2;
 
                 // send response right here if appropriate.
-                usb_send_msg("cf", command, &ret_val, sizeof(ret_val));
+                USB_Send_Msg("cf", command, &ret_val, sizeof(ret_val));
             }
             break;
         case '/':
-            if( usb_msg_length() >= MEGN540_Message_Len('/') )
+            if( USB_Msg_Length() >= MEGN540_Message_Len('/') )
             {
                 //then process your divide...
             }
             break;
         case '+':
-            if( usb_msg_length() >= MEGN540_Message_Len('+') )
+            if( USB_Msg_Length() >= MEGN540_Message_Len('+') )
             {
                 //then process your plus...
             }
             break;
         case '-':
-            if( usb_msg_length() >= MEGN540_Message_Len('-') )
+            if( USB_Msg_Length() >= MEGN540_Message_Len('-') )
             {
                 //then process your minus...
             }
             break;
         case '~':
-            if( usb_msg_length() >= MEGN540_Message_Len('~') )
+            if( USB_Msg_Length() >= MEGN540_Message_Len('~') )
             {
                 //then process your reset by setting the mf_restart flag
             }

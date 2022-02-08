@@ -49,34 +49,34 @@
 #include <stdbool.h>       // for bool type
 
 /**
- * Function Encoders_Init initializes the encoders, sets up the pin change interrupts, and zeros the initial encoder
+ * Function Initialize_Encoders initializes the encoders, sets up the pin change interrupts, and zeros the initial encoder
  * counts.
  */
-void Encoders_Init();
+void Initialize_Encoders();
 
 /**
  * Function Counts_Left returns the number of counts from the left encoder.
  * @return [int32_t] The count number.
  */
-int32_t Counts_Left();
+int32_t Encoder_Counts_Left();
 
 /**
  * Function Counts_Right returns the number of counts from the right encoder.
  * @return [int32_t] The count number.
  */
-int32_t Counts_Right();
+int32_t Encoder_Counts_Right();
 
 /**
  * Function Rad_Left returns the number of radians for the left encoder.
  * @return
  */
-float Rad_Left();
+float Encoder_Rad_Left();
 
 /**
  * Function Rad_Right returns the number of radians for the left encoder.
  * @return
  */
-float Rad_Right();
+float Encoder_Rad_Right();
 
 
 #endif

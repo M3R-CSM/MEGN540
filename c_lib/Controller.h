@@ -51,9 +51,9 @@ inline float Saturate( float value, float ABS_MAX )
 }
 
 /**
- * Function Initialize_Controller setsup the z-transform based controller for the system.
+ * Function Initialize_Controller sets up the z-transform based controller for the system.
  */
-void Controller_Init(Controller_t* p_cont, float kp, float* num, float* den, uint8_t order, float update_period);
+void Initialize_Controller(Controller_t* p_cont, float kp, float* num, float* den, uint8_t order, float update_period);
 
 /**
  * Function Controller_Set_Target_Velocity sets the target velocity for the 
