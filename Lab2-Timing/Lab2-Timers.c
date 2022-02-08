@@ -1,12 +1,12 @@
 /*
          MEGN540 Mechatronics Lab
-    Copyright (C) Andrew Petruska, 2021.
+    Copyright (C) Andrew Petruska, 2022.
        apetruska [at] mines [dot] edu
           www.mechanical.mines.edu
 */
 
 /*
-    Copyright (c) 2021 Andrew Petruska at Colorado School of Mines
+    Copyright (c) 2022 Andrew Petruska at Colorado School of Mines
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,12 @@
 #include "Timing.h"
 #include "MEGN540_MessageHandeling.h"
 
-
+// Declare Lab-Specific tasks functions here so you can link to tasks in the
+// initialization function... 
+// remember the static keyword allows data to persist between function calls without
+// requiring global scopings
+// void Task_Send_LoopTime();
+// void Task_Send_TimeNow();
 
 /**
  * Function Initialize_Modules sets up all hardware and persistant memory necessary
@@ -43,8 +48,11 @@
 void Initialize_Modules()
 {
     Initialize_USB(); 
-    Initialize_Message_Handling(); 
     Initialize_Timing();
+
+    // Setup task handling
+    Initialize_Task( &task_restart, -1 /*do only once*/, Initialize_Modules  /*function pointer to call*/);
+
 }
 
 
@@ -58,7 +66,25 @@ int main(void)
     for (;;)
     {
         Task_USB_Upkeep();
-
         Task_Message_Handling();
+
+        Task_Run_If_Ready( &task_restart );
     }
 }
+
+
+// Fill in lab-task definitons 
+// void Task_Send_LoopTime()
+//{
+//    static Time_t time_start;
+//    IF time start is 0,0 set to current time
+//    ELSE calculate time since, then set to 0,0 and send usb message
+//    ...
+//    return;
+//}
+
+// void Task_Send_TimeNow()
+//{
+//    ...    
+//    return;
+//}

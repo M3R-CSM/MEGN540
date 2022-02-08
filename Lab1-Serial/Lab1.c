@@ -29,6 +29,7 @@
 */
 
 #include "SerialIO.h"
+#include "Task_Management.h"
 #include "MEGN540_MessageHandeling.h"
 
 /**
@@ -40,7 +41,9 @@
 void Initialize_Modules()
 {
     Initialize_USB(); 
-    Initialize_Message_Handling(); 
+
+    // Initialize Tasks and their associated funciton connections
+    Initialize_Task( &task_restart, -1, Initialize_Modules );
 
 }
 
@@ -51,6 +54,8 @@ int main(void)
 {
     Initialize_Modules();
 
+    // 
+
     while( true )
     {
         Task_USB_Upkeep();
@@ -59,9 +64,6 @@ int main(void)
         //Task_Message_Handling(); // you'll want to uncomment once you get your serial sorted.
 
         // Below here you'll process state-machine flags.
-        if( MSG_FLAG_Execute( &mf_restart ) )
-        {
-            // re initialzie your stuff...
-        }
+        Task_Run_If_Ready( &task_restart );
     }
 }
