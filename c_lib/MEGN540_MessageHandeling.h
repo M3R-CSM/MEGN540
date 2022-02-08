@@ -37,28 +37,12 @@
 
 #include "SerialIO.h"
 #include "Timing.h"
+#include "Task_Management.h"
 
-/** Message Driven State Machine Flags */
-typedef struct MSG_FLAG { bool active; float duration; Time_t last_trigger_time; } MSG_FLAG_t;
-
-
-MSG_FLAG_t mf_restart;       ///<-- This flag indicates that the device received a restart command from the hoast. Default inactive.
-MSG_FLAG_t mf_loop_timer;    ///<-- Indicates if the system should report time to complete a loop.
-MSG_FLAG_t mf_time_float_send;   ///<-- Indicates if the system should report the time to send a float.
-MSG_FLAG_t mf_send_time;     ///<-- Indicates if the system should send the current time.
-
-/**
- * Function MSG_FLAG_Execute indicates if the action associated with the message flag should be executed
- * in the main loop both because its active and because its time.
- * @return [bool] True for execute action, False for skip action
- */
-bool MSG_FLAG_Execute( MSG_FLAG_t* );
-
-/**
- * Function Message_Handling_Init initializes the message handling and all associated state flags and data to their default
- * conditions.
- */
-void Message_Handling_Init();
+// Define message driving task objects here. These are global.  You'll need to add to the list for subsiquent labs
+Task_t task_restart;       ///<-- This flag indicates that the device received a restart command from the hoast. Default inactive.
+Task_t task_time_loop;     ///<-- Indicates if the system should report time to complete a loop.
+Task_t task_send_time_now; ///<-- Indicates if the system should send the current time.
 
 /**
  * Function Message_Handler processes USB messages as necessary and sets status flags to control the flow of the program.

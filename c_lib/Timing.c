@@ -38,7 +38,7 @@
 static volatile uint32_t _count_ms = 0;
 
 /**
- * Function SetupTimer0 initializes Timer0 to have a prescalar of XX and initializes the compare
+ * Function Initialize_Timing initializes Timer0 to have a prescalar of XX and initializes the compare
  * feature for use in an ISR.  It also enables ISR's.
  *
  *  FCPU = 16 000 000 Hz,  1 us => 1 000 000 Hz,  A prescalar of 16 would give you millisecond resolution, but you dont
@@ -49,30 +49,26 @@ static volatile uint32_t _count_ms = 0;
  *  Since Timer 0 will be triggering at a kHz, we may want other things to be updated at 1kHz too.
  *
  */
-void SetupTimer0()
+void Initialize_Timing()
 {
     // *** MEGN540 Lab 2 ***
     // YOUR CODE HERE
     // Enable timing, setup prescalers, etc.
 
     _count_ms= 0;
-    ms_counter_1 = 0;
-    ms_counter_2 = 0;
-    ms_counter_3 = 0;
-    ms_counter_4 = 0;
 }
 
 /**
  * This function gets the current time and returns it in a Time_t structure.
  * @return
  */
-float  GetTimeSec()
+float  Timing_Get_Time_Sec()
 {
     // *** MEGN540 Lab 2 ***
     // YOUR CODE HERE
     return 0;
 }
-Time_t GetTime()
+Time_t Timing_Get_Time()
 {
     // *** MEGN540 Lab 2 ***
     // YOUR CODE HERE
@@ -89,11 +85,11 @@ Time_t GetTime()
  * things on second or millisecond resolution.
  * @return
  */
-uint32_t GetMilli()
+uint32_t Timing_Get_Milli()
 {
     return _count_ms;
 }
-uint16_t GetMicro()
+uint16_t Timing_Get_Micro()
 {
     // *** MEGN540 Lab 2 ***
     // YOUR CODE HERE
@@ -106,7 +102,7 @@ uint16_t GetMicro()
  * @param p_time_start a pointer to a start time struct
  * @return (Time_t) Time since the other time.
  */
-float  SecondsSince(const Time_t* time_start_p )
+float  Timing_Seconds_Since(const Time_t* time_start_p )
 {
     // *** MEGN540 Lab 2 ***
     // YOUR CODE HERE
@@ -126,8 +122,4 @@ float  SecondsSince(const Time_t* time_start_p )
     // take care of upticks of both our internal and external variables.
     _count_ms ++;
 
-    ms_counter_1 ++;
-    ms_counter_2 ++;
-    ms_counter_3 ++;
-    ms_counter_4 ++;
 }*/

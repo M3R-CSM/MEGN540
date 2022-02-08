@@ -28,22 +28,31 @@
 
 */
 
-#include "../c_lib/SerialIO.h"
-#include "../c_lib/Timing.h"
+// put your includes here for all modules you need to use
+
+// put your task function declarations here for future populaion
+
+// put your global variables (only if absolutely required) here. 
+// Best to identify them as static and start with a _ to make them indentified as internal. 
+// Try to initialize them if possible, so they're values are never arbitrary.
+
+// put your initialization function here
+
 
 /** Main program entry point. This routine configures the hardware required by the application, then
  *  enters a loop to run the application tasks in sequence.
  */
 int main(void)
 {
-    SetupTimer0();         // initialize timer zero functionality
-    USB_SetupHardware();   // initialize USB
 
-    GlobalInterruptEnable(); // Enable Global Interrupts for USB and Timer etc.
+    // call initialization stuff 
 
     for (;;)
     {
-        USB_Echo_Task();
-        USB_USBTask();
+        // main loop logic
     }
+
+    return 0;
 }
+
+// put your module definitions here
