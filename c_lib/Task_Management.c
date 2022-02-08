@@ -45,10 +45,12 @@ bool Task_Is_Ready( Task_t* task )
  */ 
 bool Task_Run_If_Ready( Task_t* task )
 {
-    // Check to see if the task is ready to run
+    // Check to see if the task is ready to run.
+    // Note that a negative run_period indicates the task should only be performed once, while
+    // a run_period of 0 indicates the task should be run every time.
+    //
     // Run it if it is ready
     // Update time_last_ran and is_active as appropriate. 
-    // Remember a run_period that is negative indicates the task should only be run once. 
     // To call a void functor (function pointer):  (*functor_variable)(); 
 
     return false; // true if it ran, false if it did not run
