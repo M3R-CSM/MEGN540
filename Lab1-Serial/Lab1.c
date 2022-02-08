@@ -65,5 +65,6 @@ int main(void)
 
         // Below here you'll process state-machine flags.
         Task_Run_If_Ready( &task_restart );
+
     }
 }

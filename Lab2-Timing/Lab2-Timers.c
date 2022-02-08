@@ -28,16 +28,19 @@
 
 */
 
-#include "SerialIO.h"
-#include "Timing.h"
-#include "MEGN540_MessageHandeling.h"
+#include "SerialIO.h"  // for USB communication
+#include "Timing.h"    // for Time understanding
+#include "Task_Management.h" // for clean task management with functors
+#include "MEGN540_MessageHandeling.h" // for translating USB messages to microcontroller tasks 
 
 // Declare Lab-Specific tasks functions here so you can link to tasks in the
 // initialization function... 
-// remember the static keyword allows data to persist between function calls without
-// requiring global scopings
 // void Task_Send_LoopTime();
 // void Task_Send_TimeNow();
+
+// put your global variables (only if absolutely required) here. 
+// Best to identify them as static and start with a _ to make them indentified as internal. 
+// Try to initialize them if possible, so they're values are never arbitrary.
 
 /**
  * Function Initialize_Modules sets up all hardware and persistant memory necessary
@@ -47,6 +50,10 @@
  */
 void Initialize_Modules()
 {
+    // Initialize (reinitialize) all global variables
+
+
+    // Initialize all modules
     Initialize_USB(); 
     Initialize_Timing();
 
@@ -71,20 +78,3 @@ int main(void)
         Task_Run_If_Ready( &task_restart );
     }
 }
-
-
-// Fill in lab-task definitons 
-// void Task_Send_LoopTime()
-//{
-//    static Time_t time_start;
-//    IF time start is 0,0 set to current time
-//    ELSE calculate time since, then set to 0,0 and send usb message
-//    ...
-//    return;
-//}
-
-// void Task_Send_TimeNow()
-//{
-//    ...    
-//    return;
-//}

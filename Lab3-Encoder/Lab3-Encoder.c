@@ -28,19 +28,15 @@
 
 */
 
-// Includes for usb, timing, encoders, etc
+// put your includes here for all modules you need to use
 
+// put your task function declarations here for future populaion
 
-/**
- * Function Initialize_Modules sets up all hardware and persistant memory necessary
- * for the main loop to funciton properly. It is the first thing main should call and is
- * a convenient way or resetting the system if that is requested. 
- * 
- */
-void Initialize_Modules()
-{
+// put your global variables (only if absolutely required) here. 
+// Best to identify them as static and start with a _ to make them indentified as internal. 
+// Try to initialize them if possible, so they're values are never arbitrary.
 
-}
+// put your initialization function here
 
 
 /** Main program entry point. This routine configures the hardware required by the application, then
@@ -49,5 +45,14 @@ void Initialize_Modules()
 int main(void)
 {
 
+    // call initialization stuff 
 
+    for (;;)
+    {
+        // main loop logic
+    }
+
+    return 0;
 }
+
+// put your task function definitions here
