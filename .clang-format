@@ -1,0 +1,161 @@
+---
+Language:        Cpp
+# BasedOnStyle:  LLVM
+AccessModifierOffset: -2
+AlignAfterOpenBracket: Align
+# AlignArrayOfStructures: Right
+AlignConsecutiveAssignments: true #Consecutive
+# AlignConsecutiveBitFields: Consecutive
+AlignConsecutiveDeclarations: false #None
+AlignConsecutiveMacros: true #Consecutive
+AlignEscapedNewlines: Right
+AlignOperands:   true #Align
+AlignTrailingComments: true
+AllowAllArgumentsOnNextLine: true
+AllowAllParametersOfDeclarationOnNextLine: true
+AllowShortBlocksOnASingleLine: true #Always
+AllowShortCaseLabelsOnASingleLine: true
+# AllowShortEnumsOnASingleLine: true
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLambdasOnASingleLine: All
+AllowShortLoopsOnASingleLine: false
+AlwaysBreakAfterReturnType: None
+AlwaysBreakBeforeMultilineStrings: false
+AlwaysBreakTemplateDeclarations: true #MultiLine
+BinPackArguments: true
+BinPackParameters: true
+BraceWrapping:   
+  # AfterCase:       true
+  AfterClass:      false
+  AfterControlStatement: true #Always
+  AfterEnum:       false
+  AfterFunction:   true
+  AfterNamespace:  false
+  AfterObjCDeclaration: false
+  AfterStruct:     false
+  AfterUnion:      false
+  AfterExternBlock: false
+  BeforeCatch:     false
+  BeforeElse:      false
+  #BeforeLambdaBody: false
+  #BeforeWhile:     false
+  IndentBraces:    false
+  SplitEmptyFunction: false
+  SplitEmptyRecord: false
+  SplitEmptyNamespace: false
+BreakBeforeBinaryOperators: None
+BreakBeforeBraces: Linux
+BreakBeforeInheritanceComma: false
+BreakBeforeTernaryOperators: true
+BreakConstructorInitializers: AfterColon
+BreakInheritanceList: AfterColon
+BreakAfterJavaFieldAnnotations: false
+BreakStringLiterals: true
+ColumnLimit:     160
+CommentPragmas:  '^ IWYU pragma:'
+CompactNamespaces: false
+ConstructorInitializerIndentWidth: 4
+ContinuationIndentWidth: 4
+Cpp11BracedListStyle: true
+DerivePointerAlignment: false
+DisableFormat:   false
+# EmptyLineAfterAccessModifier: Never
+# EmptyLinesBeforeAccessModifier: Always
+ExperimentalAutoDetectBinPacking: true
+FixNamespaceComments: true
+ForEachMacros:   
+  - foreach
+  - Q_FOREACH
+  - BOOST_FOREACH
+IncludeBlocks:   Regroup
+IncludeCategories:
+  - Regex:           '^"(llvm|llvm-c|clang|clang-c)/'
+    Priority:        2
+    SortPriority:    2
+    # CaseSensitive:   true
+  - Regex:           '^((<|")(gtest|gmock|isl|json)/)'
+    Priority:        3
+  - Regex:           '<[[:alnum:].]+>'
+    Priority:        4
+  - Regex:           '.*'
+    Priority:        1
+    #SortPriority:    0
+IncludeIsMainRegex: '(_test)?$'
+# IncludeMainSourceRegex: '(\.hpp)$'
+# IndentAccessModifiers: false
+# IndentCaseBlocks: false
+IndentCaseLabels: true
+# IndentExternBlock: NoIndent
+IndentPPDirectives: AfterHash
+IndentWidth:     4
+IndentWrappedFunctionNames: true
+# InsertBraces: false
+JavaScriptQuotes: Leave
+JavaScriptWrapImports: true
+# LambdaBodyIndention: OuterScope
+MacroBlockBegin: ''
+MacroBlockEnd:   ''
+MaxEmptyLinesToKeep: 1
+NamespaceIndentation: Inner
+ObjCBlockIndentWidth: 2
+ObjCSpaceAfterProperty: false
+ObjCSpaceBeforeProtocolList: true
+# PackConstructorInitializers: NextLine
+PenaltyBreakAssignment: 2
+PenaltyBreakBeforeFirstCallParameter: 19
+PenaltyBreakComment: 300
+PenaltyBreakFirstLessLess: 120
+PenaltyBreakString: 1000
+PenaltyExcessCharacter: 1000000
+PenaltyReturnTypeOnItsOwnLine: 60
+PointerAlignment: Left
+# QualifierAlignment: Leave
+# RawStringFormats: 
+#   - Language: TextProto
+#       Delimiters:
+#         - 'pb'
+#         - 'proto'
+#       EnclosingFunctions:
+#         - 'PARSE_TEXT_PROTO'
+#       BasedOnStyle: google
+#   - Language: Cpp
+#       Delimiters:
+#         - 'cc'
+#         - 'cpp'
+#       BasedOnStyle: llvm
+#       CanonicalDelimiter: 'cpp'
+# ReferenceAlignment: Right
+ReflowComments:  true
+# SeparateDefinitionBlocks: Always
+# ShortNamespaceLines: 1
+#SortIncludes:    CaseInsensitive
+SortUsingDeclarations: true
+SpaceAfterCStyleCast: false
+SpaceAfterLogicalNot: false
+SpaceAfterTemplateKeyword: false
+# SpaceAroundPointerQualifiers: Default
+SpaceBeforeAssignmentOperators: true
+# SpaceBeforeCaseColon: false
+SpaceBeforeCpp11BracedList: true
+SpaceBeforeCtorInitializerColon: false
+SpaceBeforeInheritanceColon: false
+SpaceBeforeParens: Never
+SpaceBeforeRangeBasedForLoopColon: true
+SpaceBeforeSquareBrackets: false
+SpaceInEmptyParentheses: false
+SpacesBeforeTrailingComments: 2
+SpacesInAngles:  true #Leave
+SpacesInCStyleCastParentheses: false
+SpacesInContainerLiterals: true
+# SpacesInLineCommentPrefix: 
+#  - Minimum: 1
+#  - Maximum: -1
+SpacesInCStyleCastParentheses: false
+SpacesInParentheses: true
+SpacesInSquareBrackets: false
+Standard:        Cpp11
+TabWidth:        8
+# UseTab:          true #AlignWithSpaces
+...
+
