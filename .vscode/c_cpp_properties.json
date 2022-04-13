@@ -3,9 +3,10 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/**",
+                "**",
                 "${workspaceFolder}/c_lib/**",
-                "/usr/lib/avr/**"
+                "/usr/lib/avr/**",
+                "${workspaceFolder}/lufa"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang",
