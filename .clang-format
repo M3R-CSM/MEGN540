@@ -1,6 +1,6 @@
 ---
-Language:        Cpp
-# BasedOnStyle:  LLVM
+Language:        Cpp 
+BasedOnStyle:  LLVM
 AccessModifierOffset: -2
 AlignAfterOpenBracket: Align
 # AlignArrayOfStructures: Right
@@ -151,7 +151,6 @@ SpacesInContainerLiterals: true
 # SpacesInLineCommentPrefix: 
 #  - Minimum: 1
 #  - Maximum: -1
-SpacesInCStyleCastParentheses: false
 SpacesInParentheses: true
 SpacesInSquareBrackets: false
 Standard:        Cpp11

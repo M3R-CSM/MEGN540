@@ -3,7 +3,18 @@ sudo apt-get update
 sudo apt-get upgrade
 
 # INSTALL PROGRAMMING APPS & LIBS: GIT (version control), MELD (file differences), code (Visual Studio Code), AND AVRDUDE (avr programming)
-sudo apt-get install -y build-essential git meld gcc-avr avr-libc avrdude code cmake
+sudo apt-get install -y build-essential git meld gcc-avr avr-libc avrdude code cmake clang-format-10 doxygen
+
+# INSTALL VSCODE Extensions
+code --install-extension ms-vscode.cpptools 
+code --install-extension ms-vscode.cpptools-extension-pack 
+code --install-extension jeff-hykin.better-cpp-syntax 
+code --install-extension ms-vscode.cpptools-themes 
+code --install-extension xaver.clang-format 
+code --install-extension twxs.cmake 
+code --install-extension ms-vscode.cmake-tools 
+code --install-extension cschlosser.doxdocgen
+
 
 
 # INSTALL SCREEN CAPTURE APPS: - This allows you to record the desktop with audio for assignents
