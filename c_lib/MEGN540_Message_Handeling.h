@@ -37,20 +37,13 @@
 
 #include "SerialIO.h"
 #include "Timing.h"
-#include "Task_Management.h"
-
-// Create tasks that get initiated from USB messages
-// These tasks need to be initialized with appropriate function pointers
-// in the main lab function
-Task_t task_restart;       ///<-- This flag indicates that the device received a restart command from the hoast. Default inactive.
-Task_t task_time_loop;     ///<-- Indicates if the system should report time to complete a loop.
-Task_t task_send_time;     ///<-- Indicates if the system should send the current time.
+#include "MEGN540_Lab_Tasks.h"
 
 
 /**
  * Function Task_Message_Handling processes USB messages as necessary and sets status flags to control the flow of the program.
  */
-void Task_Message_Handling();
+void MEGN540_Message_Handling_Upkeep();
 
 /**
  * Function MEGN540_Message_Len returns the number of bytes associated with a command string per the

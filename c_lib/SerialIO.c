@@ -92,7 +92,7 @@ static void _USB_Write_Data()
 }
 
 
-void Task_USB_Upkeep()
+void USB_Upkeep()
 {
     USB_USBTask();
 

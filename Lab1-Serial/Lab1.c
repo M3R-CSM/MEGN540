@@ -58,7 +58,7 @@ int main(void)
 
     while( true )
     {
-        Task_USB_Upkeep();
+        USB_Upkeep();
 
         Task_USB_Echo();// you'll want to remove this once you get your serial sorted
         //Task_Message_Handling(); // you'll want to uncomment once you get your serial sorted.

@@ -78,7 +78,7 @@ void Initialize_USB(void);  // You'll need to add in any initialization items to
 /**
  * Function Task_USB_Upkeep should be called each loop in the main function.
  */
-void Task_USB_Upkeep(void);    // You'll need to add in USB buffer interaction here. This is where calls to usb_read_nex_byte would go...
+void USB_Upkeep(void);    // You'll need to add in USB buffer interaction here. This is where calls to usb_read_nex_byte would go...
 
 /**
  * Function Task_USB_Echo provides a functioning example to help you build your code. This should be removed 

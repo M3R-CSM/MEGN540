@@ -72,8 +72,8 @@ int main(void)
 
     for (;;)
     {
-        Task_USB_Upkeep();
-        Task_Message_Handling();
+        USB_Upkeep();
+        MEGN540_Message_Handling_Upkeep();
 
         Task_Run_If_Ready( &task_restart );
     }
