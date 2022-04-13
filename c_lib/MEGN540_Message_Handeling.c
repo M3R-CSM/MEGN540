@@ -65,11 +65,8 @@ void MEGN540_Message_Handling_Upkeep()
                 // Copy the bytes from the usb receive buffer into our structure so we can use the information
                 USB_Msg_Read_Into( &data, sizeof(data) );
 
-                // Do the thing you need to do. Here we want to multiply
-                float ret_val = data.v1 * data.v2;
-
-                // send response right here if appropriate.
-                USB_Send_Msg("cf", command, &ret_val, sizeof(ret_val));
+                // Call MEGN540_Lab_Task Function
+                Multiply_And_Send(data.v1, data.v2);
             }
             break;
         case '/':

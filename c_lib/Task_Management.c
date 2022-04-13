@@ -6,7 +6,7 @@
  *  Note that a negative run_period indicates the task should only be performed once, while
  *  a run_period of 0 indicates the task should be run every time.
  */ 
-void Initialize_Task( Task_t * task, float run_period, void (*task_fcn_ptr)(void) )
+void Initialize_Task( Task_t * task, float run_period, void (*task_fcn_ptr)(float) )
 {
     task->is_active = false;
     task->run_period = run_period;

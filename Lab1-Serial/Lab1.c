@@ -38,7 +38,7 @@
  * a convenient way or resetting the system if that is requested. 
  * 
  */
-void Initialize_Modules()
+void Initialize_Modules(float _not_used_)
 {
     Initialize_USB(); 
 
@@ -52,7 +52,7 @@ void Initialize_Modules()
  */
 int main(void)
 {
-    Initialize_Modules();
+    Initialize_Modules(0.0);
 
     // 
 
@@ -61,7 +61,7 @@ int main(void)
         USB_Upkeep();
 
         Task_USB_Echo();// you'll want to remove this once you get your serial sorted
-        //Task_Message_Handling(); // you'll want to uncomment once you get your serial sorted.
+        //MEGN540_Message_Handling_Upkeep(); // you'll want to uncomment once you get your serial sorted.
 
         // Below here you'll process state-machine flags.
         Task_Run_If_Ready( &task_restart );
