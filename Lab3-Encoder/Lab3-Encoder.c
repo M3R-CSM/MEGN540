@@ -32,23 +32,21 @@
 
 // put your task function declarations here for future populaion
 
-// put your global variables (only if absolutely required) here. 
-// Best to identify them as static and start with a _ to make them indentified as internal. 
+// put your global variables (only if absolutely required) here.
+// Best to identify them as static and start with a _ to make them indentified as internal.
 // Try to initialize them if possible, so they're values are never arbitrary.
 
 // put your initialization function here
 
-
 /** Main program entry point. This routine configures the hardware required by the application, then
  *  enters a loop to run the application tasks in sequence.
  */
-int main(void)
+int main( void )
 {
 
-    // call initialization stuff 
+    // call initialization stuff
 
-    for (;;)
-    {
+    for( ;; ) {
         // main loop logic
     }
 

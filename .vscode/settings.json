@@ -9,5 +9,7 @@
                 "editor.wordBasedSuggestions": false,
                 "editor.suggest.insertMode": "replace", 
                 "editor.semanticHighlighting.enabled": true
-        }
+        },
+        "formatFiles.extensionsToInclude": "c,h,cpp",
+        "formatFiles.excludedFolders":  [ "node_modules", ".vscode", ".git", "dist", ".chrome","lufa","BIN"]
 }

@@ -30,9 +30,9 @@
 
 /**
  * Filter.h/c defines the functions necessary to implement a z-transform
- * filter for use both with digital filtering and control. 
- * 
- * This code leverages the Ring_Buffer code developed in the homework. 
+ * filter for use both with digital filtering and control.
+ *
+ * This code leverages the Ring_Buffer code developed in the homework.
  *
  */
 #ifndef _MEGN540_FILTER_H
@@ -40,7 +40,12 @@
 
 #include "Ring_Buffer.h"
 
-typedef struct { struct Ring_Buffer_F numerator; struct Ring_Buffer_F denominator; struct Ring_Buffer_F out_list; struct Ring_Buffer_F in_list; } Filter_Data_t;
+typedef struct {
+    struct Ring_Buffer_F numerator;
+    struct Ring_Buffer_F denominator;
+    struct Ring_Buffer_F out_list;
+    struct Ring_Buffer_F in_list;
+} Filter_Data_t;
 
 /**
  * Function Initialize_Filter initializes the filter given two float arrays and the order of the filter.  Note that the
@@ -59,7 +64,7 @@ typedef struct { struct Ring_Buffer_F numerator; struct Ring_Buffer_F denominato
  * @param denominator_coeffs The denominator coefficients (A/alpha traditionally)
  * @param order The filter order
  */
-void  Initialize_Filter ( Filter_Data_t* p_filt, float* numerator_coeffs, float* denominator_coeffs, uint8_t order );
+void Initialize_Filter( Filter_Data_t* p_filt, float* numerator_coeffs, float* denominator_coeffs, uint8_t order );
 
 /**
  * Function Filter_ShiftBy shifts the input list and output list to keep the filter in the same frame. This especially
@@ -67,7 +72,7 @@ void  Initialize_Filter ( Filter_Data_t* p_filt, float* numerator_coeffs, float*
  * @param p_filt
  * @param shift_amount
  */
-void  Filter_ShiftBy( Filter_Data_t* p_filt, float shift_amount );
+void Filter_ShiftBy( Filter_Data_t* p_filt, float shift_amount );
 
 /**
  * Function Filter_SetTo sets the initial values for the input and output lists to a constant defined value. This
@@ -83,13 +88,12 @@ void Filter_SetTo( Filter_Data_t* p_filt, float amount );
  * @param value the new measurement or value
  * @return The newly filtered value
  */
-float Filter_Value( Filter_Data_t* p_filt, float value);
+float Filter_Value( Filter_Data_t* p_filt, float value );
 
 /**
  * Function Filter_Last_Output returns the most up-to-date filtered value without updating the filter.
  * @return The latest filtered value
  */
-float Filter_Last_Output(  Filter_Data_t* p_filt );
-
+float Filter_Last_Output( Filter_Data_t* p_filt );
 
 #endif

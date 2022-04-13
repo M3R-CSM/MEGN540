@@ -63,7 +63,6 @@
 static Ring_Buffer_C_t _usb_receive_buffer;
 static Ring_Buffer_C_t _usb_send_buffer;
 
-
 /**
  * (non-blocking) Internal function _USB_Read_Data takes the next USB byte and reads it
  * into a ring buffer for latter processing.
@@ -91,7 +90,6 @@ static void _USB_Write_Data()
     // register level.
 }
 
-
 void USB_Upkeep()
 {
     USB_USBTask();
@@ -107,45 +105,44 @@ void USB_Upkeep()
 /** Function to manage CDC data transmission and reception to and from the host for the second CDC interface, which echoes back
  *  all data sent to it from the host.
  */
-void Task_USB_Echo(void)
+void Task_USB_Echo( void )
 {
-	/* Device must be connected and configured for the task to run */
-	if (USB_DeviceState != DEVICE_STATE_Configured)
-	  return;
+    /* Device must be connected and configured for the task to run */
+    if( USB_DeviceState != DEVICE_STATE_Configured )
+        return;
 
-	/* Select the Serial Rx Endpoint */
-	Endpoint_SelectEndpoint(CDC_RX_EPADDR);
+    /* Select the Serial Rx Endpoint */
+    Endpoint_SelectEndpoint( CDC_RX_EPADDR );
 
-	/* Check to see if any data has been received */
-	if (Endpoint_IsOUTReceived())
-	{
-		/* Create a temp buffer big enough to hold the incoming endpoint packet */
-		uint8_t  Buffer[Endpoint_BytesInEndpoint()];
+    /* Check to see if any data has been received */
+    if( Endpoint_IsOUTReceived() ) {
+        /* Create a temp buffer big enough to hold the incoming endpoint packet */
+        uint8_t Buffer[Endpoint_BytesInEndpoint()];
 
-		/* Remember how large the incoming packet is */
-		uint16_t DataLength = Endpoint_BytesInEndpoint();
+        /* Remember how large the incoming packet is */
+        uint16_t DataLength = Endpoint_BytesInEndpoint();
 
-		/* Read in the incoming packet into the buffer */
-		Endpoint_Read_Stream_LE(&Buffer, DataLength, NULL);
+        /* Read in the incoming packet into the buffer */
+        Endpoint_Read_Stream_LE( &Buffer, DataLength, NULL );
 
-		/* Finalize the stream transfer to send the last packet */
-		Endpoint_ClearOUT();
+        /* Finalize the stream transfer to send the last packet */
+        Endpoint_ClearOUT();
 
-		/* Select the Serial Tx Endpoint */
-		Endpoint_SelectEndpoint(CDC_TX_EPADDR);
+        /* Select the Serial Tx Endpoint */
+        Endpoint_SelectEndpoint( CDC_TX_EPADDR );
 
-		/* Write the received data to the endpoint */
-		Endpoint_Write_Stream_LE(&Buffer, DataLength, NULL);
+        /* Write the received data to the endpoint */
+        Endpoint_Write_Stream_LE( &Buffer, DataLength, NULL );
 
-		/* Finalize the stream transfer to send the last packet */
-		Endpoint_ClearIN();
+        /* Finalize the stream transfer to send the last packet */
+        Endpoint_ClearIN();
 
-		/* Wait until the endpoint is ready for the next packet */
-		Endpoint_WaitUntilReady();
+        /* Wait until the endpoint is ready for the next packet */
+        Endpoint_WaitUntilReady();
 
-		/* Send an empty packet to prevent host buffering */
-		Endpoint_ClearIN();
-	}
+        /* Send an empty packet to prevent host buffering */
+        Endpoint_ClearIN();
+    }
 
     // ************** MEGN540 FOR DEBUGGING ***************** //
     // once you get your _USB_Read_Data and _USB_Write_Data to work with your ring buffers
@@ -158,16 +155,13 @@ void Task_USB_Echo(void)
     // if( usb_msg_length() != 0 )
     //    usb_send_byte(usb_msg_get());
     //
-    
-
-
 }
 
 /**
  * (non-blocking) Function USB_Send_Byte Adds a character to the output buffer
  * @param byte [uint8_t] Data to send
  */
-void USB_Send_Byte(uint8_t byte)
+void USB_Send_Byte( uint8_t byte )
 {
     // *** MEGN540  ***
     // YOUR CODE HERE
@@ -179,7 +173,7 @@ void USB_Send_Byte(uint8_t byte)
  * @param p_data [void*] pointer to the data-object to be sent
  * @param data_len [uint8_t] size of data-object to be sent
  */
-void USB_Send_Data(void* p_data, uint8_t data_len)
+void USB_Send_Data( void* p_data, uint8_t data_len )
 {
     // *** MEGN540  ***
     // YOUR CODE HERE
@@ -190,7 +184,7 @@ void USB_Send_Data(void* p_data, uint8_t data_len)
  * (non-blocking) Function USB_Send_Str adds a c-style (null terminated) string to the output buffer
  * @param p_str [char*] Pointer to a c-string (null terminated) to send
  */
-void USB_Send_Str(char* p_str)
+void USB_Send_Str( char* p_str )
 {
     // *** MEGN540  ***
     // YOUR CODE HERE. Remember c-srtings are null terminated, so make sure to send that zero!
@@ -215,7 +209,7 @@ void USB_Send_Str(char* p_str)
  * @param p_data [void*] pointer to the data-object to send.
  * @param data_len [uint8_t] size of the data-object to send. Remember sizeof() can help you with this!
  */
-void USB_Send_Msg(char* format, char cmd, void* p_data, uint8_t data_len )
+void USB_Send_Msg( char* format, char cmd, void* p_data, uint8_t data_len )
 {
     // *** MEGN540  ***
     // YOUR CODE HERE. Remember c-strings are null terminated. Use the above functions to help!
@@ -276,10 +270,10 @@ uint8_t USB_Msg_Get()
  * @param data_len
  * @return [bool]  True: sucess, False: not enough bytes available
  */
-bool USB_Msg_Read_Into(void* p_obj, uint8_t data_len)
+bool USB_Msg_Read_Into( void* p_obj, uint8_t data_len )
 {
     // *** MEGN540  ***
-    //YOUR CODE HERE
+    // YOUR CODE HERE
     // This should only interface with the ring buffers and use your ring buffer functions.
     return false;
 }
@@ -295,36 +289,34 @@ void USB_Flush_Input_Buffer()
     // This should only interface with the ring buffers and use your ring buffer functions.
 }
 
-
 /** Configures the board hardware and chip peripherals for the demo's functionality. */
-void Initialize_USB(void)
+void Initialize_USB( void )
 {
 
     // *** MEGN540 ***//
     // We need to initialize the ring buffers here.
-    rb_initialize_C(&_usb_receive_buffer);
-    rb_initialize_C(&_usb_send_buffer);
+    rb_initialize_C( &_usb_receive_buffer );
+    rb_initialize_C( &_usb_send_buffer );
 
-    // THE following is LUFA specific setup to make sure the 
+    // THE following is LUFA specific setup to make sure the
     // watchdog timer is not active as we are not actively resetting it
     // It then goes and initializes the USB hardware redgesters and turns
     // on interrupt handeling (since lufa uses interrupts).
 
-#if (ARCH == ARCH_AVR8)
-	/* Disable watchdog if enabled by bootloader/fuses */
-	MCUSR &= ~(1 << WDRF);
-	wdt_disable();
+#if( ARCH == ARCH_AVR8 )
+    /* Disable watchdog if enabled by bootloader/fuses */
+    MCUSR &= ~( 1 << WDRF );
+    wdt_disable();
 
-	/* Disable clock division */
-	clock_prescale_set(clock_div_1);
+    /* Disable clock division */
+    clock_prescale_set( clock_div_1 );
 #endif
 
-	/* Hardware Initialization */
-	USB_Init();
+    /* Hardware Initialization */
+    USB_Init();
 
     /* Enable Interupts for LUFA to respond to host requests */
     GlobalInterruptEnable();
-
 }
 
 // ************* LUFA SPECIFIC HELPING FUNCTIONS BELOW ********************* //
@@ -337,89 +329,81 @@ void Initialize_USB(void)
  *  It is possible to completely ignore these value or use other settings as the host is completely unaware of the physical
  *  serial link characteristics and instead sends and receives data in endpoint streams.
  */
-static CDC_LineEncoding_t LineEncoding1 = { .BaudRateBPS = 0,
-                                            .CharFormat  = CDC_LINEENCODING_OneStopBit,
-                                            .ParityType  = CDC_PARITY_None,
-                                            .DataBits    = 8                            };
+static CDC_LineEncoding_t LineEncoding1 = { .BaudRateBPS = 0, .CharFormat = CDC_LINEENCODING_OneStopBit, .ParityType = CDC_PARITY_None, .DataBits = 8 };
 
 /** Event handler for the USB_Connect event. This indicates that the device is enumerating via the status LEDs and
  *  starts the library USB task to begin the enumeration and USB management process.
  */
-void EVENT_USB_Device_Connect(void)
+void EVENT_USB_Device_Connect( void )
 {
-	/* Indicate USB enumerating */
-	
-	//Future LED MSG could be good here
+    /* Indicate USB enumerating */
+
+    // Future LED MSG could be good here
 }
 
 /** Event handler for the USB_Disconnect event. This indicates that the device is no longer connected to a host via
  *  the status LEDs and stops the USB management and CDC management tasks.
  */
-void EVENT_USB_Device_Disconnect(void)
+void EVENT_USB_Device_Disconnect( void )
 {
-	/* Indicate USB not ready */
-	
-	//Future LED MSG could be good here
+    /* Indicate USB not ready */
+
+    // Future LED MSG could be good here
 }
 
 /** Event handler for the USB_ConfigurationChanged event. This is fired when the host set the current configuration
  *  of the USB device after enumeration - the device endpoints are configured and the CDC management tasks are started.
  */
-void EVENT_USB_Device_ConfigurationChanged(void)
+void EVENT_USB_Device_ConfigurationChanged( void )
 {
-	bool ConfigSuccess = true;
+    bool ConfigSuccess = true;
 
-	/* Setup first CDC Interface's Endpoints */
-	ConfigSuccess &= Endpoint_ConfigureEndpoint(CDC_TX_EPADDR, EP_TYPE_BULK, CDC_TXRX_EPSIZE, 1);
-	ConfigSuccess &= Endpoint_ConfigureEndpoint(CDC_RX_EPADDR, EP_TYPE_BULK, CDC_TXRX_EPSIZE, 1);
-	ConfigSuccess &= Endpoint_ConfigureEndpoint(CDC_NOTIFICATION_EPADDR, EP_TYPE_INTERRUPT, CDC_NOTIFICATION_EPSIZE, 1);
+    /* Setup first CDC Interface's Endpoints */
+    ConfigSuccess &= Endpoint_ConfigureEndpoint( CDC_TX_EPADDR, EP_TYPE_BULK, CDC_TXRX_EPSIZE, 1 );
+    ConfigSuccess &= Endpoint_ConfigureEndpoint( CDC_RX_EPADDR, EP_TYPE_BULK, CDC_TXRX_EPSIZE, 1 );
+    ConfigSuccess &= Endpoint_ConfigureEndpoint( CDC_NOTIFICATION_EPADDR, EP_TYPE_INTERRUPT, CDC_NOTIFICATION_EPSIZE, 1 );
 
-	/* Reset line encoding baud rates so that the host knows to send new values */
-	LineEncoding1.BaudRateBPS = 0;
-
+    /* Reset line encoding baud rates so that the host knows to send new values */
+    LineEncoding1.BaudRateBPS = 0;
 }
 
 /** Event handler for the USB_ControlRequest event. This is used to catch and process control requests sent to
  *  the device from the USB host before passing along unhandled control requests to the library for processing
  *  internally.
  */
-void EVENT_USB_Device_ControlRequest(void)
+void EVENT_USB_Device_ControlRequest( void )
 {
-	/* Determine which interface's Line Coding data is being set from the wIndex parameter */
-	void* LineEncodingData = &LineEncoding1;
+    /* Determine which interface's Line Coding data is being set from the wIndex parameter */
+    void* LineEncodingData = &LineEncoding1;
 
-	/* Process CDC specific control requests */
-	switch (USB_ControlRequest.bRequest)
-	{
-		case CDC_REQ_GetLineEncoding:
-			if (USB_ControlRequest.bmRequestType == (REQDIR_DEVICETOHOST | REQTYPE_CLASS | REQREC_INTERFACE))
-			{
-				Endpoint_ClearSETUP();
+    /* Process CDC specific control requests */
+    switch( USB_ControlRequest.bRequest ) {
+        case CDC_REQ_GetLineEncoding:
+            if( USB_ControlRequest.bmRequestType == ( REQDIR_DEVICETOHOST | REQTYPE_CLASS | REQREC_INTERFACE ) ) {
+                Endpoint_ClearSETUP();
 
-				/* Write the line coding data to the control endpoint */
-				Endpoint_Write_Control_Stream_LE(LineEncodingData, sizeof(CDC_LineEncoding_t));
-				Endpoint_ClearOUT();
-			}
+                /* Write the line coding data to the control endpoint */
+                Endpoint_Write_Control_Stream_LE( LineEncodingData, sizeof( CDC_LineEncoding_t ) );
+                Endpoint_ClearOUT();
+            }
 
-			break;
-		case CDC_REQ_SetLineEncoding:
-			if (USB_ControlRequest.bmRequestType == (REQDIR_HOSTTODEVICE | REQTYPE_CLASS | REQREC_INTERFACE))
-			{
-				Endpoint_ClearSETUP();
+            break;
+        case CDC_REQ_SetLineEncoding:
+            if( USB_ControlRequest.bmRequestType == ( REQDIR_HOSTTODEVICE | REQTYPE_CLASS | REQREC_INTERFACE ) ) {
+                Endpoint_ClearSETUP();
 
-				/* Read the line coding data in from the host into the global struct */
-				Endpoint_Read_Control_Stream_LE(LineEncodingData, sizeof(CDC_LineEncoding_t));
-				Endpoint_ClearIN();
-			}
+                /* Read the line coding data in from the host into the global struct */
+                Endpoint_Read_Control_Stream_LE( LineEncodingData, sizeof( CDC_LineEncoding_t ) );
+                Endpoint_ClearIN();
+            }
 
-			break;
-		case CDC_REQ_SetControlLineState:
-			if (USB_ControlRequest.bmRequestType == (REQDIR_HOSTTODEVICE | REQTYPE_CLASS | REQREC_INTERFACE))
-			{
-				Endpoint_ClearSETUP();
-				Endpoint_ClearStatusStage();
-			}
+            break;
+        case CDC_REQ_SetControlLineState:
+            if( USB_ControlRequest.bmRequestType == ( REQDIR_HOSTTODEVICE | REQTYPE_CLASS | REQREC_INTERFACE ) ) {
+                Endpoint_ClearSETUP();
+                Endpoint_ClearStatusStage();
+            }
 
-			break;
-	}
+            break;
+    }
 }

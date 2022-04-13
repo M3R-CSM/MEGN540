@@ -29,7 +29,7 @@
 */
 
 #ifndef F_CPU
-#define F_CPU 16000000
+#    define F_CPU 16000000
 #endif
 
 #include "led_interface.h"
@@ -39,7 +39,7 @@
  * @param str pointer to a null-germinated c-string object
  * @param dot_length_ms The characteristic length of a dot in the morse-code pattern.
  */
-void blink_morse_str(char* str, uint16_t dot_length_ms)
+void blink_morse_str( char* str, uint16_t dot_length_ms )
 {
     // INFO:  C-Strings are null-terminated (end in zero). You can use this to iterate through a c-string object without
     // having to know its length explicitly (that's the whole point).
@@ -60,15 +60,14 @@ int main()
     initialize_LED();
     const uint16_t dot_length_ms = 250;
 
-  while(1)
-  {
-      // blink message!
-      blink_morse_char('S',dot_length_ms);
-      blink_morse_char('O',dot_length_ms);
-      blink_morse_char('S',dot_length_ms);
-      blink_morse_char(' ',dot_length_ms);
+    while( 1 ) {
+        // blink message!
+        blink_morse_char( 'S', dot_length_ms );
+        blink_morse_char( 'O', dot_length_ms );
+        blink_morse_char( 'S', dot_length_ms );
+        blink_morse_char( ' ', dot_length_ms );
 
-      // Using your blink_morse_str function this would be called as:
-      // blink_morse_str("SOS ", dot_length_ms);
-  }
+        // Using your blink_morse_str function this would be called as:
+        // blink_morse_str("SOS ", dot_length_ms);
+    }
 }

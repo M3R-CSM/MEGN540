@@ -1,28 +1,46 @@
 #include "Encoder.h"
 
 /**
-* Internal counters for the Interrupts to increment or decrement as necessary.
-*/
+ * Internal counters for the Interrupts to increment or decrement as necessary.
+ */
 static volatile bool _last_right_A = 0;  // Static limits it's use to this file
 static volatile bool _last_right_B = 0;  // Static limits it's use to this file
 
-static volatile bool _last_left_A = 0;   // Static limits it's use to this file
-static volatile bool _last_left_B = 0;   // Static limits it's use to this file
-static volatile bool _last_left_XOR = 0; // Necessary to check if PB4 triggered the ISR or not
+static volatile bool _last_left_A   = 0;  // Static limits it's use to this file
+static volatile bool _last_left_B   = 0;  // Static limits it's use to this file
+static volatile bool _last_left_XOR = 0;  // Necessary to check if PB4 triggered the ISR or not
 
-static volatile int32_t _left_counts = 0;   // Static limits it's use to this file
+static volatile int32_t _left_counts  = 0;  // Static limits it's use to this file
 static volatile int32_t _right_counts = 0;  // Static limits it's use to this file
 
 /** Helper Funcions for Accessing Bit Information */
 // *** MEGN540 Lab 3 TODO ***
 // Hint, use avr's bit_is_set function to help
-static inline bool Right_XOR() { return 0; } // MEGN540 Lab 3 TODO
-static inline bool Right_B()   { return 0; } // MEGN540 Lab 3 TODO
-static inline bool Right_A()   { return 0; } // MEGN540 Lab 3 TODO
+static inline bool Right_XOR()
+{
+    return 0;
+}  // MEGN540 Lab 3 TODO
+static inline bool Right_B()
+{
+    return 0;
+}  // MEGN540 Lab 3 TODO
+static inline bool Right_A()
+{
+    return 0;
+}  // MEGN540 Lab 3 TODO
 
-static inline bool Left_XOR() { return 0; } // MEGN540 Lab 3 TODO
-static inline bool Left_B()   { return 0; } // MEGN540 Lab 3 TODO
-static inline bool Left_A()   { return 0; } // MEGN540 Lab 3 TODO
+static inline bool Left_XOR()
+{
+    return 0;
+}  // MEGN540 Lab 3 TODO
+static inline bool Left_B()
+{
+    return 0;
+}  // MEGN540 Lab 3 TODO
+static inline bool Left_A()
+{
+    return 0;
+}  // MEGN540 Lab 3 TODO
 
 /**
  * Function Encoders_Init initializes the encoders, sets up the pin change interrupts, and zeros the initial encoder
@@ -38,24 +56,21 @@ void Initialize_Encoders()
     // Note that the PCINT interrupt is trigered by any PCINT pin. In the ISR you should check to make sure
     // the interrupt triggered is the one you intend on processing.
 
-
     // Right encoder uses PE6 adn PF0 as digital inputs. External interrupt INT6 is necessary to detect
     // the changes in XOR flag. You'll need to see Sections 11.1.2-11.1.4 for setup and use.
     // You'll use the INT6_vect ISR flag.
-
 
     // Initialize static file variables. These probably need to be updated.
     _last_right_A = 0;  // MEGN540 Lab 3 TODO
     _last_right_B = 0;  // MEGN540 Lab 3 TODO
 
-    _last_left_A = 0;  // MEGN540 Lab 3 TODO
-    _last_left_B = 0;  // MEGN540 Lab 3 TODO
+    _last_left_A   = 0;  // MEGN540 Lab 3 TODO
+    _last_left_B   = 0;  // MEGN540 Lab 3 TODO
     _last_left_XOR = 0;  // MEGN540 Lab 3 TODO
 
-    _left_counts = 0;  // MEGN540 Lab 3 TODO
+    _left_counts  = 0;  // MEGN540 Lab 3 TODO
     _right_counts = 0;  // MEGN540 Lab 3 TODO
 }
-
 
 /**
  * Function Encoder_Counts_Left returns the number of counts from the left encoder.
@@ -112,17 +127,16 @@ float Encoder_Rad_Right()
  * the Pin Change Interrupts can trigger for multiple pins.
  * @return
  */
-//ISR()
+// ISR()
 //{
 //
 //}
-
 
 /**
  * Interrupt Service Routine for the right Encoder.
  * @return
  */
-//ISR()
+// ISR()
 //{
 //
 //}

@@ -30,7 +30,6 @@
 
 #include "../c_lib/Timing.h"
 
-
 /** These define the internal counters that will be updated in the ISR to keep track of the time
  *  The volatile keyword is because they are changing in an ISR, the static means they are not
  *  visible (not global) outside of this file.
@@ -55,14 +54,14 @@ void Initialize_Timing()
     // YOUR CODE HERE
     // Enable timing, setup prescalers, etc.
 
-    _count_ms= 0;
+    _count_ms = 0;
 }
 
 /**
  * This function gets the current time and returns it in a Time_t structure.
  * @return
  */
-float  Timing_Get_Time_Sec()
+float Timing_Get_Time_Sec()
 {
     // *** MEGN540 Lab 2 ***
     // YOUR CODE HERE
@@ -72,10 +71,10 @@ Time_t Timing_Get_Time()
 {
     // *** MEGN540 Lab 2 ***
     // YOUR CODE HERE
-    Time_t time ={
-                    .millisec = _count_ms,
-                    .microsec = 0 // YOU NEED TO REPLACE THIS WITH A CALL TO THE TIMER0 REGISTER AND MULTIPLY APPROPRIATELY
-                 };
+    Time_t time = {
+        .millisec = _count_ms,
+        .microsec = 0  // YOU NEED TO REPLACE THIS WITH A CALL TO THE TIMER0 REGISTER AND MULTIPLY APPROPRIATELY
+    };
 
     return time;
 }
@@ -93,16 +92,15 @@ uint16_t Timing_Get_Micro()
 {
     // *** MEGN540 Lab 2 ***
     // YOUR CODE HERE
-    return 0 ;// YOU NEED TO REPLACE THIS WITH A CALL TO THE TIMER0 REGISTER AND MULTIPLY APPROPRIATELY
+    return 0;  // YOU NEED TO REPLACE THIS WITH A CALL TO THE TIMER0 REGISTER AND MULTIPLY APPROPRIATELY
 }
-
 
 /**
  * This function takes a start time and calculates the time since that time, it returns it in the Time struct.
  * @param p_time_start a pointer to a start time struct
  * @return (Time_t) Time since the other time.
  */
-float  Timing_Seconds_Since(const Time_t* time_start_p )
+float Timing_Seconds_Since( const Time_t* time_start_p )
 {
     // *** MEGN540 Lab 2 ***
     // YOUR CODE HERE
