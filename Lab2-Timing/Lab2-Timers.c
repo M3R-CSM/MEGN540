@@ -31,7 +31,7 @@
 #include "SerialIO.h"  // for USB communication
 #include "Timing.h"    // for Time understanding
 #include "Task_Management.h" // for clean task management with functors
-#include "Message_Handeling.h" // for translating USB messages to microcontroller tasks 
+#include "MEGN540_Message_Handeling.h" // for translating USB messages to microcontroller tasks 
 
 // Declare Lab-Specific tasks functions here so you can link to tasks in the
 // initialization function... 
