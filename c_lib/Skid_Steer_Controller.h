@@ -43,6 +43,21 @@ typedef struct {
     float conversion_speed_to_control;  // Relates the linear tangential speed of the left-side or right-side wheel to the motor speed being controlled
     float max_abs_control;              // The maximum control that can be applied, to enable control saturation
 
+    //// Consider adding in the following functionality to implement slew-limited commands
+    // float max_lin_accel;
+    // float max_ang_accel;
+    // float max_lin_vel;
+    // float max_ang_vel;
+    // float lin_pos_target_request;
+    // float lin_pos_target_current;
+    // float ang_pos_target_request;
+    // float ang_pos_target_current;
+    // float lin_vel_target_request;
+    // float lin_vel_target_current;
+    // float ang_vel_target_request;
+    // float ang_vel_target_current;
+    // uint8_t velocity_mode;
+
     float ( *measurement_left_fcn_ptr )( void );   // function pointer to a function that provides a measurement for the left-side's drive angular measurement
     float ( *measurement_right_fcn_ptr )( void );  // function pointer to a function that provides a measurement for the right-side's drive angular measurement
 
@@ -51,9 +66,24 @@ typedef struct {
 
 } Skid_Steer_Controller_t;
 
-void Initialize_Skid_Steer( Skid_Steer_Controller_t* p_skid_steer_cntr, float wheel_base_width, float conversion_speed_to_control, float max_abs_control,
-                            float ( *measurement_left_fcn_ptr )( void ), float ( *measurement_right_fcn_ptr )( void ), void ( *control_left_fcn_ptr )( float ),
-                            void ( *control_right_fcn_ptr )( float ) );
+/**
+ * @brief Initialize_Skid_Steer initializes the skid steer objet
+ *
+ * @param p_skid_steer_cntr a pointer to the object being initialized
+ * @param z_transform_numerator the controller's z-transform numerator
+ * @param z_transform_denominator the controller's z-transform denominator
+ * @param z_transform_order the controller's order
+ * @param wheel_base_width the axel-width between treds
+ * @param conversion_speed_to_control the conversion from m/s to control units (pwm?)
+ * @param max_abs_control the absolute maximum control for satruation in control units (pwm?)
+ * @param measurement_left_fcn_ptr a function pointer to the left-side measurement
+ * @param measurement_right_fcn_ptr a function pointer to the right-side measurement
+ * @param control_left_fcn_ptr a function pointer to the left side's control application
+ * @param control_right_fcn_ptr a founction pointer to the right side's control applicaion
+ */
+void Initialize_Skid_Steer( Skid_Steer_Controller_t* p_skid_steer_cntr, float* z_transform_numerator, float* z_transform_denominator, uint8_t z_transform_order,
+                            float wheel_base_width, float conversion_speed_to_control, float max_abs_control, float ( *measurement_left_fcn_ptr )( void ),
+                            float ( *measurement_right_fcn_ptr )( void ), void ( *control_left_fcn_ptr )( float ), void ( *control_right_fcn_ptr )( float ) );
 
 /**
  * @brief Skid_Steer_Command_Displacement sets a new target diplacment for the robot to execute. This is a relative displacment to the current position, not an
