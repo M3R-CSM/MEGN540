@@ -1,9 +1,9 @@
 # Get System Updates and Upgrades
-sudo apt-get update
-sudo apt-get upgrade
+sudo apt update
+sudo apt upgrade -y
 
 # INSTALL PROGRAMMING APPS & LIBS: GIT (version control), MELD (file differences), code (Visual Studio Code), AND AVRDUDE (avr programming)
-sudo apt-get install -y build-essential git meld gcc-avr avr-libc avrdude code cmake clang-format-10 doxygen
+sudo apt install -y build-essential git meld gcc-avr avr-libc avrdude code cmake clang-format-10 doxygen
 
 # INSTALL VSCODE Extensions
 code --install-extension ms-vscode.cpptools 
@@ -18,7 +18,7 @@ code --install-extension cschlosser.doxdocgen
 
 
 # INSTALL SCREEN CAPTURE APPS: - This allows you to record the desktop with audio for assignents
-sudo apt-get install -y ffmpeg vokoscreen
+sudo apt install -y ffmpeg vokoscreen
 
 # CLONE CLASS REPOS AND SETUP FILE SYSTEM
 cd ~/Desktop
