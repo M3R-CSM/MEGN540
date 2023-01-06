@@ -30,8 +30,8 @@ bash SerialMonitor/install_dep.sh
 cd ..
 
 # Remove Mode Manager Which Causes Issues with programming
-sudo apt-get purge modemmanager
-sudo apt-get autoremove
+sudo apt-get purge -y modemmanager
+sudo apt-get autoremove -y
 
 # SETUP UDEV RULES FOR ZUMO
 sudo sh -c 'echo "ACTION==\"add\", SUBSYSTEM==\"tty\", ATTRS{idVendor}==\"1ffb\", ATTRS{idProduct}==\"2300\", SYMLINK+=\"ttyZumoCar\"
