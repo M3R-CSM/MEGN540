@@ -1,4 +1,4 @@
-#include "MEGN540_Lab_Tasks.h"
+#include "Lab1_Tasks.h"
 
 // This function takes two values, multiplies them, and sends the result over serial back to the Host
 void Multiply_And_Send( float value_left, float value_right )
