@@ -32,29 +32,23 @@
  * This file defines lab-spcific tasks for execution
  */
 
-#ifndef MEGN540_LAB_TASKS_H
-#define MEGN540_LAB_TASKS_H
+#ifndef LAB2_TASKS_H
+#define LAB2_TASKS_H
 
 #include "Task_Management.h"
-#include "SerialIO.h"
 
+// Include your lab-specific headers here
+#include "SerialIO.h"  // USB interface for sending results back to user
+#include "Timing.h"    // Timing interface
 
-// Create tasks that get initiated from USB messages
-// These tasks need to be initialized with appropriate function pointers
-// in the main lab function
-Task_t task_restart;    ///<-- Lab 1: This flag indicates that the device received a restart command from the hoast. Default inactive.
-// Task_t task_time_loop;  ///<-- Lab 2: Indicates if the system should report time to complete a loop.
-// Task_t task_send_time;  ///<-- Lab 2: Indicates if the system should send the current time.
-
+// Put your lab-specific tasks here
+// e.g. Task_t task_restart;  ///<-- Lab 1: This flag indicates that the device received a restart command from the hoast. Default inactive.
+Task_t task_time_loop;  ///<-- Lab 2: Indicates if the system should report time to complete a loop.
+Task_t task_send_time;  ///<-- Lab 2: Indicates if the system should send the current time.
 
 // Put your lab-specific task functionality and data_structures (if necessary) here so it is accessable to both
-// message handeling and the Lab main loops. 
- 
-// Lab 1 Math Operations
-void Multiply_And_Send(float value_left, float value_right );
-void Divide_And_Send(float value_left, float value_right );
-void Add_And_Send(float value_left, float value_right );
-void Subtract_And_Send(float value_left, float value_right );
+// message handeling and the Lab main loops.
+void Send_Loop_Time( float _time_since_last );
+void Send_Time_Now( float _time_since_last );
 
-
-#endif
+#endif  // ifndef LAB2_TASKS_H
