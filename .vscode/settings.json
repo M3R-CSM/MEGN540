@@ -1,15 +1,23 @@
 {
         "editor.formatOnSave": true,
         "editor.formatOnPaste": false,
-        "clang-format.executable":"/usr/bin/clang-format-10",
+        "clang-format.executable": "/usr/bin/clang-format-10",
         "clang-format.language.c.enable": true,
-        "clang-format.style" : "file",
+        "clang-format.style": "file",
         "[c]": {
                 "editor.defaultFormatter": "xaver.clang-format",
                 "editor.wordBasedSuggestions": false,
-                "editor.suggest.insertMode": "replace", 
+                "editor.suggest.insertMode": "replace",
                 "editor.semanticHighlighting.enabled": true
         },
         "formatFiles.extensionsToInclude": "c,h,cpp",
-        "formatFiles.excludedFolders":  [ "node_modules", ".vscode", ".git", "dist", ".chrome","lufa","BIN"]
+        "formatFiles.excludedFolders": [
+                "node_modules",
+                ".vscode",
+                ".git",
+                "dist",
+                ".chrome",
+                "lufa",
+                "BIN"
+        ]
 }
