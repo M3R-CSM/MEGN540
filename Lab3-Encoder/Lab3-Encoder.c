@@ -30,11 +30,11 @@
 
 // put your includes here for all modules you need to use
 
-// put your task function declarations here for future populaion
+// put your task includes and/or function declarations here for future populaion
 
 // put your global variables (only if absolutely required) here.
-// Best to identify them as static and start with a _ to make them indentified as internal.
-// Try to initialize them if possible, so they're values are never arbitrary.
+// Best to identify them as "static" to make them indentified as internal and start with a "_" to identify as internal.
+// Try to initialize them if possible, so their values are never arbitrary.
 
 // put your initialization function here
 

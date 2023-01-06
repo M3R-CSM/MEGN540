@@ -35,9 +35,15 @@
 #ifndef MEGN540_MESAGE_HANDELING_H
 #define MEGN540_MESAGE_HANDELING_H
 
-#include "MEGN540_Lab_Tasks.h"
+// Include realted interfaces
 #include "SerialIO.h"
-#include "Timing.h"
+
+// Include Lab Specific Task Definitions
+#include "Lab1_Tasks.h"
+#include "Lab2_Tasks.h"
+#include "Lab3_Tasks.h"
+#include "Lab4_Tasks.h"
+#include "Lab5_Tasks.h"
 
 /**
  * Function Task_Message_Handling processes USB messages as necessary and sets status flags to control the flow of the program.

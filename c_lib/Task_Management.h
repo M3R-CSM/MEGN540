@@ -28,41 +28,46 @@
 
 */
 
-#ifndef MEGN540_Task_Management_H
-#define MEGN540_Task_Management_H
+#ifndef Task_Management_H
+#define Task_Management_H
+
+#include "Timing.h"  // defines Time_t struct and timing iterface
 
 #include <stdbool.h>
-#include "Timing.h"
 
-
-typedef struct { bool is_active; float run_period; Time_t time_last_ran; void (*task_fcn_ptr)(float); } Task_t;
+typedef struct {
+    bool is_active;
+    float run_period;
+    Time_t time_last_ran;
+    void ( *task_fcn_ptr )( float );
+} Task_t;
 
 /**
  * @brief Function Initialize_Task sets up a task object. Initializes time_last_ran to 0 and is_active to false.
- * 
+ *
  * @param task is a pointer to the task object of interest
  * @param run_period is the period (in seconds) the task should repeat at. If -1, the task should only be run once.
  * @param task_fcn_ptr is the function pointer to the task function to execute akin to void Task_Foo(float), it will be passed the time since last run.
  */
-void Initialize_Task( Task_t * task, float run_period, void (*task_fcn_ptr)(float) );
+void Initialize_Task( Task_t* task, float run_period, void ( *task_fcn_ptr )( float ) );
 
 /**
  * @brief Function Task_Activate sets the state of is_active to true
- * 
+ *
  * @param task is a pointer to the task object of interest
  */
 void Task_Activate( Task_t* task );
 
 /**
  * @brief Function Task_Cancel sets the state of is_active to false
- * 
+ *
  * @param task is a pointer to the task object of interest
  */
 void Task_Cancel( Task_t* task );
 
 /**
  * @brief Function Task_Is_Ready checks to see if the given task is ready for execution.
- * 
+ *
  * @param task pointer to the task object of interest
  * @return true if the run_period has elapsed ince time_last_ran and the task is active
  * @return false if the task is not active or the run_period has not ellapsed
@@ -70,18 +75,14 @@ void Task_Cancel( Task_t* task );
 bool Task_Is_Ready( Task_t* task );
 
 /**
- * @brief Function Task_Run_If_Ready checks to see if the given task is ready for execution, executes the task by passing it the time 
- *  ellapsed since it was last run, and resets the time_last_ran appropriately. If the task function pointer is NULL then it just 
+ * @brief Function Task_Run_If_Ready checks to see if the given task is ready for execution, executes the task by passing it the time
+ *  ellapsed since it was last run, and resets the time_last_ran appropriately. If the task function pointer is NULL then it just
  *  returns if the task is ready and resets the time_last_ran.
- * 
- * @param task 
+ *
+ * @param task
  * @return true if the task was executed
  * @return false if the task was not exectued (because it was not ready)
  */
 bool Task_Run_If_Ready( Task_t* task );
 
-
-
-
-
-#endif 
+#endif

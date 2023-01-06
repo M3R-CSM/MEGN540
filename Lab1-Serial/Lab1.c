@@ -28,6 +28,7 @@
 
 */
 
+#include "Lab1_Tasks.h"
 #include "MEGN540_Message_Handeling.h"
 #include "SerialIO.h"
 #include "Task_Management.h"

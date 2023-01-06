@@ -28,19 +28,17 @@
 
 */
 
-#include "MEGN540_Lab_Tasks.h"
 #include "MEGN540_Message_Handeling.h"  // for translating USB messages to microcontroller tasks
 #include "SerialIO.h"                   // for USB communication
 #include "Task_Management.h"            // for clean task management with functors
 #include "Timing.h"                     // for Time understanding
 
-// Add these Lab-Specific tasks functions to MEGN540_Lab_Tasks.h/c so you can link to tasks in the
-// initialization function...
-// void Task_Send_LoopTime(float _time_since_last);
-// void Task_Send_TimeNow(float _time_since_last);
+// Include Lab Sepcific Functionality
+#include "Lab1_Tasks.h"
+#include "Lab2_Tasks.h"
 
 // put your global variables (only if absolutely required) here.
-// Best to identify them as static and start with a _ to make them indentified as internal.
+// Best to identify them as "static" to make them indentified as internal and start with a "_" to identify as internal.
 // Try to initialize them if possible, so their values are never arbitrary.
 
 /**
