@@ -149,8 +149,8 @@ void Task_USB_Echo( void )
     // you can comment out the above example and reproduce the echo functionality with either
     // of the below
     //
-    // if( rb_length_C(&_usb_receive_buffer) != 0 )
-    //    rb_push_back_C(&_usb_send_buffer, rb_pop_front_C(&_usb_receive_buffer));
+    // if( rb_length_B( &_usb_receive_buffer ) != 0 )
+    //     rb_push_back_B( &_usb_send_buffer, rb_pop_front_B( &_usb_receive_buffer ) );
     //
     // if( usb_msg_length() != 0 )
     //    usb_send_byte(usb_msg_get());
