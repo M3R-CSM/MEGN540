@@ -57,7 +57,7 @@ int main( void )
     //
 
     while( true ) {
-        USB_Upkeep();
+        Task_USB_Upkeep();
 
         Task_USB_Echo();  // you'll want to remove this once you get your serial sorted
         // MEGN540_Message_Handling_Upkeep(); // you'll want to uncomment once you get your serial sorted.

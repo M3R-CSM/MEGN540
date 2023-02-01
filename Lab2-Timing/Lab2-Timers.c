@@ -70,7 +70,7 @@ int main( void )
     Initialize_Modules( 0.0 );
 
     for( ;; ) {
-        USB_Upkeep();
+        Task_USB_Upkeep();
         MEGN540_Message_Handling_Upkeep();
 
         Task_Run_If_Ready( &task_restart );

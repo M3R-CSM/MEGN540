@@ -54,56 +54,56 @@
 #define _SERIAL_IO_H_
 
 /* Includes: */
-#include <avr/io.h>
-#include <avr/wdt.h>
-#include <avr/power.h>
-#include <avr/interrupt.h>
-#include <string.h>
-
 #include "USB_Config/Descriptors.h"
 #include <LUFA/Drivers/USB/USB.h>
 #include <LUFA/Platform/Platform.h>
+#include <avr/interrupt.h>
+#include <avr/io.h>
+#include <avr/power.h>
+#include <avr/wdt.h>
+
+#include <string.h>
 
 // *** MEGN540  ***
 // Include your Ring_Buffer homework code.
 #include "Ring_Buffer.h"
 
 /**
- * Function Initialize_USB Initializes the USB hardware leveraging the LUFA library and also 
+ * Function Initialize_USB Initializes the USB hardware leveraging the LUFA library and also
  * initializes the internal ring-buffers for USB data storage. Care should be taken to make sure
- * the ring buffer's can accomidate at least two full-sized (16 byte) messages before overflowing. * 
+ * the ring buffer's can accomidate at least two full-sized (16 byte) messages before overflowing. *
  */
-void Initialize_USB(void);  // You'll need to add in any initialization items to this function for your ring buffers
+void Initialize_USB( void );  // You'll need to add in any initialization items to this function for your ring buffers
 
 /**
  * Function Task_USB_Upkeep should be called each loop in the main function.
  */
-void USB_Upkeep(void);    // You'll need to add in USB buffer interaction here. This is where calls to usb_read_nex_byte would go...
+void Task_USB_Upkeep( void );  // You'll need to add in USB buffer interaction here. This is where calls to usb_read_nex_byte would go...
 
 /**
- * Function Task_USB_Echo provides a functioning example to help you build your code. This should be removed 
+ * Function Task_USB_Echo provides a functioning example to help you build your code. This should be removed
  * in the final implementaion.
  */
-void Task_USB_Echo(void);
+void Task_USB_Echo( void );
 
 /**
  * (non-blocking) Function USB_Send_Byte Adds a character to the output buffer
  * @param byte [uint8_t] Data to send
  */
-void USB_Send_Byte(uint8_t byte);
+void USB_Send_Byte( uint8_t byte );
 
 /**
  * (non-blocking) Function USB_Send_Data adds the data buffer to the output ring buffer.
  * @param p_data [void*] pointer to the data-object to be sent
  * @param data_len [uint8_t] size of data-object to be sent
  */
-void USB_Send_Data(void* p_data, uint8_t data_len);
+void USB_Send_Data( void* p_data, uint8_t data_len );
 
 /**
  * (non-blocking) Function USB_Send_Str adds a c-style (null terminated) string to the output buffer
  * @param p_str [char*] Pointer to a c-string (null terminated) to send
  */
-void USB_Send_Str(char* p_str);
+void USB_Send_Str( char* p_str );
 
 /**
  * (non-blocking) Function USB_Send_Msg sends a message according to the MEGN540 USB message format.
@@ -123,7 +123,7 @@ void USB_Send_Str(char* p_str);
  * @param p_data [void*] pointer to the data-object to send.
  * @param data_len [uint8_t] size of the data-object to send. Remember sizeof() can help you with this!
  */
-void USB_Send_Msg(char* format, char cmd, void* p_data, uint8_t data_len );
+void USB_Send_Msg( char* format, char cmd, void* p_data, uint8_t data_len );
 
 /**
  * (non-blocking) Funtion USB_Msg_Length returns the number of bytes in the receive buffer awaiting processing.
@@ -152,7 +152,7 @@ uint8_t USB_Msg_Get();
  * @param data_len
  * @return [bool]  True: sucess, False: not enough bytes available
  */
-bool USB_Msg_Read_Into(void* p_obj, uint8_t data_len);
+bool USB_Msg_Read_Into( void* p_obj, uint8_t data_len );
 
 /**
  * (non-blocking) Function USB_Flush_Input_Buffer sets the length of the recieve buffer to zero and disreguards
@@ -160,12 +160,10 @@ bool USB_Msg_Read_Into(void* p_obj, uint8_t data_len);
  */
 void USB_Flush_Input_Buffer();
 
-
 // LUFA Event handeling functions that are defined but do not require modificaiton
-void EVENT_USB_Device_Connect(void);
-void EVENT_USB_Device_Disconnect(void);
-void EVENT_USB_Device_ConfigurationChanged(void);
-void EVENT_USB_Device_ControlRequest(void);
+void EVENT_USB_Device_Connect( void );
+void EVENT_USB_Device_Disconnect( void );
+void EVENT_USB_Device_ConfigurationChanged( void );
+void EVENT_USB_Device_ControlRequest( void );
 
 #endif
-

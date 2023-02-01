@@ -90,9 +90,9 @@ static void _USB_Write_Data()
     // register level.
 }
 
-void USB_Upkeep()
+void Task_USB_Upkeep()
 {
-    USB_USBTask();
+    USB_USBTask();  // lufa internal upkeep task
 
     // *** MEGN540  ***
     // Each iteration you should send what you have in the buffer
