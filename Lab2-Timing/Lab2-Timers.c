@@ -60,6 +60,9 @@ void Initialize_Modules( float _time_not_used_ )
 
     // Setup task handling
     Initialize_Task( &task_restart, -1 /*do only once*/, Initialize_Modules /*function pointer to call*/ );
+
+    // Setup message handling to get processed at some desired rate.
+    Initialize_Task( &task_message_handling, 0 /*as fast as possible*/, Task_Message_Handling );
 }
 
 /** Main program entry point. This routine configures the hardware required by the application, then
@@ -71,8 +74,8 @@ int main( void )
 
     for( ;; ) {
         Task_USB_Upkeep();
-        MEGN540_Message_Handling_Upkeep();
 
+        Task_Run_If_Ready( &task_message_handling );
         Task_Run_If_Ready( &task_restart );
     }
 }

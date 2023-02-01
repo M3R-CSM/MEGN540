@@ -48,7 +48,7 @@
 /**
  * Function Task_Message_Handling processes USB messages as necessary and sets status flags to control the flow of the program.
  */
-void MEGN540_Message_Handling_Upkeep();
+void Task_Message_Handling( float _time_since_last );
 
 /**
  * Function MEGN540_Message_Len returns the number of bytes associated with a command string per the

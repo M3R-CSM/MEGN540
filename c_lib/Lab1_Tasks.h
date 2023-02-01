@@ -43,7 +43,8 @@
 // Create tasks that get initiated from USB messages
 // These tasks need to be initialized with appropriate function pointers
 // in the main lab function
-Task_t task_restart;  ///<-- Lab 1: This flag indicates that the device received a restart command from the hoast. Default inactive.
+Task_t task_restart;           ///<-- Lab 1: This flag indicates that the device received a restart command from the hoast. Default inactive.
+Task_t task_message_handling;  ///<-- Lab 1: this flag indicates that the device shoudl process usb messages if available
 
 // Lab 1 Math Operations
 void Multiply_And_Send( float value_left, float value_right );

@@ -34,7 +34,7 @@
  * Function Task_Message_Handling processes USB messages as necessary and sets
  * status flags to control the flow of the program.
  */
-void MEGN540_Message_Handling_Upkeep()
+void Task_Message_Handling( float _time_since_last )
 {
     // *** MEGN540  ***
     // YOUR CODE HERE. I suggest you use your peak function and a switch interface
