@@ -54,7 +54,7 @@ void MEGN540_Message_Handling_Upkeep()
     switch( command ) {
         case '*':
             if( USB_Msg_Length() >= MEGN540_Message_Len( '*' ) ) {
-                // then process your times...
+                // then process your multiplication...
 
                 // remove the command from the usb recieved buffer using the
                 // usb_msg_get() function
@@ -94,7 +94,7 @@ void MEGN540_Message_Handling_Upkeep()
             break;
         case '~':
             if( USB_Msg_Length() >= MEGN540_Message_Len( '~' ) ) {
-                // then process your reset by setting the mf_restart flag
+                // then process your reset by setting the task_restart flag defined in Lab1_Tasks.h
             }
             break;
         default:
@@ -122,15 +122,7 @@ uint8_t MEGN540_Message_Len( char cmd )
         case 'e': return 1; break;
         case 'E': return 5; break;
         case 'b': return 1; break;
-        case 'B':
-            return 5;
-            break;
-            //        case 'a': return	1; break;
-            //        case 'A': return 	5; break;
-            //        case 'w': return	1; break;
-            //        case 'W': return 	5; break;
-            //        case 'm': return	1; break;
-            //        case 'M': return	5; break;
+        case 'B': return 5; break;
         case 'p': return 5; break;
         case 'P': return 9; break;
         case 's': return 1; break;
