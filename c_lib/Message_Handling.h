@@ -32,8 +32,8 @@
  * This file defines the incomming message length and other details.
  */
 
-#ifndef MEGN540_MESAGE_HANDELING_H
-#define MEGN540_MESAGE_HANDELING_H
+#ifndef MESAGE_HANDELING_H
+#define MESAGE_HANDELING_H
 
 // Include realted interfaces
 #include "SerialIO.h"

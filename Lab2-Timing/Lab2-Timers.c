@@ -28,10 +28,10 @@
 
 */
 
-#include "MEGN540_Message_Handeling.h"  // for translating USB messages to microcontroller tasks
-#include "SerialIO.h"                   // for USB communication
-#include "Task_Management.h"            // for clean task management with functors
-#include "Timing.h"                     // for Time understanding
+#include "Message_Handling.h"  // for translating USB messages to microcontroller tasks
+#include "SerialIO.h"          // for USB communication
+#include "Task_Management.h"   // for clean task management with functors
+#include "Timing.h"            // for Time understanding
 
 // Include Lab Sepcific Functionality
 #include "Lab1_Tasks.h"
