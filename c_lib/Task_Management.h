@@ -52,7 +52,8 @@ typedef struct {
 void Initialize_Task( Task_t* task, float run_period, void ( *task_fcn_ptr )( float ) );
 
 /**
- * @brief Function Task_Activate sets the state of is_active to true
+ * @brief Function Task_Activate sets the state of is_active to true and resets the time last ran to the current time. Repeated calles to Task_Activate on an
+ * active task act like snoozing a watchdog task timer.
  *
  * @param task is a pointer to the task object of interest
  */

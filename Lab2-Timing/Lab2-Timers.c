@@ -63,6 +63,8 @@ void Initialize_Modules( float _time_not_used_ )
 
     // Setup message handling to get processed at some desired rate.
     Initialize_Task( &task_message_handling, 0 /*as fast as possible*/, Task_Message_Handling );
+
+    // Initialize_Task( &task_message_handling_watchdog, /*watchdog timout period*/,  Task_Message_Handling_Watchdog );
 }
 
 /** Main program entry point. This routine configures the hardware required by the application, then
@@ -72,10 +74,12 @@ int main( void )
 {
     Initialize_Modules( 0.0 );
 
-    for( ;; ) {
+    for( ;; ) {  // yet another way to do while (true)
         Task_USB_Upkeep();
 
         Task_Run_If_Ready( &task_message_handling );
         Task_Run_If_Ready( &task_restart );
+
+        // Task_Run_If_Ready( &task_message_handling_watchdog );
     }
 }

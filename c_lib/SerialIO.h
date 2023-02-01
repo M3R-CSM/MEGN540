@@ -66,6 +66,13 @@
 
 // *** MEGN540  ***
 // Include your Ring_Buffer homework code.
+#ifndef RING_BUFFER_H  // check guard to see if "Ring_Buffer.h" has already been included. If not set ring buffer length
+// Define max rignbuffer size here so we have more than enough for the longest message we will send.
+#    define RB_LENGTH_B 32
+#elif RB_LENGTH_B < 32  // check to see if set RB_LENGTH_IS large enough
+#    warning Ring_Buffer created before SerialIO.h. Ring buffer length is too small for serial messages. Consider revising include ordering.
+#endif
+
 #include "Ring_Buffer.h"
 
 /**

@@ -1,4 +1,5 @@
 #include "Task_Management.h"
+
 #include "Timing.h"
 
 /** Function Initialize_Task initializes the task to a default state that is inactive.
@@ -17,15 +18,15 @@ void Initialize_Task( Task_t* task, float run_period, void ( *task_fcn_ptr )( fl
 /** Function Task_Activate changes the internal state to enable the task **/
 void Task_Activate( Task_t* task )
 {
-    // ****** MEGN540 *********//
-    // Here you should change the state of the is_active member
+    //****** MEGN540 --  START IN LAB 1, UPDATE IN Lab 2 ******//
+    // Here you should change the state of the is_active member and set the time to now (lab 2)
     // to identify the task is active
 }
 
 /** Function Task_Cancel changes the internal state to disable the task **/
 void Task_Cancel( Task_t* task )
 {
-    // ****** MEGN540 *********//
+    //****** MEGN540 -- Lab 1 ******//
     // Here you should change the state of the is_active member
     // to identify the task is inactive
 }
@@ -35,6 +36,7 @@ void Task_Cancel( Task_t* task )
  */
 bool Task_Is_Ready( Task_t* task )
 {
+    //****** MEGN540 --  START IN LAB 1, UPDATE IN Lab 2 ******//
     return false;  // MEGN540 Update to set the return statement based on is_active and time_last_ran.
 }
 
@@ -44,6 +46,7 @@ bool Task_Is_Ready( Task_t* task )
  */
 bool Task_Run_If_Ready( Task_t* task )
 {
+    //****** MEGN540 --  START IN LAB 1, UPDATE IN Lab 2   ******//
     // Check to see if the task is ready to run.
     // Note that a negative run_period indicates the task should only be performed once, while
     // a run_period of 0 indicates the task should be run every time.
