@@ -54,15 +54,17 @@ void Initialize_Modules( float _time_not_used_ )
 {
     // Initialize (reinitialize) all global variables
 
-    // Initialize all modules
-    Initialize_USB();
+    // reset USB input buffers
+    USB_Flush_Input_Buffer();
+
+    // Initialize all modules except USB (it can only be called once without messing things up)
     Initialize_Timing();
 
     // Setup task handling
-    Initialize_Task( &task_restart, -1 /*do only once*/, Initialize_Modules /*function pointer to call*/ );
+    Initialize_Task( &task_restart, Initialize_Modules /*function pointer to call*/ );
 
     // Setup message handling to get processed at some desired rate.
-    Initialize_Task( &task_message_handling, 0 /*as fast as possible*/, Task_Message_Handling );
+    Initialize_Task( &task_message_handling, Task_Message_Handling );
 
     // Initialize_Task( &task_message_handling_watchdog, /*watchdog timout period*/,  Task_Message_Handling_Watchdog );
 }
@@ -72,6 +74,7 @@ void Initialize_Modules( float _time_not_used_ )
  */
 int main( void )
 {
+    Initialize_USB();
     Initialize_Modules( 0.0 );
 
     for( ;; ) {  // yet another way to do while (true)

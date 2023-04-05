@@ -43,21 +43,30 @@ typedef struct {
 } Task_t;
 
 /**
- * @brief Function Initialize_Task sets up a task object. Initializes time_last_ran to 0 and is_active to false.
+ * @brief Function Initialize_Task sets up a task object. Initializes time_last_ran to 0, is_active to false, and run_period to -1.
+ *
+ * @param task is a pointer to the task object of interest
+ * @param task_fcn_ptr is the function pointer to the task function to execute akin to void Task_Foo(float), it will be passed the time since last run. If this
+ * pointer is NULL, the function call will be ignored.
+ */
+void Initialize_Task( Task_t* task, void ( *task_fcn_ptr )( float ) );
+
+/**
+ * @brief Function Task_Activate sets the state of is_active to true, sets the run_period as described, and resets the time last ran to the current time.
+ * Repeated calls to Task_Activate on an active task act like snoozing a watchdog task timer.
  *
  * @param task is a pointer to the task object of interest
  * @param run_period is the period (in seconds) the task should repeat at. If -1, the task should only be run once.
- * @param task_fcn_ptr is the function pointer to the task function to execute akin to void Task_Foo(float), it will be passed the time since last run.
  */
-void Initialize_Task( Task_t* task, float run_period, void ( *task_fcn_ptr )( float ) );
+void Task_Activate( Task_t* task, float run_period );
 
 /**
- * @brief Function Task_Activate sets the state of is_active to true and resets the time last ran to the current time. Repeated calles to Task_Activate on an
- * active task act like snoozing a watchdog task timer.
+ * @brief Function Task_ReActivate sets the state of is_active to true and resets the time last ran to the current time.
+ * This has the same functionality as Task_Activate but it does not allow changing the tasks's run period.
  *
  * @param task is a pointer to the task object of interest
  */
-void Task_Activate( Task_t* task );
+void Task_ReActivate( Task_t* task );
 
 /**
  * @brief Function Task_Cancel sets the state of is_active to false
@@ -74,6 +83,14 @@ void Task_Cancel( Task_t* task );
  * @return false if the task is not active or the run_period has not ellapsed
  */
 bool Task_Is_Ready( Task_t* task );
+
+/**
+ * @brief Function Task_Run runs the task-function (if not NULL) and updates the time last ran to the current time. If the run_period is -1, this also
+ * deactivates the task.
+ *
+ * @param task pointer to the task object of interest
+ */
+void Task_Run( Task_t* task );
 
 /**
  * @brief Function Task_Run_If_Ready checks to see if the given task is ready for execution, executes the task by passing it the time
