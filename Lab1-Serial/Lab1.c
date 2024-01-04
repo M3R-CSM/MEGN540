@@ -29,7 +29,7 @@
 */
 
 #include "Lab1_Tasks.h"
-#include "MEGN540_Message_Handeling.h"
+#include "Message_Handling.h"
 #include "SerialIO.h"
 #include "Task_Management.h"
 
@@ -41,10 +41,14 @@
  */
 void Initialize_Modules( float _not_used_ )
 {
-    Initialize_USB();
+    // reset USB input buffers
+    USB_Flush_Input_Buffer();
 
     // Initialize Tasks and their associated funciton connections
-    Initialize_Task( &task_restart, -1, Initialize_Modules );
+    Initialize_Task( &task_restart, Initialize_Modules );
+
+    // once you have everythign else working  you can setup the message handling task to be managed by our task management
+    // Initialize_Task( &task_message_handling, 0, Task_Message_Handling );
 }
 
 /** Main program entry point. This routine configures the hardware required by the application, then
@@ -52,15 +56,18 @@ void Initialize_Modules( float _not_used_ )
  */
 int main( void )
 {
+    Initialize_USB();
     Initialize_Modules( 0.0 );
 
     //
 
     while( true ) {
-        USB_Upkeep();
+        Task_USB_Upkeep();  // This we need to run Always and fast, so no need to wrap it with task management
 
         Task_USB_Echo();  // you'll want to remove this once you get your serial sorted
-        // MEGN540_Message_Handling_Upkeep(); // you'll want to uncomment once you get your serial sorted.
+        // Task_Message_Handling(0.0); // you'll want to uncomment once you get your serial sorted.
+        // Instead of above, once you have Task_Message_Handling working, you can setup the message handling task to be managed by our task management
+        // Task_Run_If_Ready( &task_message_handling);
 
         // Below here you'll process state-machine flags.
         Task_Run_If_Ready( &task_restart );

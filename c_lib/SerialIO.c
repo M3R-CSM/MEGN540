@@ -60,8 +60,8 @@
 
 // *** MEGN540  ***
 // Internal Ring Buffer Objects
-static Ring_Buffer_C_t _usb_receive_buffer;
-static Ring_Buffer_C_t _usb_send_buffer;
+static Ring_Buffer_Byte_t _usb_receive_buffer;
+static Ring_Buffer_Byte_t _usb_send_buffer;
 
 /**
  * (non-blocking) Internal function _USB_Read_Data takes the next USB byte and reads it
@@ -90,9 +90,9 @@ static void _USB_Write_Data()
     // register level.
 }
 
-void USB_Upkeep()
+void Task_USB_Upkeep()
 {
-    USB_USBTask();
+    USB_USBTask();  // lufa internal upkeep task
 
     // *** MEGN540  ***
     // Each iteration you should send what you have in the buffer
@@ -149,8 +149,8 @@ void Task_USB_Echo( void )
     // you can comment out the above example and reproduce the echo functionality with either
     // of the below
     //
-    // if( rb_length_C(&_usb_receive_buffer) != 0 )
-    //    rb_push_back_C(&_usb_send_buffer, rb_pop_front_C(&_usb_receive_buffer));
+    // if( rb_length_B( &_usb_receive_buffer ) != 0 )
+    //     rb_push_back_B( &_usb_send_buffer, rb_pop_front_B( &_usb_receive_buffer ) );
     //
     // if( usb_msg_length() != 0 )
     //    usb_send_byte(usb_msg_get());
@@ -295,8 +295,8 @@ void Initialize_USB( void )
 
     // *** MEGN540 ***//
     // We need to initialize the ring buffers here.
-    rb_initialize_C( &_usb_receive_buffer );
-    rb_initialize_C( &_usb_send_buffer );
+    rb_initialize_B( &_usb_receive_buffer );
+    rb_initialize_B( &_usb_send_buffer );
 
     // THE following is LUFA specific setup to make sure the
     // watchdog timer is not active as we are not actively resetting it
