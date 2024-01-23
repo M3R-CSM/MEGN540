@@ -19,5 +19,6 @@
                 ".chrome",
                 "lufa",
                 "BIN"
-        ]
+        ],
+        "ros.distro": "noetic"
 }
