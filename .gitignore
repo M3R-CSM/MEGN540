@@ -1,6 +1,9 @@
 # ALL BIN FILES
 BIN/*
 
+#vscode files
+.vscode/*
+
 # Prerequisites
 *.d
 
