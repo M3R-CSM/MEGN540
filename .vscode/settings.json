@@ -20,5 +20,13 @@
                 "lufa",
                 "BIN"
         ],
+<<<<<<< HEAD
         "ros.distro": "noetic"
+=======
+        "files.associations": {
+                "lab1_tasks.h": "c",
+                "serialio.h": "c",
+                "ring_buffer.h": "c"
+        }
+>>>>>>> e15c358d71832703847780f532e91be59cce5aa1
 }

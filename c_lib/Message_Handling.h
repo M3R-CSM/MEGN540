@@ -32,8 +32,8 @@
  * This file defines the incomming message length and other details.
  */
 
-#ifndef MEGN540_MESAGE_HANDELING_H
-#define MEGN540_MESAGE_HANDELING_H
+#ifndef MESAGE_HANDELING_H
+#define MESAGE_HANDELING_H
 
 // Include realted interfaces
 #include "SerialIO.h"
@@ -48,14 +48,14 @@
 /**
  * Function Task_Message_Handling processes USB messages as necessary and sets status flags to control the flow of the program.
  */
-void MEGN540_Message_Handling_Upkeep();
+void Task_Message_Handling( float _time_since_last );
 
 /**
- * Function MEGN540_Message_Len returns the number of bytes associated with a command string per the
- * class documentation;
- * @param cmd
- * @return Size of expected string. Returns 0 if unrecognized.
+ * @brief Function Task_Message_Handling_Watchdog clears the USB recieve (deleting all messages) to flush the buffer if a complete message is not recieved
+ * whithin an appropriate amount of time (say 250ms)
+ *
+ * @param _unused_
  */
-uint8_t MEGN540_Message_Len( char cmd );
+void Task_Message_Handling_Watchdog( float _unused_ );
 
 #endif

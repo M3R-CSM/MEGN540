@@ -1,7 +1,37 @@
+/*
+         MEGN540 Mechatronics Lab
+    Copyright (C) Andrew Petruska, 2023.
+       apetruska [at] mines [dot] edu
+          www.mechanical.mines.edu
+*/
+
+/*
+    Copyright (c) 2023 Andrew Petruska at Colorado School of Mines
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+
+*/
+
 #include "Filter.h"
 
 /**
- * Function Initialize_Filter initializes the filter given two float arrays and the order of the filter.  Note that the
+ * Function Filter_Init initializes the filter given two float arrays and the order of the filter.  Note that the
  * size of the array will be one larger than the order. (First order systems have two coefficients).
  *
  *  1/A_0*( SUM( B_i * input_i )  -   SUM( A_i * output_i) )
@@ -17,7 +47,7 @@
  * @param denominator_coeffs The denominator coefficients (A/alpha traditionally)
  * @param order The filter order
  */
-void Initialize_Filter( Filter_Data_t* p_filt, float* numerator_coeffs, float* denominator_coeffs, uint8_t order )
+void Filter_Init( Filter_Data_t* p_filt, float* numerator_coeffs, float* denominator_coeffs, uint8_t order )
 {
     return;
 }

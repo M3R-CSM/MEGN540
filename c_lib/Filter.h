@@ -29,7 +29,7 @@
 */
 
 /**
- * Filter.h/c defines the functions necessary to implement a z-transform
+ * filter.h/c defines the functions necessary to implement a z-transform
  * filter for use both with digital filtering and control.
  *
  * This code leverages the Ring_Buffer code developed in the homework.
@@ -38,17 +38,23 @@
 #ifndef _MEGN540_FILTER_H
 #define _MEGN540_FILTER_H
 
+#ifndef RB_LENGTH_F
+#    define RB_LENGTH_F 8  // must be a power of 2 (max of 256) and larger than the filter order +1.
+#else
+#    warning RB_LENGTH_F has been defined outside of filter.h, care should be taken that it is large enough for the filter to use.
+#endif
+
 #include "Ring_Buffer.h"
 
 typedef struct {
-    struct Ring_Buffer_F numerator;
-    struct Ring_Buffer_F denominator;
-    struct Ring_Buffer_F out_list;
-    struct Ring_Buffer_F in_list;
+    Ring_Buffer_Float_t numerator;
+    Ring_Buffer_Float_t denominator;
+    Ring_Buffer_Float_t out_list;
+    Ring_Buffer_Float_t in_list;
 } Filter_Data_t;
 
 /**
- * Function Initialize_Filter initializes the filter given two float arrays and the order of the filter.  Note that the
+ * Function Filter_Init initializes the filter given two float arrays and the order of the filter.  Note that the
  * size of the array will be one larger than the order. (First order systems have two coefficients).
  *
  *  1/A_0*( SUM( B_i * input_i )  -   SUM( A_i * output_i) )
@@ -64,7 +70,7 @@ typedef struct {
  * @param denominator_coeffs The denominator coefficients (A/alpha traditionally)
  * @param order The filter order
  */
-void Initialize_Filter( Filter_Data_t* p_filt, float* numerator_coeffs, float* denominator_coeffs, uint8_t order );
+void Filter_Init( Filter_Data_t* p_filt, float* numerator_coeffs, float* denominator_coeffs, uint8_t order );
 
 /**
  * Function Filter_ShiftBy shifts the input list and output list to keep the filter in the same frame. This especially

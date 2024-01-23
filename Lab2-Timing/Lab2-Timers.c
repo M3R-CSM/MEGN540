@@ -28,10 +28,10 @@
 
 */
 
-#include "MEGN540_Message_Handeling.h"  // for translating USB messages to microcontroller tasks
-#include "SerialIO.h"                   // for USB communication
-#include "Task_Management.h"            // for clean task management with functors
-#include "Timing.h"                     // for Time understanding
+#include "Message_Handling.h"  // for translating USB messages to microcontroller tasks
+#include "SerialIO.h"          // for USB communication
+#include "Task_Management.h"   // for clean task management with functors
+#include "Timing.h"            // for Time understanding
 
 // Include Lab Sepcific Functionality
 #include "Lab1_Tasks.h"
@@ -54,12 +54,19 @@ void Initialize_Modules( float _time_not_used_ )
 {
     // Initialize (reinitialize) all global variables
 
-    // Initialize all modules
-    Initialize_USB();
+    // reset USB input buffers
+    USB_Flush_Input_Buffer();
+
+    // Initialize all modules except USB (it can only be called once without messing things up)
     Initialize_Timing();
 
     // Setup task handling
-    Initialize_Task( &task_restart, -1 /*do only once*/, Initialize_Modules /*function pointer to call*/ );
+    Initialize_Task( &task_restart, Initialize_Modules /*function pointer to call*/ );
+
+    // Setup message handling to get processed at some desired rate.
+    Initialize_Task( &task_message_handling, Task_Message_Handling );
+
+    // Initialize_Task( &task_message_handling_watchdog, /*watchdog timout period*/,  Task_Message_Handling_Watchdog );
 }
 
 /** Main program entry point. This routine configures the hardware required by the application, then
@@ -67,12 +74,15 @@ void Initialize_Modules( float _time_not_used_ )
  */
 int main( void )
 {
+    Initialize_USB();
     Initialize_Modules( 0.0 );
 
-    for( ;; ) {
-        USB_Upkeep();
-        MEGN540_Message_Handling_Upkeep();
+    for( ;; ) {  // yet another way to do while (true)
+        Task_USB_Upkeep();
 
+        Task_Run_If_Ready( &task_message_handling );
         Task_Run_If_Ready( &task_restart );
+
+        // Task_Run_If_Ready( &task_message_handling_watchdog );
     }
 }
